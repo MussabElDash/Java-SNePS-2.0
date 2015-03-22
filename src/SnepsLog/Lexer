@@ -1,0 +1,204 @@
+import java_cup.runtime.Symbol;
+%%
+%class Lexer
+
+%implements java_cup.runtime.Scanner
+%function next_token
+%type java_cup.runtime.Symbol
+
+%eofval{
+	return new Symbol(sym.EOF, null);
+%eofval}
+
+DIGIT=[0-9]	
+ALPHA=[a-zA-z]
+NUMBER=({DIGIT})+([.]({DIGIT})+)?
+ALPHA_NUMERIC={ALPHA}|{DIGIT}
+IDENTIFIER=({ALPHA})+|{ALPHA}({ALPHA_NUMERIC})*
+
+
+
+
+ACTIVIATE=activate
+ACTIVATEASSERT=activate!
+ADDTOCONTEXT=add-to-context
+ASK=ask
+ASKIFNOT=askifnot
+ASKWH=askwh
+ASKWHNOT=askwhnot
+BELIFESABOUT=beliefs-about
+AFTERBR=auto|manual
+
+BRMODE=br-mode
+BRCMD={BRMODE}({AFTERBR})?
+
+BRTIEMODE=br-tie-mode
+BRTIECMD={BRTIEMODE}({AFTERBR})?
+
+CLEARINFER=clear-infer
+CLEARKB=clearkb
+COPYRIGHT=copyright
+
+DEFINEFRAME=define-frame
+DEFINEPATH=define-path
+DEMO=demo
+DESCRIBECONTEXT=describe-context
+DESCRIBETERMS=describe-terms
+
+EXPERT=expert
+
+LISP=lisp
+LIST-ASSERTED-WFFS=list-asserted-wffs
+LISTCONTEXTS=list-contexts
+LISTTERMS=list-terms
+LISTWFFS=list-wffs
+LOAD=load
+WFF=wff
+
+NORMAL=normal
+
+PERFORM=perform
+
+REMOVEFROMCONTEXT=remove-from-context
+
+SETCONTEXT=set-context
+SETDEFAULTCONTEXT=set-default-context
+
+SETMODE1=set-mode-1
+SETMODE2=set-mode-2
+SETMODE3=set-mode-3
+
+SETORDERH=explicit|fluent|null-order|source
+SETORDER=set-order
+SETORDERCMD={SETORDER}({SETORDERH})?
+
+SHOW=show
+TRACE=trace
+UNDEFINEPATH=undefine-path
+UNLABELED=unlabeled
+UNTRACE=untrace
+
+AND=and
+OR=or
+NAND=nand
+NOR=nor
+XOR=xor
+IFF=iff
+
+ANDOR=andor
+NOT=^
+THRESH=thresh
+ALL=all
+NEXIST=nexist
+
+WITHSOME=withsome
+WITHALL=withall
+
+
+
+
+
+
+
+
+
+
+
+
+WHITE_SPACE=([\ \n\r\t\f\b])+
+%%
+<YYINITIAL> {WHITE_SPACE} { }
+
+<YYINITIAL> {NUMBER} { 
+	return new Symbol(sym.NM, ""+Integer.parseInt(yytext()));
+}
+<YYINITIAL> {IDENTIFIER} { 
+	return new Symbol(sym.ID, yytext());
+}
+
+<YYINITIAL> {WFF} { 
+	return new Symbol(sym.WFF, yytext());
+}
+<YYINITIAL> "?" { 
+	return new Symbol(sym.QM, yytext());
+}
+
+<YYINITIAL> "," { 
+	return new Symbol(sym.COMA, yytext());
+}
+
+
+<YYINITIAL> "." { 
+	return new Symbol(sym.DT, yytext());
+}
+
+
+<YYINITIAL> "&=>" { 
+	return new Symbol(sym.AE, yytext());
+}
+
+<YYINITIAL> "v=>" { 
+	return new Symbol(sym.OE, yytext());
+}
+
+<YYINITIAL> "=>" { 
+	return new Symbol(sym.II, yytext());
+}
+
+<YYINITIAL> {DIGIT}+"=>" { 
+	return new Symbol(sym.NE, yytext());
+}
+
+
+
+
+<YYINITIAL> ";" { 
+	return new Symbol(sym.SM, yytext());
+}
+
+<YYINITIAL> ":" { 
+	return new Symbol(sym.CL, yytext());
+}
+
+<YYINITIAL> "=" { 
+	return new Symbol(sym.AO, yytext());
+}
+
+<YYINITIAL> "==" { 
+	return new Symbol(sym.EQ, yytext());
+}
+
+<YYINITIAL> "<" { 
+	return new Symbol(sym.LT, yytext());
+}
+
+<YYINITIAL> ">" { 
+	return new Symbol(sym.MT, yytext());
+}
+
+<YYINITIAL> "*" { 
+	return new Symbol(sym.ML, yytext());
+}
+
+<YYINITIAL> "||" { 
+	return new Symbol(sym.OO, yytext());
+}
+
+<YYINITIAL> "&&" { 
+	return new Symbol(sym.AA, yytext());
+}
+
+<YYINITIAL> "(" { 
+	return new Symbol(sym.LP, yytext());
+}
+
+<YYINITIAL> ")" { 
+	return new Symbol(sym.RP, yytext());
+}	
+<YYINITIAL> "!" { 
+	return new Symbol(sym.EM, yytext());
+}
+
+<YYINITIAL> . {
+	return new Symbol(sym.error, "Error!");
+}

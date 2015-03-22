@@ -8,9 +8,13 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.SyntaticClasses;
 
 import java.util.Enumeration;
+
+import sneps.Cables.UpCable;
+import sneps.Cables.UpCableSet;
+import sneps.Nodes.NodeSet;
 
 public abstract class Term {
 	

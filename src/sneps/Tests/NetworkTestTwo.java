@@ -5,15 +5,14 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import SNeBR.Context;
-
 import sneps.CaseFrame;
 import sneps.Network;
-import sneps.Node;
 import sneps.PathTrace;
-import sneps.PatternNode;
 import sneps.RCFP;
 import sneps.Relation;
-import sneps.VariableNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.PatternNode;
+import sneps.Nodes.VariableNode;
 import sneps.Paths.BUnitPath;
 import sneps.Paths.ComposePath;
 import sneps.Paths.DomainRestrictPath;

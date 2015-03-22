@@ -1,51 +1,50 @@
-package sneps;
+package sneps.Nodes;
 
 import java.util.Iterator;
 
 import SNeBR.Context;
 import SNeBR.Contradiction;
 import SNeBR.Support;
+import sneps.Cables.DownCable;
+import sneps.Cables.UpCable;
+import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
-import sneps.MolecularNode;
-import sneps.Node;
-import sneps.NodeSet;
 import SNeBR.PropositionSet;
-import sneps.UpCable;
-import sneps.UpCableSet;
 import SNeBR.SNeBR;
 import sneps.SemanticClasses.*;
+import sneps.SyntaticClasses.Molecular;
+import sneps.SyntaticClasses.Term;
+
 public class PropositionNode extends MolecularNode {
 
 	public PropositionNode(Molecular syn, Proposition sem) {
 		super(syn, sem);
-		Context c =new Context(this);
-		Support s =new Support(c);
+		Context c = new Context(this);
+		Support s = new Support(c);
 		((Proposition) this.getSemantic()).getOrigin().add(s);
 		// TODO Auto-generated constructor stub
 	}
 
-//	public PropositionNode() {
-//		super();
-//	}
+	// public PropositionNode() {
+	// super();
+	// }
 
-	public void contradiction( Context context) {
+	public void contradiction(Context context) {
 		NodeSet nodeSetNegated = checkIfNegated(this);
 		NodeSet nodeSetNegating = checkIfNegating(this);
 		PropositionSet propSet = new PropositionSet();
-		if (nodeSetNegated.size() != 0) {
-			for (int i = 0; i < nodeSetNegated.size(); i++) {
-				Node n = nodeSetNegated.getNode(i);
-				Entity e = n.getSemantic();
-				if (e.getClass().getSimpleName().equals("Proposition")) {
-					//Proposition prop = (Proposition) e;
-					PropositionNode p = (PropositionNode) n;
-					if (((Proposition) p.getSemantic()).isAsserted(context)) {
-						propSet.propositions.add((PropositionNode) n);
-					}
+		for (int i = 0; i < nodeSetNegated.size(); i++) {
+			Node n = nodeSetNegated.getNode(i);
+			Entity e = n.getSemantic();
+			if (e.getClass().getSimpleName().equals("Proposition")) {
+				// Proposition prop = (Proposition) e;
+				PropositionNode p = (PropositionNode) n;
+				if (((Proposition) p.getSemantic()).isAsserted(context)) {
+					propSet.propositions.add((PropositionNode) n);
 				}
 			}
 		}
-		if (nodeSetNegating != (null)) {
+		if (nodeSetNegating != null) {
 			for (int i = 0; i < nodeSetNegating.size(); i++) {
 				Node n = nodeSetNegating.getNode(i);
 				Entity e = n.getSemantic();
@@ -62,15 +61,18 @@ public class PropositionNode extends MolecularNode {
 			context.setConflicting(true);
 			System.out.println("done!!!!");
 			SNeBR.oldPropositionSupport.clear();
-			SNeBR.newPropositionSupport = ((Proposition)this.getSemantic()).getOrigin();
+			SNeBR.newPropositionSupport = ((Proposition) this.getSemantic())
+					.getOrigin();
 			for (Iterator<PropositionNode> iterator = propSet.propositions
 					.iterator(); iterator.hasNext();) {
 				PropositionNode p = iterator.next();
-				SNeBR.oldPropositionSupport.addAll(((Proposition)p.getSemantic()).getOrigin());
+				SNeBR.oldPropositionSupport.addAll(((Proposition) p
+						.getSemantic()).getOrigin());
 			}
 			SNeBR.restrictionsOfRestrictions(SNeBR.oldPropositionSupport,
 					SNeBR.newPropositionSupport);
-			Contradiction cont = new Contradiction((Proposition)this.getSemantic(), propSet);
+			Contradiction cont = new Contradiction(
+					(Proposition) this.getSemantic(), propSet);
 			context.addCont(cont);
 		}
 	}
@@ -130,10 +132,9 @@ public class PropositionNode extends MolecularNode {
 		// Node node = Prop.getNode();
 		Term term = prop.getSyntactic();
 		if (!(term.getClass().getSuperclass().getSimpleName()
-				.equals("Molecular"))){
+				.equals("Molecular"))) {
 			return null;
-		}
-		else {
+		} else {
 			Molecular molNode = (Molecular) term;
 			return containsMinMaxZeroArg(molNode);
 		}

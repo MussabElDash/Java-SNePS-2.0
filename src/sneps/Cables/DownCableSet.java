@@ -7,11 +7,13 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.Cables;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+
+import sneps.CaseFrame;
 
 public class DownCableSet {
 	

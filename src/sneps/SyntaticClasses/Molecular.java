@@ -9,9 +9,17 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.SyntaticClasses;
 
 import java.util.Enumeration;
+
+import sneps.Relation;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Cables.UpCable;
+import sneps.Nodes.MolecularNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 
 public abstract class Molecular extends Term{
 	

@@ -1,5 +1,7 @@
 package sneps;
 
+import sneps.Nodes.Node;
+
 public class NodeTracePair {
 	
 	private Node node;

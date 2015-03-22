@@ -8,7 +8,11 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.Cables;
+
+import sneps.Relation;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 
 public class UpCable extends Cable {
 

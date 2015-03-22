@@ -13,8 +13,8 @@ package sneps.Paths;
 import java.util.LinkedList;
 
 import SNeBR.Context;
-import sneps.Node;
 import sneps.PathTrace;
+import sneps.Nodes.Node;
 
 public class OrPath extends Path {
 	
@@ -53,7 +53,7 @@ public class OrPath extends Path {
 	}
 
 	/** (non-Javadoc)
-     * @see sneps.Paths.Path#follow(sneps.Node, sneps.PathTrace, SNeBR.Context)
+     * @see sneps.Paths.Path#follow(sneps.Nodes.Node, sneps.PathTrace, SNeBR.Context)
      */
 	@Override
 	public LinkedList<Object[]> follow(Node node, PathTrace trace, Context context) {
@@ -67,7 +67,7 @@ public class OrPath extends Path {
 	}
 
 	/** (non-Javadoc)
-     * @see sneps.Paths.Path#followConverse(sneps.Node, sneps.PathTrace, SNeBR.Context)
+     * @see sneps.Paths.Path#followConverse(sneps.Nodes.Node, sneps.PathTrace, SNeBR.Context)
      */
 	@Override
 	public LinkedList<Object[]> followConverse(Node node, PathTrace trace, Context context) {
@@ -99,7 +99,7 @@ public class OrPath extends Path {
 	}
 
 	/** (non-Javadoc)
-     * @see sneps.Paths.Path#clone(sneps.Node, sneps.PathTrace, SNeBR.Context)
+     * @see sneps.Paths.Path#clone(sneps.Nodes.Node, sneps.PathTrace, SNeBR.Context)
      */
 	@Override
 	public OrPath clone() {
@@ -111,7 +111,7 @@ public class OrPath extends Path {
 	}
 
 	/** (non-Javadoc)
-     * @see sneps.Paths.Path#equals(sneps.Node, sneps.PathTrace, SNeBR.Context)
+     * @see sneps.Paths.Path#equals(sneps.Nodes.Node, sneps.PathTrace, SNeBR.Context)
      */
 	@Override
 	public boolean equals(Object obj) {
@@ -152,7 +152,7 @@ public class OrPath extends Path {
 	}
 
 	/** (non-Javadoc)
-     * @see sneps.Paths.Path#converse(sneps.Node, sneps.PathTrace, SNeBR.Context)
+     * @see sneps.Paths.Path#converse(sneps.Nodes.Node, sneps.PathTrace, SNeBR.Context)
      */
 	@Override
 	public Path converse() {

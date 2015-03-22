@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import sneps.PropositionNode;
+import sneps.Nodes.PropositionNode;
 import SNeBR.*;
 public class Proposition extends Entity{
 	HashSet<Support> originSupport;

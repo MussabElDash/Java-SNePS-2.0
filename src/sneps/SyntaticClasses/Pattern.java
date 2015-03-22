@@ -9,10 +9,17 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.SyntaticClasses;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
+
+import sneps.Relation;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Nodes.MolecularNode;
+import sneps.Nodes.NodeSet;
+import sneps.Nodes.VariableNode;
 
 public class Pattern extends Molecular {
 	

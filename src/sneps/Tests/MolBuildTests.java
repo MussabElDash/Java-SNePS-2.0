@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
-import sneps.DownCable;
-import sneps.DownCableSet;
-import sneps.Node;
-import sneps.NodeSet;
 import sneps.RCFP;
 import sneps.Relation;
-import sneps.VariableNode;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
+import sneps.Nodes.VariableNode;
 
 public class MolBuildTests {
 	

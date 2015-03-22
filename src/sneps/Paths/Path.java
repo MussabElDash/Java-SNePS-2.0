@@ -16,8 +16,8 @@ package sneps.Paths;
 import java.util.LinkedList;
 
 import SNeBR.Context;
-import sneps.Node;
 import sneps.PathTrace;
+import sneps.Nodes.Node;
 
 public abstract class Path {
 	

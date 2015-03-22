@@ -3,7 +3,7 @@ package SNeBR;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import sneps.PropositionNode;
+import sneps.Nodes.PropositionNode;
 import sneps.SemanticClasses.*;
 public class Context {
 	PropositionSet hypothesisSet;

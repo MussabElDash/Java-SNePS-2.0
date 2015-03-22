@@ -7,7 +7,7 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.Nodes;
 
 import java.util.LinkedList;
 

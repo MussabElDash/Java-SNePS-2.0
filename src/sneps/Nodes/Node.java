@@ -10,10 +10,14 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.Nodes;
 
 import java.lang.reflect.Constructor;
+
+import sneps.Cables.DownCableSet;
+import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
+import sneps.SyntaticClasses.Term;
 
 public class Node {
 	

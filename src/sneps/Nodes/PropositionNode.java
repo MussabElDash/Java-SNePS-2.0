@@ -1,19 +1,19 @@
-package sneps;
+package sneps.Nodes;
 
 import java.util.Iterator;
 
 import SNeBR.Context;
 import SNeBR.Contradiction;
 import SNeBR.Support;
+import sneps.Cables.DownCable;
+import sneps.Cables.UpCable;
+import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
-import sneps.MolecularNode;
-import sneps.Node;
-import sneps.NodeSet;
 import SNeBR.PropositionSet;
-import sneps.UpCable;
-import sneps.UpCableSet;
 import SNeBR.SNeBR;
 import sneps.SemanticClasses.*;
+import sneps.SyntaticClasses.Molecular;
+import sneps.SyntaticClasses.Term;
 public class PropositionNode extends MolecularNode {
 
 	public PropositionNode(Molecular syn, Proposition sem) {

@@ -1,4 +1,4 @@
-package snips.entailments;
+package snip.entailments;
 
 import sneps.SemanticClasses.Proposition;
 

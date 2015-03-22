@@ -92,7 +92,7 @@ public class Node {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Node(String syn, String sem, String name) throws Exception{
-		Class s = Class.forName("sneps." + syn);
+		Class s = Class.forName("sneps.SyntaticClasses." + syn);
 		Constructor con = s.getConstructor(new Class[]{String.class});
 		this.syntactic = (Term) con.newInstance(name);
 		Class s2 = Class.forName("sneps.SemanticClasses." + sem);

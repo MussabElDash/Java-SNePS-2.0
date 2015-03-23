@@ -5,17 +5,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
-import sneps.DownCable;
-import sneps.DownCableSet;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
+import sneps.Nodes.PropositionNode;
 import sneps.SemanticClasses.Entity;
 import sneps.Network;
-import sneps.Node;
-import sneps.NodeSet;
-import sneps.Pattern;
-import sneps.PropositionNode;
 import sneps.RCFP;
 import sneps.Relation;
 import sneps.SemanticClasses.*;
+import sneps.SyntaticClasses.Pattern;
 public class test {
 	
 	public static void main(String[] args){

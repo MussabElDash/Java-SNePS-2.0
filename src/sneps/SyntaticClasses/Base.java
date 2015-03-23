@@ -9,7 +9,8 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.SyntaticClasses;
+
 
 public class Base extends Term{
 	

@@ -8,11 +8,11 @@ import javax.print.attribute.standard.Finishings;
 
 import sneps.CaseFrame;
 import sneps.Network;
-import sneps.Node;
-import sneps.PatternNode;
 import sneps.RCFP;
 import sneps.Relation;
-import sneps.VariableNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.PatternNode;
+import sneps.Nodes.VariableNode;
 import sneps.Paths.AndPath;
 import sneps.Paths.BUnitPath;
 import sneps.Paths.FUnitPath;

@@ -2,7 +2,7 @@ package SNeBR;
 
 import java.util.HashSet;
 
-import sneps.PropositionNode;
+import sneps.Nodes.PropositionNode;
 
 
 public class Restriction {

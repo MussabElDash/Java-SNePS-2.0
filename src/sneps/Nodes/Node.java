@@ -10,10 +10,14 @@
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
-package sneps;
+package sneps.Nodes;
 
 import java.lang.reflect.Constructor;
+
+import sneps.Cables.DownCableSet;
+import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
+import sneps.SyntaticClasses.Term;
 
 public class Node {
 	
@@ -88,7 +92,7 @@ public class Node {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Node(String syn, String sem, String name) throws Exception{
-		Class s = Class.forName("sneps." + syn);
+		Class s = Class.forName("sneps.SyntaticClasses." + syn);
 		Constructor con = s.getConstructor(new Class[]{String.class});
 		this.syntactic = (Term) con.newInstance(name);
 		Class s2 = Class.forName("sneps.SemanticClasses." + sem);

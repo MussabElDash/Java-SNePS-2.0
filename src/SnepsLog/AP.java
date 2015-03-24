@@ -1,6 +1,14 @@
+package SnepsLog;
 
-import java.io.*;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+
+import java_cup.Lexer;
+import java_cup.parser;
 import java_cup.runtime.Symbol;
 
 public class AP {

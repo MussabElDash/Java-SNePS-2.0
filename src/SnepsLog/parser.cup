@@ -2,36 +2,42 @@
 import java_cup.runtime.*;
 	
 /* Terminals (tokens returned by the scanner). */
-terminal			SM, AO, ID, NM, OO, AA, QM, LP, RP, LT, MT, CL, EQ, ML, EM, DT, II, NE, AE, OE, COMA, WFF;
+terminal			SM, AO, ID, NM, OO, AA, QM, LP, RP, LT, MT, CL, EQ, ML, EM, DT, II, NE, AE, OE, COMA,WF,WITHSOME,WITHALL;
 
 /* Non-terminals */
-nonterminal	String		program, statement, conditional, cond, condH, oper , entailment, terminalPunctuation, SNePSLOGsymbol,qvar;
+nonterminal	String		program, statement, conditional, cond, condH, oper , entailment, terminalPunctuation,line,SNePSLOGsymbol,qvar,symbolSequence,withSomeTerm,withAllTerm,withSomeH,termSet;
 
 /*nonterminal	Integer     operH;*/
 
 
 /* The grammar */
 
+line ::=  entailment:e {:RESULT=e;:} |symbolSequence:s {:RESULT=s;:}|terminalPunctuation:t {:RESULT=t;:}|qvar:v {:RESULT=""+v;:} |{:RESULT="";:};
 
 
-program ::= program:p entailment:c {:RESULT = p + c;:}| program:p terminalPunctuation:s {:RESULT = p + s;:}
-			  |  {:RESULT = "";:};
-			  
-		  
-		  
-entailment ::= ID:i1 LP ID:i2 COMA ID:i3 RP AE ID:i4 LP ID:i5 COMA ID:i6 RP {:RESULT="if "+i1+" of "+i2+" and "+i3+" then "+i4+" of "+i5+" and "+i6+" is true \n";:};
 
-wffName ::= WFF:w NM:n {:RESULT="this is the wff named by:" +"wff"+n+"\n";:};
+entailment ::= ID:i1 LP ID:i2 COMA ID:i3 RP II ID:i4 LP ID:i5 COMA ID:i6 RP {:RESULT="if "+i1+" of "+i2+" and "+i3+" then "+i4+" of "+i5+" and "+i6+" is true \n";:};
 
-qvar ::= QM SNePSLOGsymbol:s {:RESULT="Question query for the sneps symbol: "+s+"\n";:};
-SNePSLOGsymbol ::= WFF:w NM:n {:RESULT="This is wff number: "+n+".\n";:};
+
+
+
+withSomeTerm ::= WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withSomeTerm "+s+"-"+"t1+"-"+t2;:} | WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withSomeTerm "+s+"-"+"t1+"-"+t2+"-"+t3;:};
+
+withAllTerm ::= WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withAllTerm "+s+"-"+"t1+"-"+t2;:} | WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withAllTerm "+s+"-"+"t1+"-"+t2+"-"+t3;:};
+
+symbolSequence ::= SNePSLOGsymbol:s {:RESULT=s;:} | SNePSLOGsymbol:s COMA symbolSequence:h {:RESULT=s+" and "+h;:} ;
+
+qvar ::= QM SNePSLOGsymbol:s {:RESULT="query"+s;:};
+
+SNePSLOGsymbol ::= WF NM:n{:RESULT="wff"+n;:};
+
+
+ 
+
+
+
 
 terminalPunctuation ::= DT {:RESULT="terminal punctuation in sneps.\n";:}| COMA {:RESULT="terminal punctuation in sneps.\n";:}|  error {:RESULT = "Not a grammatical sneps!\n";System.out.println("Not sneps!");:};
-
-
-
-
-
 
 
 

@@ -1,4 +1,10 @@
 import java_cup.runtime.Symbol;
+
+
+
+
+
+
 %%
 %class Lexer
 
@@ -10,16 +16,26 @@ import java_cup.runtime.Symbol;
 	return new Symbol(sym.EOF, null);
 %eofval}
 
+
+
+
 DIGIT=[0-9]	
-ALPHA=[a-zA-z]
+
+
+
+
 NUMBER=({DIGIT})+([.]({DIGIT})+)?
+ALPHA=[a-zA-z]
 ALPHA_NUMERIC={ALPHA}|{DIGIT}
-IDENTIFIER=({ALPHA})+|{ALPHA}({ALPHA_NUMERIC})*
 
 
 
 
-ACTIVIATE=activate
+WFF=wff 
+ACTIVATE=activate
+WITHSOME=withsome
+WITHALL=withall
+
 ACTIVATEASSERT=activate!
 ADDTOCONTEXT=add-to-context
 ASK=ask
@@ -53,7 +69,7 @@ LISTCONTEXTS=list-contexts
 LISTTERMS=list-terms
 LISTWFFS=list-wffs
 LOAD=load
-WFF=wff
+
 
 NORMAL=normal
 
@@ -91,14 +107,10 @@ THRESH=thresh
 ALL=all
 NEXIST=nexist
 
-WITHSOME=withsome
-WITHALL=withall
 
 
 
-
-
-
+IDENTIFIER=({ALPHA})+
 
 
 
@@ -106,19 +118,39 @@ WITHALL=withall
 
 
 WHITE_SPACE=([\ \n\r\t\f\b])+
+
+
+
+
 %%
 <YYINITIAL> {WHITE_SPACE} { }
+
+<YYINITIAL> {WFF} { 
+	return new Symbol(sym.WF, yytext());
+}
+
 
 <YYINITIAL> {NUMBER} { 
 	return new Symbol(sym.NM, ""+Integer.parseInt(yytext()));
 }
+
+
+<YYINITIAL> {WITHSOME} { 
+	return new Symbol(sym.WITHSOME, yytext());
+}
+
+<YYINITIAL> {WITHALL} { 
+	return new Symbol(sym.WITHALL, yytext());
+}
+
+
 <YYINITIAL> {IDENTIFIER} { 
 	return new Symbol(sym.ID, yytext());
 }
 
-<YYINITIAL> {WFF} { 
-	return new Symbol(sym.WFF, yytext());
-}
+
+
+
 <YYINITIAL> "?" { 
 	return new Symbol(sym.QM, yytext());
 }
@@ -145,6 +177,10 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 	return new Symbol(sym.II, yytext());
 }
 
+
+
+
+
 <YYINITIAL> {DIGIT}+"=>" { 
 	return new Symbol(sym.NE, yytext());
 }
@@ -155,6 +191,9 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 <YYINITIAL> ";" { 
 	return new Symbol(sym.SM, yytext());
 }
+
+
+
 
 <YYINITIAL> ":" { 
 	return new Symbol(sym.CL, yytext());
@@ -199,6 +238,10 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 	return new Symbol(sym.EM, yytext());
 }
 
+
+
+
 <YYINITIAL> . {
 	return new Symbol(sym.error, "Error!");
 }
+

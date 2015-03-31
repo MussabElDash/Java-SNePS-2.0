@@ -2,28 +2,65 @@
 import java_cup.runtime.*;
 	
 /* Terminals (tokens returned by the scanner). */
-terminal			SM, AO, ID, NM, OO, AA, QM, LP, RP, LT, MT, CL, EQ, ML, EM, DT, II, NE, AE, OE, COMA,WF,WITHSOME,WITHALL;
+terminal			SM, AO, ID, NM, OO, AA, QM, LP, RP, LT, MT, CL, EQ, ML, EM, DT, II, NE, AE, OE, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURLY,ANDENTAIL,ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL;
 
 /* Non-terminals */
-nonterminal	String		program, statement, conditional, cond, condH, oper , entailment, terminalPunctuation,line,SNePSLOGsymbol,qvar,symbolSequence,withSomeTerm,withAllTerm,withSomeH,termSet;
+nonterminal	String		program, statement, conditional, cond, condH, oper , entailment, terminalPunctuation,line,SNePSLOGsymbol,qvar,symbolSequence,withSomeTerm,withAllTerm,withSomeH,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,atomicTerm,termSetSequence,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm;
 
 /*nonterminal	Integer     operH;*/
 
 
 /* The grammar */
 
-line ::=  entailment:e {:RESULT=e;:} |symbolSequence:s {:RESULT=s;:}|terminalPunctuation:t {:RESULT=t;:}|qvar:v {:RESULT=""+v;:} |{:RESULT="";:};
-
-
-
-entailment ::= ID:i1 LP ID:i2 COMA ID:i3 RP II ID:i4 LP ID:i5 COMA ID:i6 RP {:RESULT="if "+i1+" of "+i2+" and "+i3+" then "+i4+" of "+i5+" and "+i6+" is true \n";:};
+line ::=  infixedTerm:e {:RESULT=e;:} |symbolSequence:s {:RESULT=s;:}|terminalPunctuation:t {:RESULT=t;:}|qvar:v {:RESULT=""+v;:} |{:RESULT="";:};
 
 
 
 
-withSomeTerm ::= WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withSomeTerm "+s+"-"+"t1+"-"+t2;:} | WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withSomeTerm "+s+"-"+"t1+"-"+t2+"-"+t3;:};
 
-withAllTerm ::= WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withAllTerm "+s+"-"+"t1+"-"+t2;:} | WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withAllTerm "+s+"-"+"t1+"-"+t2+"-"+t3;:};
+infixedTerm ::= prefixedTerm:p1 helpersConnectives:h1 prefixedTerm:p2 {:RESULT=p1+" "+h1+" "+p2;:} | prefixedTerm:p3 helpersConnectives:h2 infixedTerm:i2 {:RESULT=p3+" "+h2+" "+i2;:};
+ 
+helpersConnectives ::= AND{:RESULT="and";:} | OR{:RESULT="or";:}| DOUBLEIMPLICATION{:RESULT="<=>";:};
+
+
+entailment ::= termSet:t1 ARROW termSet:t2 {:RESULT=t1+" ARROW "+t2;:}|termSet:t3 ORENTAIL termSet:t4 {:RESULT=t3+" ORENTAIL "+t4;:}  | termSet:t5 ANDENTAIL termSet:t6 {:RESULT=t5+" ANDENTAIL "+t6;:} | termSet:t7 II termSet:t8 {:RESULT=t7+" numerical entail "+t8;:};
+
+
+
+
+
+termSet ::= prefixedTerm:p{:RESULT="termSet"+p;:} | RCURLY termSequence:t LCURLY {:RESULT="{"+t+"}";:};
+termSequence ::= prefixedTerm:p{:RESULT="prefixed term:"+p;:}|prefixedTerm:p1 termSequence:s{:RESULT="prefixed term "+p1+" and prefixed term "+s;:};
+
+prefixedTerm ::= negatedTerm:n{:RESULT="negated term: "+n;:} | andorTerm:a{:RESULT="andor term: "+a;:} | allTerm:l{:RESULT="forAll term: "+l;:} | nexistsTerm:x{:RESULT="nExist term: "+x;:}
+| threshTerm:h{:RESULT="forAll term: "+h;:} | atomicTerm:i{:RESULT="forAll term: "+i;:};
+
+
+negatedTerm ::= NOT atomicTerm:a{:RESULT="not "+a;:};
+
+andorTerm ::= ANDOR LP NM:i COMA NM:j RP termSet:t{:Integer x = Integer.parseInt(i+"");Integer y=Integer.parseInt(j+"");if(x>=0 && y>=x){RESULT="andorTerm Right";}else{RESULT="wrong andor term";}:};
+
+
+threshTerm ::= THRESH LP NM:i COMA NM:j RP termSet:t {:Integer x = Integer.parseInt(i+"");Integer y=Integer.parseInt(j+"");if(x>=0 && y>=x){RESULT="threshTerm Right";}else{RESULT="wrong threshTerm";}:}| THRESH LP NM:i1 RP termSet:t1 {:Integer x = Integer.parseInt(i1+"");if(x>=0){RESULT="threshTerm Right";}else{RESULT="wrong thresTerm";}:};
+
+nexistsTerm ::= NEXISTS nexistsParamters:np LP symbolSequence:s RP LP termSet:t1 CL termSet:t2 RP{:RESULT="";:};
+
+nexistsParamters ::= LP NM:i COMA NM:j COMA NM:k RP {:RESULT="("+i+","+j+","+k+")";:}|LP NM:j1 RP{:RESULT="("+j1+")";:}| LP NM:i1 COMA NM:k1 RP {:RESULT="("+i1+","+k1+")";:};
+
+
+atomicTerm ::= SNePSLOGsymbol:s {:RESULT=s;:}| qvar:q {:RESULT=q;:} | withSomeTerm:ws {:RESULT=ws;:}|withAllTerm:wa {:RESULT=wa;:}|qvar:q1 LP termSetSequence:t1 RP{:RESULT=q1+"("+t1+")";:}|
+SNePSLOGsymbol:s1 LP termSetSequence:t2 RP{:RESULT=s1+"("+t2+")";:}|LP wff:w RP{:RESULT="("+w+")";:};
+
+
+
+
+
+withSomeTerm ::= WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withSomeTerm "+s+"-"+t1+"-"+t2;:} | WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withSomeTerm "+s+"-"+t1+"-"+t2+"-"+t3;:};
+
+withAllTerm ::= WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 {:RESULT="withAllTerm "+s+"-"+t1+"-"+t2;:} | WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 termSet:t3 {:RESULT="withAllTerm "+s+"-"+t1+"-"+t2+"-"+t3;:};
+
+
+termSetSequence ::= termSet:t1 {:RESULT="termSetSequence consists of only one term: "+t1;:}|termSet:t2 COMA termSetSequence:ts {:RESULT=t2+" and "+ts;:}; 
 
 symbolSequence ::= SNePSLOGsymbol:s {:RESULT=s;:} | SNePSLOGsymbol:s COMA symbolSequence:h {:RESULT=s+" and "+h;:} ;
 
@@ -32,19 +69,17 @@ qvar ::= QM SNePSLOGsymbol:s {:RESULT="query"+s;:};
 SNePSLOGsymbol ::= WF NM:n{:RESULT="wff"+n;:};
 
 
- 
-
-
-
-
-terminalPunctuation ::= DT {:RESULT="terminal punctuation in sneps.\n";:}| COMA {:RESULT="terminal punctuation in sneps.\n";:}|  error {:RESULT = "Not a grammatical sneps!\n";System.out.println("Not sneps!");:};
+ terminalPunctuation ::= DT {:RESULT="terminal punctuation in sneps.\n";:}| COMA {:RESULT="terminal punctuation in sneps.\n";:}|  error {:RESULT = "Not a grammatical sneps!\n";System.out.println("Not sneps!");:};
 
 
 
 
 
 
+/*some comments as a backup*/
 
+
+/*entailment ::= ID:i1 LP ID:i2 COMA ID:i3 RP II ID:i4 LP ID:i5 COMA ID:i6 RP {:RESULT="if "+i1+" of "+i2+" and "+i3+" then "+i4+" of "+i5+" and "+i6+" is true \n";:};*/
 
 
 

@@ -101,11 +101,11 @@ NOR=nor
 XOR=xor
 IFF=iff
 
+
 ANDOR=andor
-NOT=^
 THRESH=thresh
 ALL=all
-NEXIST=nexist
+NEXISTS=nexists
 
 
 
@@ -125,8 +125,44 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 %%
 <YYINITIAL> {WHITE_SPACE} { }
 
+
+
+
 <YYINITIAL> {WFF} { 
 	return new Symbol(sym.WF, yytext());
+}
+
+<YYINITIAL> {AND} { 
+	return new Symbol(sym.AND, yytext());
+}
+
+<YYINITIAL> {OR} { 
+	return new Symbol(sym.OR, yytext());
+}
+
+
+
+<YYINITIAL> "<=>" { 
+	return new Symbol(sym.DOUBLEIMPLICATION, yytext());
+}
+
+<YYINITIAL> "~" { 
+	return new Symbol(sym.NOT, yytext());
+}
+
+<YYINITIAL> {ANDOR} { 
+	return new Symbol(sym.ANDOR, yytext());
+}
+<YYINITIAL> {THRESH} { 
+	return new Symbol(sym.THRESH, yytext());
+}
+
+<YYINITIAL> {NEXISTS} { 
+	return new Symbol(sym.NEXISTS, yytext());
+}
+
+<YYINITIAL> {ALL} { 
+	return new Symbol(sym.ALL, yytext());
 }
 
 
@@ -165,17 +201,32 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 
 
+
+<YYINITIAL> "=>" { 
+	return new Symbol(sym.ARROW, yytext());
+}
+
+
 <YYINITIAL> "&=>" { 
-	return new Symbol(sym.AE, yytext());
+	return new Symbol(sym.ANDENTAIL, yytext());
 }
 
 <YYINITIAL> "v=>" { 
-	return new Symbol(sym.OE, yytext());
+	return new Symbol(sym.ORENTAIL, yytext());
 }
 
-<YYINITIAL> "=>" { 
+<YYINITIAL> {NUMBER}"=>" { 
 	return new Symbol(sym.II, yytext());
 }
+
+
+<YYINITIAL> "{" { 
+	return new Symbol(sym.RCURLY, yytext());
+}
+<YYINITIAL> "}" { 
+	return new Symbol(sym.LCURLY, yytext());
+}
+
 
 
 

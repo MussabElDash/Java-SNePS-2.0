@@ -1,6 +1,7 @@
 package snip;
 
-import sneps.Node;
+
+import sneps.Nodes.Node;
 import SNeBR.Context;
 import SNeBR.Support;
 
@@ -50,19 +51,19 @@ public class Report {
 		return context;
 	}
 
-	public void addBinding(Binding m) {
-		// TODO
-		// this.substitution.putIn(m);
-	}
+//	public void addBinding(Binding m) {
+//		// TODO
+//		// this.substitution.putIn(m);
+//	}
 
-	@Override
-	public boolean equals(Object report) {
-		Report castedReport = (Report) report;
-		return this.substitution.equals(castedReport.substitution)
-				&& this.sign == castedReport.sign
-				&& this.node.eqauls(castedReport.node)
-				&& this.context.equals(castedReport.context));
-	}
+//	@Override
+//	public boolean equals(Object report) {
+//		Report castedReport = (Report) report;
+//		return this.substitution.equals(castedReport.substitution)
+//				&& this.sign == castedReport.sign
+//				&& this.node.eqauls(castedReport.node)
+//				&& this.context.equals(castedReport.context));
+//	}
 	
 	public boolean isPositive() {
 		return sign;

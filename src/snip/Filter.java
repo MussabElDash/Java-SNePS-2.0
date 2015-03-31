@@ -12,16 +12,18 @@ public class Filter {
 		this.substitution = substitution;
 	}
 	
-	public Substitutios getSubstitution() {
+	public Substitutions getSubstitution() {
 		return substitution;
 	}
 	
 	public boolean equals(Object filter) {
 //		TODO
+		return false;
 	}
 	
 	public boolean canPass(Report report) {
 		//TODO
+		return false;
 	}
 	
 }

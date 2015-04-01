@@ -239,9 +239,6 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 
 
 
-<YYINITIAL> ";" { 
-	return new Symbol(sym.SM, yytext());
-}
 
 
 
@@ -250,33 +247,9 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 	return new Symbol(sym.CL, yytext());
 }
 
-<YYINITIAL> "=" { 
-	return new Symbol(sym.AO, yytext());
-}
 
-<YYINITIAL> "==" { 
-	return new Symbol(sym.EQ, yytext());
-}
 
-<YYINITIAL> "<" { 
-	return new Symbol(sym.LT, yytext());
-}
 
-<YYINITIAL> ">" { 
-	return new Symbol(sym.MT, yytext());
-}
-
-<YYINITIAL> "*" { 
-	return new Symbol(sym.ML, yytext());
-}
-
-<YYINITIAL> "||" { 
-	return new Symbol(sym.OO, yytext());
-}
-
-<YYINITIAL> "&&" { 
-	return new Symbol(sym.AA, yytext());
-}
 
 <YYINITIAL> "(" { 
 	return new Symbol(sym.LP, yytext());
@@ -295,4 +268,5 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 <YYINITIAL> . {
 	return new Symbol(sym.error, "Error!");
 }
+
 

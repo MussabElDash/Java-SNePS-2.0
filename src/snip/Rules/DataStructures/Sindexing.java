@@ -24,8 +24,26 @@ public class Sindexing {
 	 * @return the final RuleUseInfo
 	 */
 	private RuleUseInfoSet insertInIndex(int x, RuleUseInfo rui) {
-		// TODO
-		return null;
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		RuleUseInfoSet ruis = map.get(x);
+		if (ruis == null) {
+			ruis = new RuleUseInfoSet();
+			map.put(x, ruis);
+		}
+		int pos = ruis.getIndex(rui);
+		if (pos == -1) {
+			ruis.putIn(rui);
+			res.putIn(rui);
+		} else {
+			RuleUseInfo r = ruis.getRuleUseInfo(pos);
+			RuleUseInfo rnew = new RuleUseInfo(r.getSub(), r.getPosCount()
+					+ rui.getPosCount(), r.getNegCount() + rui.getNegCount(), r
+					.getFlagNodeSet().union(rui.getFlagNodeSet()));
+			ruis.remove(pos);
+			ruis.putIn(rnew);
+			res.putIn(rnew);
+		}
+		return res;
 	}
 
 	/**

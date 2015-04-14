@@ -5,7 +5,7 @@ public class Filter {
 	private Substitutions substitution;
 	
 	public Filter() {
-		
+		this.substitution = new Substitutions();
 	}
 	
 	public Filter(Substitutions substitution) {

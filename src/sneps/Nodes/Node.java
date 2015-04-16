@@ -347,5 +347,12 @@ public class Node {
 //		System.out.println(NodeThree.getSyntacticSuperClass());
 //
 //	}
-
+	
+	public void processReports() {
+		
+	}
+	
+	public void processRequests() {
+		
+	}
 }

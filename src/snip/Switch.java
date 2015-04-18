@@ -6,7 +6,6 @@ public class Switch {
 	
 	public Switch() {
 		this.substitution = new Substitutions();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Switch(Substitutions substitution) {

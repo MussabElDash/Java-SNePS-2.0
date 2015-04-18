@@ -13,11 +13,22 @@
 package sneps.Nodes;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import sneps.Cables.DownCableSet;
 import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Term;
+import snip.Channel;
+import snip.Filter;
+import snip.MatchChannel;
+import snip.Report;
+import snip.Runner;
+import snip.Switch;
+import SNeBR.Context;
 
 public class Node {
 	
@@ -44,6 +55,9 @@ public class Node {
 	 */
 	private int id;
 	
+	//TODO Ahmed Akram
+	private Set<Channel> outgoingChannels, incomingChannels;
+	private HashMap<Report, Boolean> knownInstances;
 	/**
 	 * The first constructor of this class. 
 	 * 
@@ -65,6 +79,9 @@ public class Node {
 		this.semantic = sem;
 		id = count;
 		count++;
+		outgoingChannels = new HashSet<Channel>();
+		incomingChannels = new HashSet<Channel>();
+		knownInstances = new HashMap<Report, Boolean>();
 	}
 	
 	/**
@@ -349,10 +366,54 @@ public class Node {
 //	}
 	
 	public void processReports() {
-		
+		for(Channel currentChannel : outgoingChannels) {
+			ArrayList<Report> reports = currentChannel.getReportsBuffer();
+			for(Report currentReport : reports) {
+				if(knownInstances.containsKey(currentReport)) {
+					continue;
+				}
+				
+			}
+		}
 	}
 	
 	public void processRequests() {
 		
 	}
+
+	public void sendRequests(Set<Node> ns, Context c) {
+		for (Node sentTo : ns) {
+
+			//TODO what is a temp node ? h
+			if (sentTo.isTemp())
+				continue;
+
+			Filter f = new Filter();
+			Switch s = new Switch();
+			//TODO channel type
+			Channel newChannel = new MatchChannel(f, s, c, this, true);
+			
+			incomingChannels.add(newChannel);
+			Runner.addToLowQueue(this);
+			
+			sentTo.receiveRequest(newChannel);
+//			TODO why do we check this ?
+//			Request r = new Request();
+//			if (sentTo.getEntity().getClass().getSimpleName()
+//					.equalsIgnoreCase("proposition"))
+//				sentTto.getEntity().getProcess().receiveRequest(r);
+////			else
+//				((RuleProcess) to.getEntity().getProcess())
+//						.receiveRuleRequest(r);
+		}
+	}
+	
+	public void receiveRequest(Channel channel) {
+		outgoingChannels.add(channel);
+		//TODO send any know instance
+	}
 }
+
+
+
+

@@ -7,15 +7,15 @@ import sneps.Nodes.Node;
 
 public class Runner {
 	
-	Queue<Node> highQueue;
-	Queue<Node> lowQueue;
-
-	public Runner() {
+	private static Queue<Node> highQueue;
+	private static Queue<Node> lowQueue;
+	
+	public static void initiate() {
 		highQueue = new ArrayDeque<Node>();
 		lowQueue = new ArrayDeque<Node>();
 	}
-	
-	public void run() {
+
+	public static void run() {
 		while(!highQueue.isEmpty() || !lowQueue.isEmpty()) {
 			while(!highQueue.isEmpty()) {
 				Node toRunNext = highQueue.poll();
@@ -27,6 +27,14 @@ public class Runner {
 				toRunNext.processRequests();
 			}
 		}
+	}
+	
+	public static void addToHighQueue(Node node) {
+		highQueue.add(node);
+	}
+	
+	public static void addToLowQueue(Node node) {
+		lowQueue.add(node);
 	}
 
 }

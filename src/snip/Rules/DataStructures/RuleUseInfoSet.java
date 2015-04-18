@@ -9,13 +9,21 @@ package snip.Rules.DataStructures;
 
 import java.util.Vector;
 
-public class RuleUseInfoSet {
+import SNeBR.Context;
+
+public class RuleUseInfoSet extends ContextRUIS {
 	private Vector<RuleUseInfo> ruis;
 
 	/**
 	 * Create a new empty rule use info set
 	 */
 	public RuleUseInfoSet() {
+		super(null);
+		ruis = new Vector<RuleUseInfo>();
+	}
+	
+	public RuleUseInfoSet(Context c){
+		super(c);
 		ruis = new Vector<RuleUseInfo>();
 	}
 

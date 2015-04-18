@@ -2,13 +2,17 @@ package snip.Rules.DataStructures;
 
 import java.util.TreeMap;
 
-public class Sindexing {
+import SNeBR.Context;
+
+public class Sindexing extends ContextRUIS{
 	TreeMap<Integer, RuleUseInfoSet> map;
 
 	/**
-	 * Create new Empty Sindexing table
+	 * Create new Empty Sindexing table and associate it with the Context c
+	 * @param c Context
 	 */
-	public Sindexing() {
+	public Sindexing(Context c) {
+		super(c);
 		map = new TreeMap<Integer, RuleUseInfoSet>();
 	}
 

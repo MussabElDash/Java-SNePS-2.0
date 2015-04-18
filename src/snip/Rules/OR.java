@@ -24,4 +24,8 @@ public class OR extends Rule {
 		}
 
 	}
+
+	@Override
+	public void resetRule() {
+	}
 }

@@ -14,14 +14,17 @@ import java.util.Vector;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
+import SNeBR.Context;
 
-public class Ptree {
+public class Ptree extends ContextRUIS {
 	private TreeNode root;
 
 	/**
-	 * Create a new Ptree
+	 * Create a new Ptree and associate it with the Context c
+	 * @param c Context
 	 */
-	public Ptree() {
+	public Ptree(Context c) {
+		super(c);
 		root = null;
 	}
 

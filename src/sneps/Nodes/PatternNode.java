@@ -15,8 +15,9 @@ import java.util.LinkedList;
 import sneps.Cables.DownCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Pattern;
+import snip.Rules.Interfaces.NodeWithVar;
 
-public class PatternNode extends MolecularNode{
+public class PatternNode extends MolecularNode implements NodeWithVar{
 
 	/**
 	 * The first constructor of this class.

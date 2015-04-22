@@ -9,16 +9,17 @@ package snip.Rules.DataStructures;
 
 import java.util.Vector;
 
-import sneps.Nodes.Node;
-
 public class FlagNodeSet {
 	private Vector<FlagNode> fns;
+
+	// private VectorHashSet<FlagNode> fns;
 
 	/**
 	 * Create a new flag node set
 	 */
 	public FlagNodeSet() {
 		fns = new Vector<FlagNode>();
+		// fns = new VectorHashSet<>();
 	}
 
 	/**
@@ -65,6 +66,7 @@ public class FlagNodeSet {
 				return true;
 		}
 		return false;
+		// return fns.contains(fn);
 	}
 
 	/**
@@ -88,39 +90,40 @@ public class FlagNodeSet {
 		fns.add(fn);
 	}
 
-	/**
-	 * Return the flag of n in the flag node set (5 should not be returned
-	 * because the existence of n in the flag node set should be tested before
-	 * calling this method)
-	 * 
-	 * @param n
-	 *            node
-	 * @return int
-	 */
-	public int getFlagNode(Node n) {
-		for (int i = 0; i < fns.size(); i++) {
-			if (this.fns.get(i).getNode() == n)
-				return this.fns.get(i).getFlag();
-		}
-		return 5;
-	}
-
-	/**
-	 * Return the support of n in the flag node set (null should not be returned
-	 * because the existence of n in the flag node set should be tested before
-	 * calling this method)
-	 * 
-	 * @param n
-	 *            node
-	 * @return support
-	 */
-	public Object getSupportNode(Node n) {
-		for (int i = 0; i < fns.size(); i++) {
-			if (this.fns.get(i).getNode() == n)
-				return this.fns.get(i).getSupport();
-		}
-		return null;
-	}
+	// /**
+	// * Return the flag of n in the flag node set (5 should not be returned
+	// * because the existence of n in the flag node set should be tested before
+	// * calling this method)
+	// *
+	// * @param n
+	// * node
+	// * @return int
+	// */
+	// public int getFlagNode(Node n) {
+	// for (int i = 0; i < fns.size(); i++) {
+	// if (this.fns.get(i).getNode() == n)
+	// return this.fns.get(i).getFlag();
+	// }
+	// return 5;
+	// }
+	//
+	// /**
+	// * Return the support of n in the flag node set (null should not be
+	// returned
+	// * because the existence of n in the flag node set should be tested before
+	// * calling this method)
+	// *
+	// * @param n
+	// * node
+	// * @return support
+	// */
+	// public Object getSupportNode(Node n) {
+	// for (int i = 0; i < fns.size(); i++) {
+	// if (this.fns.get(i).getNode() == n)
+	// return this.fns.get(i).getSupport();
+	// }
+	// return null;
+	// }
 
 	/**
 	 * Return the flagged node number i in the flag node set

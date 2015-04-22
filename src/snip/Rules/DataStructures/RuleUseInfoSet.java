@@ -14,17 +14,24 @@ import SNeBR.Context;
 public class RuleUseInfoSet extends ContextRUIS {
 	private Vector<RuleUseInfo> ruis;
 
+	// private VectorHashSet<RuleUseInfo> ruis;
+
 	/**
-	 * Create a new empty rule use info set
+	 * Create a new empty rule use info set for general use
 	 */
 	public RuleUseInfoSet() {
 		super(null);
 		ruis = new Vector<RuleUseInfo>();
+		// ruis = new VectorHashSet<RuleUseInfo>();
 	}
-	
-	public RuleUseInfoSet(Context c){
+
+	/**
+	 * Create a new empty rule use info set for ContextRUIS use
+	 */
+	public RuleUseInfoSet(Context c) {
 		super(c);
 		ruis = new Vector<RuleUseInfo>();
+		// ruis = new VectorHashSet<RuleUseInfo>();
 	}
 
 	/**

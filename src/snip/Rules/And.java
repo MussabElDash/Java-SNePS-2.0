@@ -45,7 +45,6 @@ public class And extends Rule {
 
 	@Override
 	public void applyRuleHandler(Report report) {
-		// TODO Auto-generated method stub
 		if (report.isNegative())
 			return;
 
@@ -64,7 +63,7 @@ public class And extends Rule {
 		RuleUseInfoSet res = null;
 		if (shareVars) {
 			Sindexing scrtemp = (Sindexing) crtemp;
-			res = scrtemp.insert(rui, vars);
+			RuleUseInfo ruiRes = scrtemp.insert(rui, vars);
 		} else {
 			Ptree pcrtemp = (Ptree) crtemp;
 			res = pcrtemp.insert(rui);
@@ -72,7 +71,19 @@ public class And extends Rule {
 				res = new RuleUseInfoSet();
 			}
 		}
-		
+		for (int i = 0; i < res.cardinality(); i++) {
+
+			RuleUseInfo ruitemp = res.getRuleUseInfo(i);
+			if (ruitemp.getPosCount() == this.antsWithVarsNumber) {
+
+				Report reply = new Report(ruitemp.getSub(), null, true, this,
+						null, context);
+				// TODO
+				throw new UnsupportedOperationException();
+				// ChannelsSet ctemp = this.getOutGoing();
+				// this.sendReport(reply, ctemp);
+			}
+		}
 	}
 
 }

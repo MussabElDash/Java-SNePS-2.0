@@ -11,18 +11,17 @@ public class OR extends Rule {
 	}
 
 	@Override
-	public void applyRuleHandler(Report r) {
-		if (r.isPositive()) {
+	public void applyRuleHandler(Report report) {
+		if (report.isNegative())
+			return;
 
-			Report reply = new Report(r.getSubstituions(), r.getSupport(),
-					true, this, null, r.getContext());
-			// TODO
-			throw new UnsupportedOperationException();
-			// ChannelsSet ctemp = this.getOutGoing().getConChannelsSet(
-			// r.getContext());
-			// this.sendReport(reply, ctemp);
-		}
-
+		Report reply = new Report(report.getSubstituions(),
+				report.getSupport(), true, this, null, report.getContext());
+		// TODO
+		throw new UnsupportedOperationException();
+		// ChannelsSet ctemp = this.getOutGoing().getConChannelsSet(
+		// r.getContext());
+		// this.sendReport(reply, ctemp);
 	}
 
 	@Override

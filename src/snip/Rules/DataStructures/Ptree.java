@@ -8,12 +8,14 @@
 
 package snip.Rules.DataStructures;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Vector;
 
 import sneps.Nodes.NodeSet;
-import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
+import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
 
 public class Ptree extends ContextRUIS {
@@ -21,7 +23,9 @@ public class Ptree extends ContextRUIS {
 
 	/**
 	 * Create a new Ptree and associate it with the Context c
-	 * @param c Context
+	 * 
+	 * @param c
+	 *            Context
 	 */
 	public Ptree(Context c) {
 		super(c);
@@ -34,9 +38,9 @@ public class Ptree extends ContextRUIS {
 	 * @param nodes
 	 */
 	public void buildTree(NodeSet pns) {
-		PatternNode[] patns = new PatternNode[pns.size()];
+		NodeWithVar[] patns = new NodeWithVar[pns.size()];
 		for (int i = 0; i < patns.length; i++) {
-			patns[i] = (PatternNode) pns.getNode(i);
+			patns[i] = (NodeWithVar) pns.getNode(i);
 		}
 		Vector<Vector<Integer>> patvar = getPatVar(patns);
 		Vector<Vector<Integer>> varpat = getVarPat(patvar);
@@ -322,11 +326,14 @@ public class Ptree extends ContextRUIS {
 	 *            PatternNode []
 	 * @return Vector<Vector<Integer>>
 	 */
-	private Vector<Vector<Integer>> getPatVar(PatternNode[] pns) {
+	private Vector<Vector<Integer>> getPatVar(NodeWithVar[] pns) {
 		Vector<Vector<Integer>> res = new Vector<Vector<Integer>>();
 		for (int i = 0; i < pns.length; i++) {
 			Vector<Integer> temp = new Vector<Integer>();
 			temp.add(pns[i].getId());
+			if (pns[i] instanceof VariableNode) {
+				continue;
+			}
 			LinkedList<VariableNode> vars = pns[i].getFreeVariables();
 			for (int j = 0; j < vars.size(); j++) {
 				temp.add(vars.get(j).getId());
@@ -348,20 +355,22 @@ public class Ptree extends ContextRUIS {
 		Vector<Vector<Integer>> res = new Vector<Vector<Integer>>();
 		Vector<Integer> pats = new Vector<Integer>();
 		Vector<Integer> vars = new Vector<Integer>();
+		Set<Integer> varsSet = new HashSet<Integer>();
 		for (int i = 0; i < patvar.size(); i++) {
 			pats.add(patvar.get(i).get(0));
 			for (int j = 1; j < patvar.get(i).size(); j++) {
-				vars.add(patvar.get(i).get(j));
+				varsSet.add(patvar.get(i).get(j));
 			}
 		}
-		for (int i = 0; i < vars.size(); i++) {
-			for (int j = i + 1; j < vars.size(); j++) {
-				if (vars.get(i) == vars.get(j)) {
-					vars.remove(j);
-					j--;
-				}
-			}
-		}
+		vars.addAll(varsSet);
+		// for (int i = 0; i < vars.size(); i++) {
+		// for (int j = i + 1; j < vars.size(); j++) {
+		// if (vars.get(i) == vars.get(j)) {
+		// vars.remove(j);
+		// j--;
+		// }
+		// }
+		// }
 		for (int i = 0; i < vars.size(); i++) {
 			Vector<Integer> temp = new Vector<Integer>();
 			int var = vars.get(i);
@@ -382,7 +391,7 @@ public class Ptree extends ContextRUIS {
 	/**
 	 * Return the pattern sequence given the patvar and varpat. For example, a
 	 * 'varpat-list' ((x P R) (y P Q) (z Q R))produces a 'patseq' (P R Q).
-	 * 
+	 * 'patvar-list' ((P x y) (Q y z) (R x z))
 	 * @param pv
 	 *            Vector<Vector<Integer>>
 	 * @param vp

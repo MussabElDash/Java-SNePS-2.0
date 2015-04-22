@@ -1,11 +1,12 @@
 package snip.Rules.DataStructures;
 
+import java.util.Hashtable;
 import java.util.TreeMap;
 
 import SNeBR.Context;
 
 public class Sindexing extends ContextRUIS{
-	TreeMap<Integer, RuleUseInfoSet> map;
+	Hashtable<Integer, RuleUseInfo> map;
 
 	/**
 	 * Create new Empty Sindexing table and associate it with the Context c
@@ -13,7 +14,7 @@ public class Sindexing extends ContextRUIS{
 	 */
 	public Sindexing(Context c) {
 		super(c);
-		map = new TreeMap<Integer, RuleUseInfoSet>();
+		map = new Hashtable<Integer, RuleUseInfo>();
 	}
 
 	/**
@@ -27,27 +28,15 @@ public class Sindexing extends ContextRUIS{
 	 *            RuleUseInfo
 	 * @return the final RuleUseInfo
 	 */
-	private RuleUseInfoSet insertInIndex(int x, RuleUseInfo rui) {
-		RuleUseInfoSet res = new RuleUseInfoSet();
-		RuleUseInfoSet ruis = map.get(x);
-		if (ruis == null) {
-			ruis = new RuleUseInfoSet();
-			map.put(x, ruis);
+	private RuleUseInfo insertInIndex(int x, RuleUseInfo rui) {
+		RuleUseInfo tempRui = map.get(x);
+		if (tempRui == null) {
+			tempRui = rui;
+		}else{
+			tempRui = tempRui.combine(rui);
 		}
-		int pos = ruis.getIndex(rui);
-		if (pos == -1) {
-			ruis.putIn(rui);
-			res.putIn(rui);
-		} else {
-			RuleUseInfo r = ruis.getRuleUseInfo(pos);
-			RuleUseInfo rnew = new RuleUseInfo(r.getSub(), r.getPosCount()
-					+ rui.getPosCount(), r.getNegCount() + rui.getNegCount(), r
-					.getFlagNodeSet().union(rui.getFlagNodeSet()));
-			ruis.remove(pos);
-			ruis.putIn(rnew);
-			res.putIn(rnew);
-		}
-		return res;
+		map.put(x, tempRui);
+		return tempRui;
 	}
 
 	/**
@@ -81,7 +70,7 @@ public class Sindexing extends ContextRUIS{
 	 *            int []
 	 * @return the final RuleUseInfo
 	 */
-	public RuleUseInfoSet insert(RuleUseInfo rui, int[] ids) {
+	public RuleUseInfo insert(RuleUseInfo rui, int[] ids) {
 		int index = getIndex(ids);
 		return insertInIndex(index, rui);
 	}

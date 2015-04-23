@@ -30,8 +30,7 @@ ALPHA_NUMERIC={ALPHA}|{DIGIT}
 
 
 
-TRUE=true
-FALSE=false
+	
 WFF=wff 
 ACTIVATE=activate
 WITHSOME=withsome
@@ -185,12 +184,6 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 <YYINITIAL> {NEXISTS} { 
 	return new Symbol(sym.NEXISTS, yytext());
-}
-<YYINITIAL> {TRUE} { 
-	return new Symbol(sym.TRUE, yytext());
-}
-<YYINITIAL> {FALSE} { 
-	return new Symbol(sym.FALSE, yytext());
 }
 <YYINITIAL> {ALL} { 
 	return new Symbol(sym.ALL, yytext());

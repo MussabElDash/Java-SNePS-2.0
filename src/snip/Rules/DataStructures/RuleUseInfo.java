@@ -61,9 +61,13 @@ public class RuleUseInfo {
 	 */
 	public FlagNodeSet getNegSubs() {
 		FlagNodeSet res = new FlagNodeSet();
-		for (int i = 0; i < fns.cardinality(); i++) {
-			if (fns.getFlagNode(i).getFlag() == 2)
-				res.putIn(fns.getFlagNode(i));
+		// for (int i = 0; i < fns.cardinality(); i++) {
+		// if (fns.getFlagNode(i).getFlag() == 2)
+		// res.putIn(fns.getFlagNode(i));
+		// }
+		for (FlagNode fn : fns) {
+			if (fn.getFlag() == 2)
+				res.putIn(fn);
 		}
 		return res;
 	}
@@ -75,9 +79,13 @@ public class RuleUseInfo {
 	 */
 	public FlagNodeSet getPosSubs() {
 		FlagNodeSet res = new FlagNodeSet();
-		for (int i = 0; i < fns.cardinality(); i++) {
-			if (fns.getFlagNode(i).getFlag() == 1)
-				res.putIn(fns.getFlagNode(i));
+		// for (int i = 0; i < fns.cardinality(); i++) {
+		// if (fns.getFlagNode(i).getFlag() == 1)
+		// res.putIn(fns.getFlagNode(i));
+		// }
+		for (FlagNode fn : fns) {
+			if (fn.getFlag() == 1)
+				res.putIn(fn);
 		}
 		return res;
 	}
@@ -105,6 +113,33 @@ public class RuleUseInfo {
 	}
 
 	/**
+	 * Check if this and r are joint
+	 * 
+	 * @param r
+	 *            rule use info
+	 * @return true or false
+	 */
+	public boolean isJoint(RuleUseInfo r) {
+		// for (int i = 0; i < fns.cardinality(); i++) {
+		// for (int j = 0; j < r.getFlagNodeSet().cardinality(); j++) {
+		// if (fns.getFlagNode(i)
+		// .getNode()
+		// .getIdentifier()
+		// .equals(r.getFlagNodeSet().getFlagNode(j).getNode()
+		// .getIdentifier()))
+		// return true;
+		// }
+		// }
+		for (FlagNode fn1 : fns) {
+			for (FlagNode fn2 : r.getFlagNodeSet()) {
+				if (fn1.getNode() == fn2.getNode())
+					return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Check if this and r are disjoint
 	 * 
 	 * @param r
@@ -112,17 +147,7 @@ public class RuleUseInfo {
 	 * @return true or false
 	 */
 	public boolean isDisjoint(RuleUseInfo r) {
-		for (int i = 0; i < fns.cardinality(); i++) {
-			for (int j = 0; j < r.getFlagNodeSet().cardinality(); j++) {
-				if (fns.getFlagNode(i)
-						.getNode()
-						.getIdentifier()
-						.equals(r.getFlagNodeSet().getFlagNode(j).getNode()
-								.getIdentifier()))
-					return true;
-			}
-		}
-		return false;
+		return !isJoint(r);
 	}
 
 	/**

@@ -1,18 +1,17 @@
 package snip.Rules.DataStructures;
 
 import java.util.Hashtable;
-import java.util.TreeMap;
 
 import SNeBR.Context;
 
-public class Sindexing extends ContextRUIS{
+public class SIndexing extends ContextRUIS{
 	Hashtable<Integer, RuleUseInfo> map;
 
 	/**
 	 * Create new Empty Sindexing table and associate it with the Context c
 	 * @param c Context
 	 */
-	public Sindexing(Context c) {
+	public SIndexing(Context c) {
 		super(c);
 		map = new Hashtable<Integer, RuleUseInfo>();
 	}

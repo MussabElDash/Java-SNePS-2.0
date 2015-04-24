@@ -80,11 +80,11 @@ public class FlagNode {
 		flag = x;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof FlagNode))
-			return false;
-		FlagNode fn = (FlagNode) obj;
-		return isEqual(fn);
-	}
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (!(obj instanceof FlagNode))
+	// return false;
+	// FlagNode fn = (FlagNode) obj;
+	// return isEqual(fn);
+	// }
 }

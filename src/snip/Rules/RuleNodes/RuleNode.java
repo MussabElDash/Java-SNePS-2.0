@@ -1,4 +1,4 @@
-package snip.Rules;
+package snip.Rules.RuleNodes;
 
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
@@ -10,11 +10,11 @@ import sneps.SyntaticClasses.Molecular;
 import snip.Report;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
-import snip.Rules.DataStructures.Ptree;
-import snip.Rules.DataStructures.Sindexing;
+import snip.Rules.DataStructures.PTree;
+import snip.Rules.DataStructures.SIndexing;
 import SNeBR.Context;
 
-public abstract class Rule extends PropositionNode {
+public abstract class RuleNode extends PropositionNode {
 
 	/**
 	 * a NodeSet containing all the pattern antecedents attached to this Node
@@ -51,7 +51,7 @@ public abstract class Rule extends PropositionNode {
 
 	protected ContextRUISSet contextRUISSet;
 
-	public Rule(Molecular syn, Proposition sym) {
+	public RuleNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		resetRule();
 	}
@@ -139,9 +139,9 @@ public abstract class Rule extends PropositionNode {
 	 */
 	public ContextRUIS addContextRUIS(Context c) {
 		if (shareVars)
-			return this.addContextRUIS(new Sindexing(c));
+			return this.addContextRUIS(new SIndexing(c));
 		else {
-			Ptree pTree = new Ptree(c);
+			PTree pTree = new PTree(c);
 			ContextRUIS cr = this.addContextRUIS(pTree);
 			pTree.buildTree(antNodesWithVars);
 			return cr;

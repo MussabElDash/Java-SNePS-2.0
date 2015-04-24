@@ -8,14 +8,15 @@
 
 package snip.Rules.DataStructures;
 
-public class TreeNode {
+import java.util.Set;
+
+public class PTreeNode {
 	private RuleUseInfoSet ruis;
-	private int[] pats;
-	private int[] vars;
-	private boolean[] dir;
-	private TreeNode up;
-	private TreeNode right;
-	private TreeNode left;
+	private Set<Integer> pats;
+	private Set<Integer> vars;
+	private PTreeNode up;
+	private PTreeNode right;
+	private PTreeNode left;
 
 	/**
 	 * Create a new subtree with the parent up (if up is null then this node is
@@ -28,11 +29,10 @@ public class TreeNode {
 	 * @param up
 	 *            TreeNode
 	 */
-	public TreeNode(int[] p, int[] v, boolean[] d) {
+	public PTreeNode(Set<Integer> p, Set<Integer> v) {
 		ruis = new RuleUseInfoSet();
 		pats = p;
 		vars = v;
-		dir = d;
 		up = null;
 		right = null;
 		left = null;
@@ -55,8 +55,11 @@ public class TreeNode {
 	 *            RuleUseInfoSet
 	 */
 	public void insertRUIS(RuleUseInfoSet ruis) {
-		for (int i = 0; i < ruis.cardinality(); i++)
-			this.ruis.putIn(ruis.getRuleUseInfo(i));
+		// for (int i = 0; i < ruis.cardinality(); i++)
+		// this.ruis.putIn(ruis.getRuleUseInfo(i));
+		for (RuleUseInfo rui : ruis) {
+			this.insertRUI(rui);
+		}
 	}
 
 	/**
@@ -73,7 +76,7 @@ public class TreeNode {
 	 * 
 	 * @return TreeNode
 	 */
-	public TreeNode getParent() {
+	public PTreeNode getParent() {
 		return up;
 	}
 
@@ -82,7 +85,7 @@ public class TreeNode {
 	 * 
 	 * @return
 	 */
-	public TreeNode getRight() {
+	public PTreeNode getRight() {
 		return right;
 	}
 
@@ -91,7 +94,7 @@ public class TreeNode {
 	 * 
 	 * @return
 	 */
-	public TreeNode getLeft() {
+	public PTreeNode getLeft() {
 		return left;
 	}
 
@@ -103,7 +106,7 @@ public class TreeNode {
 	 * @param d
 	 *            list of directions
 	 */
-	public void insertRight(TreeNode tn) {
+	public void insertRight(PTreeNode tn) {
 		right = tn;
 		tn.up = this;
 	}
@@ -116,7 +119,7 @@ public class TreeNode {
 	 * @param d
 	 *            list of directions
 	 */
-	public void insertLeft(TreeNode tn) {
+	public void insertLeft(PTreeNode tn) {
 		left = tn;
 		tn.up = this;
 	}
@@ -126,33 +129,8 @@ public class TreeNode {
 	 * 
 	 * @return int[]
 	 */
-	public int[] getPats() {
+	public Set<Integer> getPats() {
 		return pats;
-	}
-
-	/**
-	 * Return the list of directions
-	 * 
-	 * @return boolean[]
-	 */
-	public boolean[] getDir() {
-		return dir;
-	}
-
-	/**
-	 * Return the direction of a pattern
-	 * 
-	 * @param pat
-	 *            int
-	 * @return boolean
-	 */
-	public boolean getPatDir(int pat) {
-		int i = 0;
-		for (; i < pats.length; i++) {
-			if (pat == pats[i])
-				break;
-		}
-		return dir[i];
 	}
 
 	/**
@@ -160,8 +138,13 @@ public class TreeNode {
 	 * 
 	 * @return
 	 */
-	public int[] getVars() {
+	public Set<Integer> getVars() {
 		return vars;
+	}
+
+	@Override
+	public String toString() {
+		return pats.toString();
 	}
 
 }

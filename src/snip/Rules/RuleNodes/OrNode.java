@@ -1,12 +1,12 @@
-package snip.Rules;
+package snip.Rules.RuleNodes;
 
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Report;
 
-public class OR extends Rule {
+public class OrNode extends RuleNode {
 
-	public OR(Molecular syn, Proposition sym) {
+	public OrNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 	}
 

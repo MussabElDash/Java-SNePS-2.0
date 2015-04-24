@@ -1,4 +1,4 @@
-package snip.Rules;
+package snip.Rules.RuleNodes;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,15 +12,15 @@ import snip.Report;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
-import snip.Rules.DataStructures.Ptree;
+import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
-import snip.Rules.DataStructures.Sindexing;
+import snip.Rules.DataStructures.SIndexing;
 import SNeBR.Context;
 
-public class And extends Rule {
+public class AndNode extends RuleNode {
 
-	public And(Molecular syn, Proposition sym) {
+	public AndNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 	}
 
@@ -60,29 +60,26 @@ public class And extends Rule {
 		} else {
 			crtemp = addContextRUIS(context);
 		}
-		RuleUseInfoSet res = null;
 		if (shareVars) {
-			Sindexing scrtemp = (Sindexing) crtemp;
+			SIndexing scrtemp = (SIndexing) crtemp;
 			RuleUseInfo ruiRes = scrtemp.insert(rui, vars);
-		} else {
-			Ptree pcrtemp = (Ptree) crtemp;
-			res = pcrtemp.insert(rui);
-			if (res == null) {
-				res = new RuleUseInfoSet();
-			}
+			sendRui(ruiRes);
+			return;
 		}
-		for (int i = 0; i < res.cardinality(); i++) {
+		PTree pcrtemp = (PTree) crtemp;
+		RuleUseInfoSet res = pcrtemp.insert(rui);
+		if (res == null) {
+			res = new RuleUseInfoSet();
+		}
+		for (RuleUseInfo tRui : res) {
+			sendRui(tRui);
+		}
+	}
 
-			RuleUseInfo ruitemp = res.getRuleUseInfo(i);
-			if (ruitemp.getPosCount() == this.antsWithVarsNumber) {
-
-				Report reply = new Report(ruitemp.getSub(), null, true, this,
-						null, context);
-				// TODO
-				throw new UnsupportedOperationException();
-				// ChannelsSet ctemp = this.getOutGoing();
-				// this.sendReport(reply, ctemp);
-			}
+	private void sendRui(RuleUseInfo tRui) {
+		// TODO Auto-generated method stub
+		if (tRui.getPosCount() == this.antsWithVarsNumber) {
+			throw new UnsupportedOperationException();
 		}
 	}
 

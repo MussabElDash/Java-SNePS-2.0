@@ -7,10 +7,13 @@
  */
 package snip.Rules.DataStructures;
 
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-public class FlagNodeSet {
-	private Vector<FlagNode> fns;
+public class FlagNodeSet implements Iterable<FlagNode> {
+	// private Vector<FlagNode> fns;
+	private Set<FlagNode> fns;
 
 	// private VectorHashSet<FlagNode> fns;
 
@@ -18,18 +21,19 @@ public class FlagNodeSet {
 	 * Create a new flag node set
 	 */
 	public FlagNodeSet() {
-		fns = new Vector<FlagNode>();
+		// fns = new Vector<FlagNode>();
 		// fns = new VectorHashSet<>();
+		fns = new HashSet<FlagNode>();
 	}
 
-	/**
-	 * Return the first flag node in the flag node set
-	 * 
-	 * @return FlagNode
-	 */
-	public FlagNode choose() {
-		return fns.get(0);
-	}
+	// /**
+	// * Return the first flag node in the flag node set
+	// *
+	// * @return FlagNode
+	// */
+	// public FlagNode choose() {
+	// return fns.get(0);
+	// }
 
 	/**
 	 * Check if the flag node set is new (empty)
@@ -40,18 +44,18 @@ public class FlagNodeSet {
 		return fns.isEmpty();
 	}
 
-	/**
-	 * Return a flag node set with all flag nodes in this except the first one
-	 * 
-	 * @return FlagNodeSet
-	 */
-	public FlagNodeSet other() {
-		FlagNodeSet s = new FlagNodeSet();
-		for (int i = 1; i < fns.size(); i++) {
-			s.fns.add(this.fns.get(i));
-		}
-		return s;
-	}
+	// /**
+	// * Return a flag node set with all flag nodes in this except the first one
+	// *
+	// * @return FlagNodeSet
+	// */
+	// public FlagNodeSet other() {
+	// FlagNodeSet s = new FlagNodeSet();
+	// for (int i = 1; i < fns.size(); i++) {
+	// s.fns.add(this.fns.get(i));
+	// }
+	// return s;
+	// }
 
 	/**
 	 * Check if fn is in this
@@ -61,8 +65,12 @@ public class FlagNodeSet {
 	 * @return true or false
 	 */
 	public boolean isMember(FlagNode fn) {
-		for (int i = 0; i < fns.size(); i++) {
-			if (fns.get(i).isEqual(fn))
+		// for (int i = 0; i < fns.size(); i++) {
+		// if (fns.get(i).isEqual(fn))
+		// return true;
+		// }
+		for (FlagNode tFn : fns) {
+			if (tFn.isEqual(fn))
 				return true;
 		}
 		return false;
@@ -125,16 +133,16 @@ public class FlagNodeSet {
 	// return null;
 	// }
 
-	/**
-	 * Return the flagged node number i in the flag node set
-	 * 
-	 * @param i
-	 *            int
-	 * @return FlagNode
-	 */
-	public FlagNode getFlagNode(int i) {
-		return fns.get(i);
-	}
+	// /**
+	// * Return the flagged node number i in the flag node set
+	// *
+	// * @param i
+	// * int
+	// * @return FlagNode
+	// */
+	// public FlagNode getFlagNode(int i) {
+	// return fns.get(i);
+	// }
 
 	/**
 	 * Return the number of flagged nodes in this set
@@ -154,12 +162,23 @@ public class FlagNodeSet {
 	 */
 	public FlagNodeSet union(FlagNodeSet f) {
 		FlagNodeSet res = new FlagNodeSet();
-		for (int i = 0; i < this.fns.size(); i++) {
-			res.insert(this.fns.get(i));
+		// for (int i = 0; i < this.fns.size(); i++) {
+		// res.insert(this.fns.get(i));
+		// }
+		// for (int i = 0; i < f.fns.size(); i++) {
+		// res.insert(f.fns.get(i));
+		// }
+		for (FlagNode fn : fns) {
+			res.insert(fn);
 		}
-		for (int i = 0; i < f.fns.size(); i++) {
-			res.insert(f.fns.get(i));
+		for (FlagNode fn : f) {
+			res.insert(fn);
 		}
 		return res;
+	}
+
+	@Override
+	public Iterator<FlagNode> iterator() {
+		return fns.iterator();
 	}
 }

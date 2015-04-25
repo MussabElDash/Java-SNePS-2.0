@@ -2,8 +2,6 @@ package snip.Rules.DataStructures;
 
 import java.util.Iterator;
 
-import com.sun.javafx.geom.transform.GeneralTransform3D;
-
 public class PSubTree {
 	private PTreeNode root;
 
@@ -24,7 +22,6 @@ public class PSubTree {
 	}
 
 	public RuleUseInfoSet insert(RuleUseInfo rui) {
-		// TODO Auto-generated method stub
 		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
 		PTreeNode leaf = getLeafPattern(pattern, root);
 		leaf.getRUIS().putIn(rui);
@@ -32,7 +29,6 @@ public class PSubTree {
 	}
 
 	private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
-		// TODO Auto-generated method stub
 		if (pNode.getLeft() == null)
 			return pNode;
 		PTreeNode left = pNode.getLeft(), right = pNode.getRight();
@@ -44,17 +40,21 @@ public class PSubTree {
 
 	private RuleUseInfoSet insertIn(PTreeNode parent) {
 		Iterator<RuleUseInfo> iter1 = parent.getLeft().getRUIS().iterator();
-		Iterator<RuleUseInfo> iter2 = parent.getRight().getRUIS().iterator();
-		while (iter1.hasNext())
+		while (iter1.hasNext()) {
+			RuleUseInfo rui1 = iter1.next();
+			Iterator<RuleUseInfo> iter2 = parent.getRight().getRUIS()
+					.iterator();
 			while (iter2.hasNext()) {
-				RuleUseInfo rui1 = iter1.next(), rui2 = iter2.next();
+				RuleUseInfo rui2 = iter2.next();
 				RuleUseInfo combined = rui1.combine(rui2);
 				if (combined == null)
 					continue;
 				iter1.remove();
 				iter2.remove();
 				parent.getRUIS().putIn(combined);
+				break;
 			}
+		}
 		if (parent == root)
 			return parent.getRUIS();
 		else

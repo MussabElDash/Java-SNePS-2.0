@@ -8,11 +8,11 @@ import org.w3c.dom.css.Counter;
 import sneps.CFSignature;
 import sneps.CableTypeConstraint;
 import sneps.CaseFrame;
-import sneps.Node;
-import sneps.NodeSet;
 import sneps.RCFP;
 import sneps.Relation;
 import sneps.SubDomainConstraint;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 
 public class CFTestingFile {
 	

@@ -11,6 +11,8 @@ package sneps;
 
 import java.util.LinkedList;
 
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 import sneps.Paths.AndPath;
 import sneps.Paths.ComposePath;
 import sneps.Paths.EmptyPath;

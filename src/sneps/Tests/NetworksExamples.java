@@ -5,15 +5,15 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
-import sneps.Molecular;
 import sneps.Network;
-import sneps.Node;
-import sneps.PatternNode;
 import sneps.RCFP;
 import sneps.Relation;
-import sneps.VariableNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.PatternNode;
+import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Entity;
 import sneps.SemanticClasses.Individual;
+import sneps.SyntaticClasses.Molecular;
 
 public class NetworksExamples {
 	

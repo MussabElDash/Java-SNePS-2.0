@@ -17,11 +17,26 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import sneps.Cables.Cable;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Cables.UpCable;
+import sneps.Nodes.ClosedNode;
+import sneps.Nodes.MolecularNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
+import sneps.Nodes.PatternNode;
+import sneps.Nodes.PropositionNode;
+import sneps.Nodes.VariableNode;
 import sneps.Paths.FUnitPath;
 import sneps.Paths.Path;
 import sneps.SemanticClasses.Entity;
 import sneps.SemanticClasses.Infimum;
 import sneps.SemanticClasses.Proposition;
+import sneps.SyntaticClasses.Base;
+import sneps.SyntaticClasses.Closed;
+import sneps.SyntaticClasses.Pattern;
+import sneps.SyntaticClasses.Variable;
 import SNeBR.Context;
 
 public class Network {

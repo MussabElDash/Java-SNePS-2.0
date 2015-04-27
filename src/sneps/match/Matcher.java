@@ -5,14 +5,14 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
-import sneps.DownCable;
-import sneps.DownCableSet;
-import sneps.MolecularNode;
+import sneps.Cables.DownCable;
+import sneps.Cables.DownCableSet;
+import sneps.Nodes.MolecularNode;
 import sneps.Network;
-import sneps.Node;
-import sneps.NodeSet;
-import sneps.PatternNode;
-import sneps.VariableNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
+import sneps.Nodes.PatternNode;
+import sneps.Nodes.VariableNode;
 
 public class Matcher {
 	

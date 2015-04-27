@@ -7,8 +7,8 @@
  */
 package sneps.match;
 
-import sneps.Node;
-import sneps.VariableNode;
+import sneps.Nodes.Node;
+import sneps.Nodes.VariableNode;
 
 
 

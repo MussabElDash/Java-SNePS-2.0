@@ -15,151 +15,209 @@ import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
 
 public class Matcher {
-	
-	
-	public LinkedList<Object[]> Match(MolecularNode sourceNode,Network network,boolean UVBR){
-		LinkedList<Object[]> matches=new LinkedList<Object[]>();
-		CaseFrame sourceCF=sourceNode.getDownCableSet().getCaseFrame();
-		NodeSet candidateNodes = network.getMolecularNodes().get(sourceCF.getId());
-		
+
+	public LinkedList<Object[]> Match(MolecularNode sourceNode,
+			Network network, boolean UVBR) {
+		LinkedList<Object[]> matches = new LinkedList<Object[]>();
+		CaseFrame sourceCF = sourceNode.getDownCableSet().getCaseFrame();
+		NodeSet candidateNodes = network.getMolecularNodes().get(
+				sourceCF.getId());
+
 		for (int i = 0; i < candidateNodes.size(); i++) {
-			MolecularNode candidateNode=(MolecularNode) candidateNodes.getNode(i);
-			if(sourceNode.equals(candidateNode))
+			MolecularNode candidateNode = (MolecularNode) candidateNodes
+					.getNode(i);
+			if (sourceNode.equals(candidateNode))
 				continue;
 			LinkedList<Substitutions> sourceList = new LinkedList<Substitutions>();
 			LinkedList<Substitutions> targetList = new LinkedList<Substitutions>();
 			sourceList.add(new LinearSubstitutions());
 			targetList.add(new LinearSubstitutions());
-			NodeSet sourceNodeVariables=getTerms(sourceNode,true);
-			if(hERE(sourceNode,candidateNode,sourceList,targetList,UVBR,true)){
-				
-possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
-					Substitutions sourceR=sourceList.get(j);
-					Substitutions sourceS=new LinearSubstitutions();
-					Substitutions targetR=targetList.get(j);
-					Substitutions targetS=new LinearSubstitutions();
-					
-					Substitutions sourceBindings=new LinearSubstitutions();
-					Substitutions targetBindings=new LinearSubstitutions();
-					
-					NodeSet candidateNodeVariables=getTerms(candidateNode,true);
-					
+			NodeSet sourceNodeVariables = getTerms(sourceNode, true);
+			if (hERE(sourceNode, candidateNode, sourceList, targetList, UVBR,
+					true)) {
+
+				possibleMatches: for (int j = 0; j < sourceList.size(); j++) {
+					Substitutions sourceR = sourceList.get(j);
+					Substitutions sourceS = new LinearSubstitutions();
+					Substitutions targetR = targetList.get(j);
+					Substitutions targetS = new LinearSubstitutions();
+
+					Substitutions sourceBindings = new LinearSubstitutions();
+					Substitutions targetBindings = new LinearSubstitutions();
+
+					NodeSet candidateNodeVariables = getTerms(candidateNode,
+							true);
+
 					for (int k = 0; k < sourceNodeVariables.size(); k++) {
-						Node sbinding=vere((VariableNode) sourceNodeVariables.getNode(k), sourceR, targetR, sourceS, targetS); 
-						if(sbinding==null)
+						Node sbinding = vere(
+								(VariableNode) sourceNodeVariables.getNode(k),
+								sourceR, targetR, sourceS, targetS);
+						if (sbinding == null)
 							continue possibleMatches;
 						else
-					      sourceBindings.insert(new Binding((VariableNode) sourceNodeVariables.getNode(k),sbinding));		
-							
+							sourceBindings.insert(new Binding(
+									(VariableNode) sourceNodeVariables
+											.getNode(k), sbinding));
+
 					}
 					for (int k = 0; k < candidateNodeVariables.size(); k++) {
-						Node cbinding=vere((VariableNode) candidateNodeVariables.getNode(k), targetR, sourceR, targetS, sourceS); 
-						if(cbinding==null)
+						Node cbinding = vere(
+								(VariableNode) candidateNodeVariables
+										.getNode(k),
+								targetR, sourceR, targetS, sourceS);
+						if (cbinding == null)
 							continue possibleMatches;
 						else
-						      targetBindings.insert(new Binding((VariableNode) candidateNodeVariables.getNode(k),cbinding));
-							
+							targetBindings.insert(new Binding(
+									(VariableNode) candidateNodeVariables
+											.getNode(k), cbinding));
+
 					}
-					
-					
-					if(!(violatesUTIR(sourceNode,sourceBindings)||violatesUTIR(candidateNode,targetBindings))){
-						Object[] match=new Object []{candidateNode,sourceBindings,targetBindings};
+
+					if (!(violatesUTIR(sourceNode, sourceBindings) || violatesUTIR(
+							candidateNode, targetBindings))) {
+						Object[] match = new Object[] { candidateNode,
+								sourceBindings, targetBindings };
 						matches.add(match);
 					}
-					
+
 				}
 			}
 		}
-		
+
 		return matches;
 	}
-	public boolean violatesUTIR(MolecularNode node,Substitutions bindings){
-		NodeSet terms=getTerms(node,false);
-		
-		return violatesUTIR(terms,bindings);
-		
-		
+
+	public boolean violatesUTIR(MolecularNode node, Substitutions bindings) {
+		NodeSet terms = getTerms(node, false);
+
+		return violatesUTIR(terms, bindings,false);
+
 	}
-	
-	public boolean violatesUTIR(NodeSet terms,Substitutions bindings){
-		
-		if(terms.size()<2)
+
+	public boolean violatesUTIR(NodeSet terms, Substitutions bindings,boolean helper) {
+        System.out.println("called with "+terms);
+		if (terms.size() < 2)
 			return false;
-		Node term0=terms.getNode(0);
-		Node term1=terms.getNode(1);
-		
-		if(termsEqual(term0,term1,bindings))
+		Node term0 = terms.getNode(0);
+		Node term1 = terms.getNode(1);
+
+		if (differentTermsEqual(term0, term1, bindings))
 			return true;
-		
-		NodeSet newTerms=new NodeSet();
+
+		NodeSet newTerms = new NodeSet();
 		newTerms.addAll(terms);
 		newTerms.removeNode(term1);
-		if(term1.getSyntacticSuperClass()=="Molecular")
-		newTerms.addAll(getTerms((MolecularNode) term1,false));
-		if(violatesUTIR(newTerms,bindings))
+		if (term1.getSyntacticSuperClass().equals("Molecular"))
+			newTerms.addAll(getTerms((MolecularNode) term1, false));
+		if (violatesUTIR(newTerms, bindings,true))
 			return true;
+		if(helper)
+			return false;
+		System.out.println("after first call "+terms);
 		terms.removeNode(term0);
-		if(term0.getSyntacticSuperClass()=="Molecular")
-			terms.addAll(getTerms((MolecularNode) term0,false));
-		if(violatesUTIR(terms,bindings))
-			return true;
-		
+		if (term0.getSyntacticSuperClass().equals("Molecular"))
+			terms.addAll(getTerms((MolecularNode) term0, false));
+		if (violatesUTIR(terms, bindings,false)){
+			//System.out.println(terms.toString());
+			return true;}
+
 		return false;
 	}
-	
-	public boolean termsEqual(Node term1,Node term2,Substitutions bindings){
-		if(term1.getSyntacticType()=="Variable")
-			term1=bindings.term((VariableNode) term1);
-		if(term2.getSyntacticType()=="Variable")
-			term2=bindings.term((VariableNode) term2);
-		
-		if(!term1.getSyntacticType().equals(term2.getSyntacticType()))
-		return false;
-		
-		if(term1.getSemanticType()=="Base")
+
+	public boolean differentTermsEqual(Node term1, Node term2,
+			Substitutions bindings) {
+
+		if (term1.getSyntacticType().equals("Variable"))
+			if (term2.getSyntacticType().equals("Variable"))
+				if (term1.equals(term2))
+					return false;
+
+		if (term1.getSyntacticType().equals("Variable")&&bindings.isBound((VariableNode) term1))
+			term1 = bindings.term((VariableNode) term1);
+		if (term2.getSyntacticType().equals("Variable")&&bindings.isBound((VariableNode) term2))
+			term2 = bindings.term((VariableNode) term2);
+          //System.out.println(term1.getIdentifier()+" "+term2.getIdentifier());
+		if (!term1.getSyntacticType().equals(term2.getSyntacticType()))
+			return false;
+
+		//System.out.println(term1.equals(term2));
+		if (term1.getSyntacticType().equals("Base")||term1.getSyntacticType().equals("Variable"))
 			return term1.equals(term2);
-		//Molecular
-		if(term1.equals(term2)){
-		DownCable[] dc1=(DownCable[]) ((MolecularNode) term1).getDownCableSet().getDownCables().values().toArray();
-		DownCable[] dc2=(DownCable[]) ((MolecularNode) term2).getDownCableSet().getDownCables().values().toArray();
-		
-		for (int i = 0; i < dc1.length; i++) {
-			boolean found=false;
-			for (int j = 0; j < dc2.length; j++) {
-			if(dc1[i].getRelation()==dc2[j].getRelation()){
-				found=true;
-				NodeSet ns1=dc1[i].getNodeSet();
-				NodeSet ns2=dc2[j].getNodeSet();
-				if(!ns1.equals(ns2))
+		// Molecular
+		if (term1.equals(term2)) {
+			DownCable[] dc1 = (DownCable[]) ((MolecularNode) term1)
+					.getDownCableSet().getDownCables().values().toArray();
+			DownCable[] dc2 = (DownCable[]) ((MolecularNode) term2)
+					.getDownCableSet().getDownCables().values().toArray();
+
+			for (int i = 0; i < dc1.length; i++) {
+				boolean found = false;
+				for (int j = 0; j < dc2.length; j++) {
+					if (dc1[i].getRelation() == dc2[j].getRelation()) {
+						found = true;
+						NodeSet ns1 = dc1[i].getNodeSet();
+						NodeSet ns2 = dc2[j].getNodeSet();
+
+						for (int k = 0; k < ns1.size(); k++) {
+							Node n = ns1.getNode(k);
+							if (n.getSyntacticType().equals("Variable"))
+								if (bindings.isBound((VariableNode) n))
+									if (!bindings.value((VariableNode) n)
+											.equals(n))
+
+									{
+										ns1.removeNode(ns1.getNode(k));
+										ns1.addNode(bindings
+												.value((VariableNode) n));
+									}
+						}
+						for (int k = 0; k < ns2.size(); k++) {
+							Node n = ns2.getNode(k);
+							if (n.getSyntacticType().equals("Variable"))
+								if (bindings.isBound((VariableNode) n))
+									if (!bindings.value((VariableNode) n)
+											.equals(n))
+
+									{
+										ns2.removeNode(ns2.getNode(k));
+										ns2.addNode(bindings
+												.value((VariableNode) n));
+									}
+
+						}
+
+						if (!ns1.equals(ns2))
+							return false;
+					}
+				}
+				if (!found)
 					return false;
 			}
-			}
-			if(!found)
-			return false;
+
 		}
-		
-		}
-		
+
 		return true;
 	}
-	
-	public NodeSet getTerms(MolecularNode node,boolean var){
-		NodeSet ns=new NodeSet();
-		Hashtable <String,DownCable> dcs=node.getDownCableSet().getDownCables();
-		Enumeration <DownCable> elements= dcs.elements();
-		
-		while(elements.hasMoreElements()){
-			NodeSet nodes=elements.nextElement().getNodeSet();
-			
+
+	public NodeSet getTerms(MolecularNode node, boolean var) {
+		NodeSet ns = new NodeSet();
+		Hashtable<String, DownCable> dcs = node.getDownCableSet()
+				.getDownCables();
+		Enumeration<DownCable> elements = dcs.elements();
+
+		while (elements.hasMoreElements()) {
+			NodeSet nodes = elements.nextElement().getNodeSet();
+
 			for (int i = 0; i < nodes.size(); i++) {
-				Node n=nodes.getNode(i);
-				
-				if(var&&n.getSyntacticType()=="Variable")
+				Node n = nodes.getNode(i);
+
+				if (var && n.getSyntacticType().equals("Variable"))
 					ns.addNode(n);
-				else if(!var)
+				else if (!var)
 					ns.addNode(n);
 			}
-			
+
 		}
 		return ns;
 	}
@@ -170,16 +228,16 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 			boolean rightOrder) {
 		if (!compatible(sourceNode, targetNode))
 			return false;
-		if (sourceNode.getSyntacticType() == "Variable")
+		if (sourceNode.getSyntacticType().equals("Variable"))
 			if (!VARHERE(sourceNode, targetNode, sourceList, targetList, UVBR,
 					rightOrder))
 				return false;
-			else if (targetNode.getSyntacticType() == "Variable")
+			else if (targetNode.getSyntacticType().equals("Variable"))
 				if (!VARHERE(sourceNode, targetNode, sourceList, targetList,
-						UVBR, rightOrder))
+						UVBR, !rightOrder))
 					return false;
-				else if (sourceNode.getSyntacticType() == "Molecular"
-						&& targetNode.getSyntacticType() == "Molecular") {
+				else if (sourceNode.getSyntacticType().equals("Molecular")
+						&& targetNode.getSyntacticType().equals("Molecular")) {
 					MolecularNode n1 = (MolecularNode) sourceNode;
 					MolecularNode n2 = (MolecularNode) targetNode;
 					DownCableSet cs1 = n1.getDownCableSet();
@@ -253,7 +311,7 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 			Substitutions currentVSub = variableList.removeFirst();
 			Substitutions currentBSub = bindingList.removeFirst();
 			if (!currentVSub.isBound(variableNode)) {
-				if (bindingNode.getSyntacticType() == "Variable" && UVBR)
+				if (bindingNode.getSyntacticType().equals("Variable") && UVBR)
 					if (currentBSub.isBound((VariableNode) bindingNode)
 							|| currentVSub.isValue(bindingNode))
 						continue;
@@ -277,11 +335,11 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 	}
 
 	public boolean compatible(Node sourceNode, Node targetNode) {
-		String sourceType = sourceNode.getSyntacticSuperClass() == "Molecular" ? "Molecular"
-				: sourceNode.getSyntacticType();
-		String targetType = targetNode.getSyntacticSuperClass() == "Molecular" ? "Molecular"
-				: targetNode.getSyntacticType();
-		if (sourceType == "Variable" || targetType == "Variable")
+		String sourceType = sourceNode.getSyntacticSuperClass().equals(
+				"Molecular") ? "Molecular" : sourceNode.getSyntacticType();
+		String targetType = targetNode.getSyntacticSuperClass().equals(
+				"Molecular") ? "Molecular" : targetNode.getSyntacticType();
+		if (sourceType.equals("Variable") || targetType.equals("Variable"))
 			return true;
 		if (sourceType == targetType)
 			// TODO: check identifying nodes
@@ -340,15 +398,15 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 		Node bindingNode;
 		if (sourceR.isBound(n)) {
 			Node RbindingNode = sourceR.term(n);
-			if (RbindingNode.getSyntacticType() == "Base"
-					|| RbindingNode.getSyntacticType() == "Closed") {
+			if (RbindingNode.getSyntacticType().equals("Base")
+					|| RbindingNode.getSyntacticType().equals("Closed")) {
 				bindingNode = RbindingNode;
 				sourceS.putIn(new Binding(n, RbindingNode));
 				sourceR.update(sourceR.getBindingByVariable(n), n);
 
 				// TODO:add appropriate getters and setters in subs
 
-			} else if (RbindingNode.getSyntacticType() == "Pattern") {
+			} else if (RbindingNode.getSyntacticType().equals("Pattern")) {
 				/* done */sourceR.update(sourceR.getBindingByVariable(n), n);
 				/* loop */sourceS.update(sourceS.getBindingByVariable(n), n);
 				bindingNode = termVere((MolecularNode) RbindingNode, sourceR,
@@ -390,7 +448,7 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 				Node currentOldNode = currentOldNS.getNode(i);
 				Node currentNewNode = null;
 
-				if (currentOldNode.getSyntacticType() == "Variable") {
+				if (currentOldNode.getSyntacticType().equals("Variable")) {
 					if (targetR.isBound((VariableNode) currentOldNode)) {
 						if (targetR.term((VariableNode) currentOldNode) == currentOldNode) {
 							if (targetS.term((VariableNode) currentOldNode) == currentOldNode)
@@ -408,7 +466,7 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 					else
 						currentNewNode = currentOldNode;
 
-				} else if (currentOldNode.getSyntacticType() == "Pattern")
+				} else if (currentOldNode.getSyntacticType().equals("Pattern"))
 					currentNewNode = termVere((PatternNode) currentOldNode,
 							targetR, sourceR, targetS, sourceS);
 
@@ -538,8 +596,8 @@ possibleMatches:	for (int j = 0; j < sourceList.size(); j++) {
 	// }
 
 	public boolean uvbrConflict(NodeSet ns1, NodeSet ns2, Node n, Node m) {
-		return (n.getSyntacticType() == "Variable" || m.getSyntacticType() == "Variable")
-				&& (ns1.contains(m) || ns2.contains(n));
+		return (n.getSyntacticType().equals("Variable") || m.getSyntacticType()
+				.equals("Variable")) && (ns1.contains(m) || ns2.contains(n));
 	}
 
 	public static void main(String[] args) {

@@ -137,19 +137,21 @@ public class Matcher {
 			term1 = bindings.term((VariableNode) term1);
 		if (term2.getSyntacticType().equals("Variable")&&bindings.isBound((VariableNode) term2))
 			term2 = bindings.term((VariableNode) term2);
-          //System.out.println(term1.getIdentifier()+" "+term2.getIdentifier());
+        
 		if (!term1.getSyntacticType().equals(term2.getSyntacticType()))
 			return false;
 
-		//System.out.println(term1.equals(term2));
+		
 		if (term1.getSyntacticType().equals("Base")||term1.getSyntacticType().equals("Variable"))
-			return term1.equals(term2);
+			return term1.equals(term2);//TODO: same constants aren't different
 		// Molecular
-		if (term1.equals(term2)) {
-			DownCable[] dc1 = (DownCable[]) ((MolecularNode) term1)
-					.getDownCableSet().getDownCables().values().toArray();
-			DownCable[] dc2 = (DownCable[]) ((MolecularNode) term2)
-					.getDownCableSet().getDownCables().values().toArray();
+		if (term1.equals(term2)&&term1.getSyntacticSuperClass().equals("Molecular")) {
+			DownCable[] dc1 = new DownCable[((MolecularNode) term1).getDownCableSet().size()];
+					dc1= ((MolecularNode) term1)
+					.getDownCableSet().getDownCables().values().toArray(dc1);
+			DownCable[] dc2 = new DownCable[((MolecularNode) term2).getDownCableSet().size()];
+					dc2= ((MolecularNode) term2)
+					.getDownCableSet().getDownCables().values().toArray(dc2);
 
 			for (int i = 0; i < dc1.length; i++) {
 				boolean found = false;
@@ -186,9 +188,9 @@ public class Matcher {
 									}
 
 						}
-
-						if (!ns1.equals(ns2))
-							return false;
+                       
+						 return ns1.equals(ns2);//TODO: recheck
+						
 					}
 				}
 				if (!found)
@@ -482,8 +484,8 @@ public class Matcher {
 		newDCS = new DownCableSet(newDClist, oldDCS.getCaseFrame());
 		try {
 			newNode = new MolecularNode(oldNode.getSyntacticType(),
-			// TODO:name
-					oldNode.getSemanticType(), "tempName", newDCS);
+			
+					oldNode.getSemanticType(), oldNode.getIdentifier(), newDCS);
 		} catch (Exception e) {
 
 			e.printStackTrace();

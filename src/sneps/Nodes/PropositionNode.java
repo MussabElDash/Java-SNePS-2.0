@@ -3,20 +3,20 @@ package sneps.Nodes;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import SNeBR.Context;
-import SNeBR.Contradiction;
-import SNeBR.Support;
 import sneps.Cables.DownCable;
 import sneps.Cables.UpCable;
 import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
-import SNeBR.PropositionSet;
-import SNeBR.SNeBR;
-import sneps.SemanticClasses.*;
+import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import sneps.SyntaticClasses.Pattern;
 import sneps.SyntaticClasses.Term;
 import snip.Rules.Interfaces.NodeWithVar;
+import SNeBR.Context;
+import SNeBR.Contradiction;
+import SNeBR.PropositionSet;
+import SNeBR.SNeBR;
+import SNeBR.Support;
 
 public class PropositionNode extends MolecularNode implements NodeWithVar {
 
@@ -238,4 +238,5 @@ public class PropositionNode extends MolecularNode implements NodeWithVar {
 			return ((Pattern) this.getSyntactic()).getFreeVariables();
 		return new LinkedList<VariableNode>();
 	}
+
 }

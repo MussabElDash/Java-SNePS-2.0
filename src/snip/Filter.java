@@ -17,13 +17,13 @@ public class Filter {
 	}
 	
 	public boolean equals(Object filter) {
-//		TODO
+//		TODO Akram
 		return false;
 	}
 	
 	public boolean canPass(Report report) {
-		//TODO
-		return false;
+		//TODO Akram
+		return true;
 	}
 	
 }

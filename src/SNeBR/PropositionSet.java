@@ -24,6 +24,10 @@ public class PropositionSet {
 	public void removePropSet(PropositionSet propSet) {
 		this.propositions.removeAll(propSet.propositions);
 	}
+	
+	public void addProposition(PropositionNode node) {
+		propositions.add(node);
+	}
 
 	public boolean assertedInContext(Context context) {
 		if (context.hypothesisSet.propositions.containsAll(this.propositions))

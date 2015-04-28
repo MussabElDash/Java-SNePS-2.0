@@ -26,12 +26,12 @@ public class Report {
 	}
 
 	public Substitutions getSubstituions() {
-		// TODO
+		// TODO Akram
 		return null;
 	}
 
 	 public Support getSupport() {
-		 // TODO
+		 // TODO Akram
 		 return null;
 	 }
 
@@ -52,7 +52,6 @@ public class Report {
 	}
 
 //	public void addBinding(Binding m) {
-//		// TODO
 //		// this.substitution.putIn(m);
 //	}
 

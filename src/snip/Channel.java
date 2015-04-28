@@ -15,6 +15,11 @@ public abstract class Channel {
 	private Substitutions tar;
 	private ArrayList<Report> reportsBuffer;
 	
+	public Channel() {
+		filter = new Filter();
+		reportsBuffer = new ArrayList<Report>();
+	}
+
 	public Channel(Filter f, Switch s, Context c, Node d, boolean v) {
 		this.filter = f;
 		this.switch_ = s;
@@ -22,6 +27,7 @@ public abstract class Channel {
 		this.destination = d;
 		this.valve = v;
 		this.tar = new Substitutions();
+		reportsBuffer = new ArrayList<Report>();
 	}
 	
 	public Context getContext() {
@@ -36,8 +42,14 @@ public abstract class Channel {
 		this.valve = valve;
 	}
 	
-	public void addReport(Report report) {
-		reportsBuffer.add(report);
+	public boolean addReport(Report report) {
+		if(filter.canPass(report)) {
+			//TODO Akram: substitute using switch
+			System.out.println("report " + report.getNode() + " " + report.getSignature());
+			reportsBuffer.add(report);
+			return true;
+		}
+		return false;
 	}
 	
 	public ArrayList<Report> getReportsBuffer() {

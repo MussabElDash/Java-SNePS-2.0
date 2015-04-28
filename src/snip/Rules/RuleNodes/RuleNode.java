@@ -1,5 +1,9 @@
 package snip.Rules.RuleNodes;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
@@ -7,7 +11,11 @@ import sneps.Nodes.PropositionNode;
 import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import snip.AntecedentToRuleChannel;
+import snip.Channel;
+import snip.ChannelTypes;
 import snip.Report;
+import snip.RuleToConsequentChannel;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
 import snip.Rules.DataStructures.PTree;
@@ -153,9 +161,13 @@ public abstract class RuleNode extends PropositionNode {
 	 * Fills the NodeSet withVars with all the Variable Nodes and Pattern Nodes
 	 * from the NodeSet allNodes and Fills the NodeSet withoutVars with the rest
 	 * of the Nodes from the NodeSet allNodes
-	 * @param allNodes NodeSet
-	 * @param withVars NodeSet
-	 * @param WithoutVars NodeSet
+	 * 
+	 * @param allNodes
+	 *            NodeSet
+	 * @param withVars
+	 *            NodeSet
+	 * @param WithoutVars
+	 *            NodeSet
 	 */
 	public void splitToNodesWithVarsAndWithout(NodeSet allNodes,
 			NodeSet withVars, NodeSet WithoutVars) {
@@ -165,6 +177,59 @@ public abstract class RuleNode extends PropositionNode {
 				withVars.addNode(n);
 			else
 				WithoutVars.addNode(n);
+		}
+	}
+
+	@Override
+	public void processRequests() {
+		for (Channel currentChannel : incomingChannels) {
+			if (currentChannel instanceof RuleToConsequentChannel) {
+				// TODO Akram: no free variable
+				if (true) {
+					Proposition semanticType = (Proposition) this.getSemantic();
+					if (semanticType.isAsserted(currentChannel.getContext())) {
+						// TODO Akram: if rule is usable
+						if (true) {
+							// TODO Akram: relation name "Antecedent"
+							DownCable antecedntCable = this.getDownCableSet()
+									.getDownCable("Antecedent");
+							NodeSet antecedentNodeSet = antecedntCable
+									.getNodeSet();
+							Set<Node> antecedentNodes = new HashSet<Node>();
+							for (int i = 0; i < antecedentNodeSet.size(); ++i) {
+								Node currentNode = antecedentNodeSet.getNode(i);
+								// TODO Akram: if not yet been requested for
+								// this instance
+								if (true) {
+									antecedentNodes.add(currentNode);
+								}
+							}
+							sendRequests(antecedentNodes,
+									currentChannel.getContext(),
+									ChannelTypes.RuleAnt);
+						} else {
+							// TODO Akram: establish the rule
+						}
+					}
+				} else if (true) {
+
+				} else if (true) {
+
+				}
+			} else {
+				super.processSingleRequest(currentChannel);
+			}
+		}
+	}
+
+	@Override
+	public void processReports() {
+		for (Channel currentChannel : outgoingChannels) {
+			processSingleReport(currentChannel);
+			if (currentChannel instanceof AntecedentToRuleChannel) {
+				// TODO Akram: send the correct report :D
+				this.applyRuleHandler(null);
+			}
 		}
 	}
 }

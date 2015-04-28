@@ -94,4 +94,11 @@ public class ContextRUISSet {
 	public boolean hasContext(Context c) {
 		return crs.containsKey(c.getId());
 	}
+	
+	/**
+	 * Clears the ContextRUISet
+	 */
+	public void clear(){
+		crs.clear();
+	}
 }

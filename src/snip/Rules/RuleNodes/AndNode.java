@@ -22,10 +22,6 @@ public class AndNode extends RuleNode {
 
 	public AndNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-	}
-
-	@Override
-	public void resetRule() {
 		NodeSet antNodes = this.getDownNodeSet("&ant");
 		this.antNodesWithoutVars = new NodeSet();
 		this.antNodesWithVars = new NodeSet();

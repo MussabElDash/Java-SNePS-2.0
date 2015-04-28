@@ -1,6 +1,5 @@
 package snip.Rules.DataStructures;
 
-import java.util.Iterator;
 
 public class PSubTree {
 	private PTreeNode root;
@@ -24,8 +23,10 @@ public class PSubTree {
 	public RuleUseInfoSet insert(RuleUseInfo rui) {
 		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
 		PTreeNode leaf = getLeafPattern(pattern, root);
-		leaf.getRUIS().putIn(rui);
-		return insertIn(leaf.getParent());
+		Integer key = leaf.insertIntoTree(rui);
+		if (key == null)
+			return new RuleUseInfoSet();
+		return root.getRUIS(key);
 	}
 
 	private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
@@ -38,26 +39,5 @@ public class PSubTree {
 			return getLeafPattern(pattern, right);
 	}
 
-	private RuleUseInfoSet insertIn(PTreeNode parent) {
-		Iterator<RuleUseInfo> iter1 = parent.getLeft().getRUIS().iterator();
-		while (iter1.hasNext()) {
-			RuleUseInfo rui1 = iter1.next();
-			Iterator<RuleUseInfo> iter2 = parent.getRight().getRUIS()
-					.iterator();
-			while (iter2.hasNext()) {
-				RuleUseInfo rui2 = iter2.next();
-				RuleUseInfo combined = rui1.combine(rui2);
-				if (combined == null)
-					continue;
-				iter1.remove();
-				iter2.remove();
-				parent.getRUIS().putIn(combined);
-				break;
-			}
-		}
-		if (parent == root)
-			return parent.getRUIS();
-		else
-			return insertIn(parent.getParent());
-	}
+	// private Rs
 }

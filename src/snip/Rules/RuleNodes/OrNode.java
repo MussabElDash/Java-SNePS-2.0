@@ -23,8 +23,4 @@ public class OrNode extends RuleNode {
 		// r.getContext());
 		// this.sendReport(reply, ctemp);
 	}
-
-	@Override
-	public void resetRule() {
-	}
 }

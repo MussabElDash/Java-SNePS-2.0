@@ -157,8 +157,8 @@ public class PTree extends ContextRUIS {
 				Set<Integer> vars = Sets
 						.union(head.getVars(), second.getVars());
 				PTreeNode tn = new PTreeNode(pats, vars);
-				tn.insertLeft(head);
-				tn.insertRight(second);
+				Set<Integer> intersection = getSharedVars(head, second);
+				tn.insertLeftAndRight(head, second, intersection);
 				newTnv.add(tn);
 				head = tnv.poll();
 			} else {
@@ -201,6 +201,21 @@ public class PTree extends ContextRUIS {
 			if (bigger.contains(i))
 				return true;
 		return false;
+	}
+
+	private Set<Integer> getSharedVars(PTreeNode first, PTreeNode second) {
+		Set<Integer> smaller = null, bigger = null, intersection = new HashSet<Integer>();
+		if (first.getVars().size() > second.getVars().size()) {
+			smaller = second.getVars();
+			bigger = first.getVars();
+		} else {
+			bigger = second.getVars();
+			smaller = first.getVars();
+		}
+		for (int i : smaller)
+			if (bigger.contains(i))
+				intersection.add(i);
+		return intersection;
 	}
 
 	public Set<PSubTree> getSubTrees() {

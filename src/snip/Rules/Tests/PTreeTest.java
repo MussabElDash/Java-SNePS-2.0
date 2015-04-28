@@ -22,7 +22,6 @@ import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.Interfaces.NodeWithVar;
-import snip.Rules.RuleNodes.AndNode;
 import SNeBR.Support;
 
 public class PTreeTest {
@@ -30,9 +29,9 @@ public class PTreeTest {
 		Relation[] relations = new Relation[14];
 		for (int i = 0; i < 14; i += 2) {
 			relations[i] = Network.defineRelation((char) ('A' + i / 2) + "1",
-					"Entity", "none", 1);
+					"Infimum", "none", 1);
 			relations[i + 1] = Network.defineRelation((char) ('A' + i / 2)
-					+ "2", "Entity", "none", 1);
+					+ "2", "Infimum", "none", 1);
 		}
 
 		VariableNode[] varNodes = getVarNodes(10);
@@ -41,18 +40,19 @@ public class PTreeTest {
 
 		CaseFrame[] caseFrames = getCaseFrames(relationsProperties);
 
-		NodeWithVar[] antNodes = buildNodes(varNodes, relations, caseFrames);
+		NodeWithVar[] antNodesTemp = buildNodes(varNodes, relations, caseFrames);
 
 		MolecularNode consequentNode = buildConsequent(varNodes);
 
 		System.out.println("Relations: " + Arrays.toString(relations));
 		System.out.println("Variable Nodes: " + Arrays.toString(varNodes));
-		System.out.println("Antecedent Nodes: " + Arrays.toString(antNodes));
+		System.out
+				.println("Antecedent Nodes: " + Arrays.toString(antNodesTemp));
 		System.out.println("Consequent Node: " + consequentNode);
 
 		// AndNode and = getAndNode(antNodes, consequentNode);
 		NodeSet nodeSet = new NodeSet();
-		for (NodeWithVar mn : antNodes)
+		for (NodeWithVar mn : antNodesTemp)
 			nodeSet.addNode((Node) mn);
 		PTree tree = new PTree(null);
 		tree.buildTree(nodeSet);
@@ -64,7 +64,7 @@ public class PTreeTest {
 		}
 		System.out.println("====================================");
 
-		RuleUseInfo rui = getRui((Node) antNodes[0]);
+		RuleUseInfo rui = getRui((Node) antNodesTemp[0]);
 		RuleUseInfoSet ruis = tree.insert(rui);
 		System.out.println(ruis.cardinality());
 	}
@@ -99,7 +99,7 @@ public class PTreeTest {
 		CaseFrame[] res = new CaseFrame[relationsProperties.size()];
 		int index = 0;
 		for (LinkedList<RCFP> link : relationsProperties)
-			res[index++] = Network.defineCaseFrame("Entity", link);
+			res[index++] = Network.defineCaseFrame("Proposition", link);
 		return res;
 	}
 

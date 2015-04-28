@@ -1,6 +1,7 @@
 package sneps.Nodes;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import SNeBR.Context;
 import SNeBR.Contradiction;
@@ -13,9 +14,11 @@ import SNeBR.PropositionSet;
 import SNeBR.SNeBR;
 import sneps.SemanticClasses.*;
 import sneps.SyntaticClasses.Molecular;
+import sneps.SyntaticClasses.Pattern;
 import sneps.SyntaticClasses.Term;
+import snip.Rules.Interfaces.NodeWithVar;
 
-public class PropositionNode extends MolecularNode {
+public class PropositionNode extends MolecularNode implements NodeWithVar {
 
 	public PropositionNode(Molecular syn, Proposition sem) {
 		super(syn, sem);
@@ -227,5 +230,12 @@ public class PropositionNode extends MolecularNode {
 		if (min && max)
 			return true;
 		return false;
+	}
+
+	@Override
+	public LinkedList<VariableNode> getFreeVariables() {
+		if (getSyntactic() instanceof Pattern)
+			return ((Pattern) this.getSyntactic()).getFreeVariables();
+		return new LinkedList<VariableNode>();
 	}
 }

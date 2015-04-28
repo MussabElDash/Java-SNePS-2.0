@@ -53,7 +53,6 @@ public abstract class RuleNode extends PropositionNode {
 
 	public RuleNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-		resetRule();
 	}
 
 	/**
@@ -65,23 +64,11 @@ public abstract class RuleNode extends PropositionNode {
 	abstract public void applyRuleHandler(Report report);
 
 	/**
-	 * Resets all instance variables previously used in this node in-order to
-	 * start a new inference
-	 */
-	abstract public void resetRule();
-
-	/**
 	 * Nullifies all instance variables previously used in this node in-order to
 	 * save some memory and prepare for the new inference
 	 */
-	public void clearRule() {
-		antNodesWithoutVars = null;
-		antNodesWithVars = null;
-		antsWithoutVarsNumber = 0;
-		antsWithVarsNumber = 0;
-		shareVars = false;
-		vars = null;
-		contextRUISSet = null;
+	public void clear() {
+		contextRUISSet.clear();
 	}
 
 	/**

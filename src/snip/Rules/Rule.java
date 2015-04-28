@@ -49,9 +49,9 @@ public abstract class Rule extends PropositionNode {
 							//TODO Akram: establish the rule
 						}
 					}
-				}else if() {
+				}else if(true) {
 					
-				}else if() {
+				}else if(true) {
 					
 				}
 			}else {

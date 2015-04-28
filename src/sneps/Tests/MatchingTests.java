@@ -2,6 +2,7 @@ package sneps.Tests;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
+import sneps.CustomException;
 import sneps.Network;
 import sneps.RCFP;
 import sneps.Relation;
@@ -212,12 +213,81 @@ public class MatchingTests {
              //test 5 : pass
              ns2.addNode(cons);
              System.out.println( matcher.violatesUTIR(f2, new LinearSubstitutions()));
-             //test 6 : fail TODO
+             //test 6 : pass
              Substitutions conflictingSub3=new LinearSubstitutions();
-             conflictingSub3.putIn(new Binding(x,f1));
+             conflictingSub3.putIn(new Binding(z,f1));
+             System.out.println(matcher.violatesUTIR(f2, conflictingSub3));
 	}
-	public static void testVere(){
+	public static void testVere() throws Exception{
+		//variable nodes
+		VariableNode x=new VariableNode("Entity", "x");
+		VariableNode y=new VariableNode("Entity", "y");
+		VariableNode z=new VariableNode("Entity", "z");
+		VariableNode q=new VariableNode("Entity", "q");
 		
+		//base nodes
+		Node cons = new Node("Base", "Entity","constant");
+		Node cons2 = new Node("Base", "Entity","constant2");
+		Node cons3 = new Node("Base", "Entity","constant3");
+		Node cons4 = new Node("Base", "Entity","constant4");
+		
+		//node sets
+		NodeSet ns1=new NodeSet();
+		ns1.addNode(x);
+		ns1.addNode(y);
+		ns1.addNode(cons);
+		ns1.addNode(cons2);
+		NodeSet ns2=new NodeSet();
+		ns2.addNode(z);
+		ns2.addNode(q);
+		ns2.addNode(cons3);
+		ns2.addNode(cons4);
+		//relations
+		Relation r1=new Relation("r1", "Entity", "none", 5);
+		Relation r2=new Relation("r2", "Entity", "none", 5);
+		//down cables
+		DownCable dc1=new DownCable(r1, ns1);
+		DownCable dc2=new DownCable(r2, ns2);
+		//down cable lists
+		LinkedList<DownCable> dcl1=new LinkedList<DownCable>();
+		LinkedList<DownCable> dcl2=new LinkedList<DownCable>();
+		dcl1.add(dc1);
+		dcl2.add(dc2);
+		//RFCPs
+		RCFP rp1 = Network.defineRelationPropertiesForCF(r1, "none",5);
+		RCFP rp2 = Network.defineRelationPropertiesForCF(r2, "none", 5);
+		
+		LinkedList<RCFP> relCF1 = new LinkedList<RCFP>();
+		LinkedList<RCFP> relCF2 = new LinkedList<RCFP>();
+		relCF1.add(rp1);
+		relCF2.add(rp2);
+		//case frames
+		CaseFrame cs1=Network.defineCaseFrame("Entity", relCF1);
+		CaseFrame cs2=Network.defineCaseFrame("Entity", relCF2);
+		//down cable sets
+		DownCableSet dcs1=new DownCableSet(dcl1, cs1);
+		DownCableSet dcs2=new DownCableSet(dcl2, cs2);
+		
+		//test 1 node
+		PatternNode f1=new PatternNode("Infimum", "f1", dcs1);
+		
+		
+		//subs
+		Substitutions sourceR=new LinearSubstitutions();
+		Substitutions sourceS=new LinearSubstitutions();
+		Substitutions targetR=new LinearSubstitutions();
+		Substitutions targetS=new LinearSubstitutions();
+		//bindings
+		sourceR.putIn(new Binding(q,f1));
+		targetR.putIn(new Binding(x,cons3));
+        targetR.putIn(new Binding(y,cons4));
+        
+        Matcher matcher = new Matcher();
+        //test 1 : pass
+        System.out.println(matcher.vere(q, sourceR, targetR, sourceS, targetS));
+        //test 2 : fail
+        targetR.update(targetR.getBindingByVariable(x), q);
+        System.out.println(matcher.vere(q, sourceR, targetR, sourceS, targetS));
 	}
 	public static void testHere(){
 		
@@ -228,9 +298,10 @@ public class MatchingTests {
 	
 	
 	public static void main(String[] args) throws Exception {
-		//testVarhere();
-		//testSetUnify();
-		testViolatesUTIR();
+		//testVarhere(); pass partial
+		//testSetUnify(); fail
+		testViolatesUTIR(); //pass partial
+		//testVere(); pass partial
 	}
 
 }

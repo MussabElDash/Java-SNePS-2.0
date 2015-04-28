@@ -1675,6 +1675,10 @@ public class Network {
 	
 		return result;
 	}
+	
+	public static NodeSet match(Node x) {
+		return new NodeSet();
+	}
 			
 ////////////////////////////////////// the main method that was used for testing //////////////////////////////////////////
 	
@@ -1729,5 +1733,7 @@ public class Network {
 //		System.out.println(m.getSemanticType());
 //		
 //	}
+	
+	
 	
 }

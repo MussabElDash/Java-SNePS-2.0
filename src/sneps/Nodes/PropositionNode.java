@@ -2,18 +2,18 @@ package sneps.Nodes;
 
 import java.util.Iterator;
 
-import SNeBR.Context;
-import SNeBR.Contradiction;
-import SNeBR.Support;
 import sneps.Cables.DownCable;
 import sneps.Cables.UpCable;
 import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
-import SNeBR.PropositionSet;
-import SNeBR.SNeBR;
-import sneps.SemanticClasses.*;
+import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import sneps.SyntaticClasses.Term;
+import SNeBR.Context;
+import SNeBR.Contradiction;
+import SNeBR.PropositionSet;
+import SNeBR.SNeBR;
+import SNeBR.Support;
 
 public class PropositionNode extends MolecularNode {
 
@@ -28,7 +28,8 @@ public class PropositionNode extends MolecularNode {
 	// public PropositionNode() {
 	// super();
 	// }
-
+	
+	
 	public void contradiction(Context context) {
 		NodeSet nodeSetNegated = checkIfNegated(this);
 		NodeSet nodeSetNegating = checkIfNegating(this);
@@ -228,4 +229,6 @@ public class PropositionNode extends MolecularNode {
 			return true;
 		return false;
 	}
+	
+	
 }

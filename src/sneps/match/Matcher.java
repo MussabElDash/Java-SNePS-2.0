@@ -428,6 +428,9 @@ public class Matcher {
 	public Node vere(VariableNode n, Substitutions sourceR,
 			Substitutions targetR, Substitutions sourceS, Substitutions targetS) {
 		Node bindingNode;
+//		System.out.println(n+"->"+sourceR.term((VariableNode) n));
+//		System.out.println(sourceR);
+//		System.out.println(targetR);
 		if (sourceR.isBound(n)) {
 			Node RbindingNode = sourceR.term(n);
 			if (RbindingNode.getSyntacticType().equals("Base")
@@ -440,7 +443,7 @@ public class Matcher {
 
 			} else if (RbindingNode.getSyntacticType().equals("Pattern")) {
 				/* done */sourceR.update(sourceR.getBindingByVariable(n), n);
-				/* loop */sourceS.update(sourceS.getBindingByVariable(n), n);
+				/* loop */sourceS.putIn(new Binding(n, n));
 				bindingNode = termVere((MolecularNode) RbindingNode, sourceR,
 						targetR, sourceS, targetS);
 				if (bindingNode == null)
@@ -448,9 +451,12 @@ public class Matcher {
 				/* loop */sourceS.update(sourceS.getBindingByVariable(n),
 						bindingNode);
 
-			} else if (sourceS.isBound(n)) {
-				if (sourceS.term((VariableNode) n).equals(n))
-					/* fail loop */return null;
+			} else if (sourceS.isBound(n)||targetS.isBound((VariableNode) RbindingNode)) {
+				
+//				if (sourceS.term((VariableNode) n).equals(n))
+//					/* fail loop */return null;
+				 if (targetS.term((VariableNode) RbindingNode).equals(RbindingNode))
+					return null;
 				else
 					bindingNode = sourceS.term((VariableNode) n);
 
@@ -492,7 +498,8 @@ public class Matcher {
 							currentNewNode = vere(
 									(VariableNode) currentOldNode, targetR,
 									sourceR, targetS, sourceS);
-
+                               if(currentNewNode==null)
+                            	   return null;
 					}
 
 					else

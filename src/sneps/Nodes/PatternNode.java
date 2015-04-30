@@ -75,8 +75,8 @@ public class PatternNode extends MolecularNode implements NodeWithVar{
 	 * 
 	 * @return true if both nodes has the same free variables, and false otherwise.
 	 */
-	public boolean hasSameFreeVariablesAs(PatternNode patternNode){
-		return ((Pattern)this.getSyntactic()).hasSameFreeVariablesAs(patternNode);
+	public boolean hasSameFreeVariablesAs(NodeWithVar patternNode){
+		return ((Pattern)this.getSyntactic()).hasSameFreeVariablesAs((Node)patternNode);
 	}
 
 }

@@ -60,6 +60,11 @@ public class VariableNode extends Node implements NodeWithVar {
 		return temp;
 	}
 
+	@Override
+	public boolean hasSameFreeVariablesAs(NodeWithVar node) {
+		return false;
+	}
+
 //////////////////////////////////////main method that was used for testing //////////////////////////////////////	
 	
 //	public static void main(String[] args){

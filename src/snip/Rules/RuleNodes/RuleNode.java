@@ -8,9 +8,11 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.PropositionNode;
-import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import sneps.SyntaticClasses.Pattern;
+import sneps.SyntaticClasses.Term;
+import sneps.SyntaticClasses.Variable;
 import snip.AntecedentToRuleChannel;
 import snip.Channel;
 import snip.ChannelTypes;
@@ -20,6 +22,7 @@ import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
 import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.SIndexing;
+import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
 
 public abstract class RuleNode extends PropositionNode {
@@ -86,10 +89,10 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public boolean allShareVars(NodeSet nodes) {
 
-		PatternNode n = (PatternNode) nodes.getNode(0);
+		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
 		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
-			if (!n.hasSameFreeVariablesAs((PatternNode) nodes.getNode(i))) {
+			if (!n.hasSameFreeVariablesAs((NodeWithVar) nodes.getNode(i))) {
 				res = false;
 				break;
 			}
@@ -173,7 +176,8 @@ public abstract class RuleNode extends PropositionNode {
 			NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			if (n instanceof VariableNode || n instanceof PatternNode)
+			Term t = n.getSyntactic();
+			if (t instanceof Variable || t instanceof Pattern)
 				withVars.addNode(n);
 			else
 				WithoutVars.addNode(n);

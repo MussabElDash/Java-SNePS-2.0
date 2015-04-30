@@ -239,4 +239,19 @@ public class PropositionNode extends MolecularNode implements NodeWithVar {
 		return new LinkedList<VariableNode>();
 	}
 
+	/**
+	 * 
+	 * @param patternNode
+	 *            a given pattern node that its free variables will be compared
+	 *            to the free variables of the current node.
+	 * 
+	 * @return true if both nodes has the same free variables, and false
+	 *         otherwise.
+	 */
+	@Override
+	public boolean hasSameFreeVariablesAs(NodeWithVar patternNode) {
+		return ((Pattern) this.getSyntactic())
+				.hasSameFreeVariablesAs((Node) patternNode);
+	}
+
 }

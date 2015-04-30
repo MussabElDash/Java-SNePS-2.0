@@ -26,6 +26,7 @@ import SNeBR.Support;
 
 public class PTreeTest {
 	public static void main(String[] args) throws Exception {
+		CaseFrame.createRuleCaseFrame();
 		Relation[] relations = new Relation[14];
 		for (int i = 0; i < 14; i += 2) {
 			relations[i] = Network.defineRelation((char) ('A' + i / 2) + "1",
@@ -50,7 +51,7 @@ public class PTreeTest {
 				.println("Antecedent Nodes: " + Arrays.toString(antNodesTemp));
 		System.out.println("Consequent Node: " + consequentNode);
 
-		// AndNode and = getAndNode(antNodes, consequentNode);
+		getAndNode(antNodesTemp, consequentNode);
 		NodeSet nodeSet = new NodeSet();
 		for (NodeWithVar mn : antNodesTemp)
 			nodeSet.addNode((Node) mn);
@@ -142,12 +143,12 @@ public class PTreeTest {
 		Relation[] relations = new Relation[varNodes.length];
 		LinkedList<RCFP> rcfps = new LinkedList<RCFP>();
 		for (int i = 0; i < varNodes.length; i++) {
-			relations[i] = Network.defineRelation("H" + (i + 1), "Entity",
+			relations[i] = Network.defineRelation("H" + (i + 1), "Proposition",
 					"none", 1);
 			rcfps.add(Network.defineRelationPropertiesForCF(relations[i],
 					"none", 1));
 		}
-		CaseFrame caseFrame = Network.defineCaseFrame("Entity", rcfps);
+		CaseFrame caseFrame = Network.defineCaseFrame("Proposition", rcfps);
 		for (int i = 0; i < varNodes.length; i++) {
 			a1[i][0] = relations[i];
 			a1[i][1] = varNodes[i];
@@ -155,26 +156,22 @@ public class PTreeTest {
 		return Network.buildMolecularNode(a1, caseFrame);
 	}
 
-	// private static AndNode getAndNode(MolecularNode[] antNodes,
-	// MolecularNode consequentNode) throws Exception {
-	// // TODO Auto-generated method stub
-	// Relation ant = Network.defineRelation("&ant", "Entity", "none", 1);
-	// Relation conq = Network.defineRelation("cq", "Entity", "none", 1);
-	// LinkedList<RCFP> antcqRCFP = new LinkedList<RCFP>();
-	// antcqRCFP.add(Network.defineRelationPropertiesForCF(ant, "none", 1));
-	// antcqRCFP.add(Network.defineRelationPropertiesForCF(conq, "none", 1));
-	// CaseFrame antcqCaseFrame = Network.defineCaseFrame("Entity", antcqRCFP);
-	// Object[][] a1 = new Object[8][2];
-	// for (int i = 0; i < 7; i++) {
-	// a1[i][0] = ant;
-	// a1[i][1] = antNodes[i];
-	// }
-	// a1[7][0] = conq;
-	// a1[7][1] = consequentNode;
-	// AndNode mc = Network.buildAndNode(a1, antcqCaseFrame);
-	// System.out.println(mc);
-	// return mc;
-	// }
+	private static Node getAndNode(NodeWithVar[] antNodesTemp,
+			MolecularNode consequentNode) throws Exception {
+		Relation ant = Relation.andAnt;
+		Relation conq = Relation.cq;
+		CaseFrame antcqCaseFrame = CaseFrame.andRule;
+		Object[][] a1 = new Object[8][2];
+		for (int i = 0; i < 7; i++) {
+			a1[i][0] = ant;
+			a1[i][1] = (MolecularNode) antNodesTemp[i];;
+		}
+		a1[7][0] = conq;
+		a1[7][1] = consequentNode;
+		MolecularNode mc = Network.buildMolecularNode(a1, antcqCaseFrame);
+		System.out.println(mc.getClass().getSimpleName());
+		return mc;
+	}
 
 	private static RuleUseInfo getRui(Node n) {
 		FlagNode fn = new FlagNode(n, new Support(), 1);

@@ -2,13 +2,15 @@ package sneps.match;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 import sneps.CaseFrame;
+import sneps.Network;
 import sneps.Cables.DownCable;
 import sneps.Cables.DownCableSet;
 import sneps.Nodes.MolecularNode;
-import sneps.Network;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
@@ -74,7 +76,7 @@ public class Matcher {
 
 					}
 
-					if (!(violatesUTIR(sourceNode, sourceBindings) || violatesUTIR(
+					if (!(violatesUTIRBrute(sourceNode, sourceBindings) || violatesUTIRBrute(
 							candidateNode, targetBindings))) {
 						Object[] match = new Object[] { candidateNode,
 								sourceBindings, targetBindings };
@@ -88,14 +90,14 @@ public class Matcher {
 		return matches;
 	}
 
-	public boolean violatesUTIR(MolecularNode node, Substitutions bindings) {
+	public boolean violatesUTIRBrute(MolecularNode node, Substitutions bindings) {
 		NodeSet terms = getTerms(node, false);
 
-		return violatesUTIR(terms, bindings,false);
+		return violatesUTIRBrute(terms, bindings,false);
 
 	}
 
-	public boolean violatesUTIR(NodeSet terms, Substitutions bindings,boolean helper) {
+	public boolean violatesUTIRBrute(NodeSet terms, Substitutions bindings,boolean helper) {
         System.out.println("called with "+terms);
 		if (terms.size() < 2)
 			return false;
@@ -110,7 +112,7 @@ public class Matcher {
 		newTerms.removeNode(term1);
 		if (term1.getSyntacticSuperClass().equals("Molecular"))
 			newTerms.addAll(getTerms((MolecularNode) term1, false));
-		if (violatesUTIR(newTerms, bindings,true))
+		if (violatesUTIRBrute(newTerms, bindings,true))
 			return true;
 		if(helper)
 			return false;
@@ -118,7 +120,7 @@ public class Matcher {
 		terms.removeNode(term0);
 		if (term0.getSyntacticSuperClass().equals("Molecular"))
 			terms.addAll(getTerms((MolecularNode) term0, false));
-		if (violatesUTIR(terms, bindings,false)){
+		if (violatesUTIRBrute(terms, bindings,false)){
 			//System.out.println(terms.toString());
 			return true;}
 
@@ -223,6 +225,34 @@ public class Matcher {
 		}
 		return ns;
 	}
+	
+	
+	public boolean violatesUTIRorOccursCheck(Set<Node> boundTerms,Substitutions sourceR,Substitutions targetR,int originalSize)
+	throws Exception{
+		Iterator<Node> termsIterator=boundTerms.iterator();
+		while(termsIterator.hasNext()){
+			Node term=termsIterator.next();
+			Node newTerm;
+			if(term.getSyntacticType().equals("Base"))
+				continue;
+			if(term.getSyntacticType().equals("Variable"))
+			newTerm=vere((VariableNode) term, sourceR, targetR, new LinearSubstitutions(), new LinearSubstitutions());
+			else
+			newTerm=termVere((MolecularNode) term, sourceR, targetR,new LinearSubstitutions(),new LinearSubstitutions());
+
+			if(newTerm==null)//occurs check
+				return true;
+			if(term.equals(newTerm))
+				continue;
+			boundTerms.remove(term);
+			boundTerms.add(newTerm);
+			return boundTerms.size()!=originalSize;
+		}
+		
+		return false;
+	}
+	
+	
 
 	public boolean hERE(Node sourceNode, Node targetNode,
 			LinkedList<Substitutions> sourceList,

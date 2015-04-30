@@ -1,5 +1,6 @@
 package snip.Rules.RuleNodes;
 
+import sneps.Nodes.Node;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Report;
@@ -11,7 +12,7 @@ public class OrNode extends RuleNode {
 	}
 
 	@Override
-	public void applyRuleHandler(Report report) {
+	public void applyRuleHandler(Report report, Node signature) {
 		if (report.isNegative())
 			return;
 

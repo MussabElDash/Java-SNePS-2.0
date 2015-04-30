@@ -3,6 +3,7 @@ package snip.Rules.RuleNodes;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
@@ -40,12 +41,12 @@ public class AndNode extends RuleNode {
 	}
 
 	@Override
-	public void applyRuleHandler(Report report) {
+	public void applyRuleHandler(Report report, Node signature) {
 		if (report.isNegative())
 			return;
 
 		Context context = report.getContext();
-		FlagNode fn = new FlagNode(report.getSignature(), report.getSupport(),
+		FlagNode fn = new FlagNode(signature, report.getSupport(),
 				1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);

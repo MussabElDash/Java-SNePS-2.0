@@ -72,7 +72,7 @@ public abstract class RuleNode extends PropositionNode {
 	 * @param report
 	 *            Report
 	 */
-	abstract public void applyRuleHandler(Report report);
+	abstract public void applyRuleHandler(Report report, Node signature);
 
 	/**
 	 * Nullifies all instance variables previously used in this node in-order to
@@ -232,7 +232,7 @@ public abstract class RuleNode extends PropositionNode {
 			processSingleReport(currentChannel);
 			if (currentChannel instanceof AntecedentToRuleChannel) {
 				// TODO Akram: send the correct report :D
-				this.applyRuleHandler(null);
+				this.applyRuleHandler(null,null);
 			}
 		}
 	}

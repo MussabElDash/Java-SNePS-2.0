@@ -1,5 +1,7 @@
 package sneps.Tests;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import sneps.CaseFrame;
 import sneps.Network;
@@ -14,6 +16,7 @@ import sneps.Nodes.VariableNode;
 import sneps.match.Binding;
 import sneps.match.LinearSubstitutions;
 import sneps.match.Matcher;
+import sneps.match.MatchingSet;
 import sneps.match.Substitutions;
 public class MatchingTests {
 	
@@ -58,27 +61,29 @@ public class MatchingTests {
 		//test1 : pass
 		sourceList.add(emptySSub);
 		targetList.add(emptyTSub);
-		//test2 : pass
-		sourceList.add(conflictingSSub);
-		targetList.add(conflictingTSub);
-		//test3 : pass
-		sourceList2.add(emptySSub2);
-		targetList2.add(emptyTSub2);  
-		//test4 : pass
-		sourceList2.add(conflictingSSub2);
-		targetList2.add(conflictingTSub2);
-		//test5 : pass
-		sourceList2.add(redundantSSub2);
-		targetList2.add(reduntantTSub2);
-		
+		MatchingSet terms=new MatchingSet();
+		terms.add(x);
+//		//test2 : pass
+//		sourceList.add(conflictingSSub);
+//		targetList.add(conflictingTSub);
+//		//test3 : pass
+//		sourceList2.add(emptySSub2);
+//		targetList2.add(emptyTSub2);  
+//		//test4 : pass
+//		sourceList2.add(conflictingSSub2);
+//		targetList2.add(conflictingTSub2);
+//		//test5 : pass
+//		sourceList2.add(redundantSSub2);
+//		targetList2.add(reduntantTSub2);
+//		
 		//pre test
 		printSubs(sourceList,"Source");		
 	    printSubs(targetList,"Target");
 	    printSubs(sourceList2,"Source2");		
 	    printSubs(targetList2,"Target2");
 	    //test
-	    matcher.VARHERE(x, cons, sourceList, targetList, true, true);
-		matcher.VARHERE(x, y, sourceList2, targetList2, true, true);
+	    matcher.VARHERE(x, cons, sourceList, targetList, true, true,terms,1);
+		//matcher.VARHERE(x, y, sourceList2, targetList2, true, true);
         //post test
 		printSubs(sourceList,"Source");		
         printSubs(targetList,"Target");	
@@ -133,7 +138,7 @@ public class MatchingTests {
 		tList.add(tSub);
 		//matching
 		Matcher matcher = new Matcher();
-		matcher.setUnify(ns1, ns2, sList, tList, true, true);
+	//	matcher.setUnify(ns1, ns2, sList, tList, true, true);
 		//post test
 		printSubs(sList, "Source");
 		printSubs(tList, "Target");
@@ -284,7 +289,7 @@ public class MatchingTests {
         Matcher matcher = new Matcher();
         //test 1 : pass f1(x,y) x->c3 y->c4
         //System.out.println(matcher.vere(q, sourceR, targetR, sourceS, targetS));
-        //test 2 : fail  q->f1(x) x->q
+        //test 2 : pass  q->f1(x) x->q
         targetR.update(targetR.getBindingByVariable(x), q);
         System.out.println(matcher.vere(q, sourceR, targetR, sourceS, targetS));
 	}
@@ -318,51 +323,76 @@ public class MatchingTests {
 				//ns2.addNode(q);
 				//ns2.addNode(cons3);
 				//ns2.addNode(cons4);
+				NodeSet ns3=new NodeSet();
+				ns3.addNode(cons);
 				//relations
 				Relation r1=new Relation("r1", "Entity", "none", 5);
 				Relation r2=new Relation("r2", "Entity", "none", 5);
+				
 				//down cables
 				DownCable dc1=new DownCable(r1, ns1);
 				DownCable dc2=new DownCable(r2, ns2);
+				DownCable dc3=new DownCable(r2, ns3);
 				//down cable lists
 				LinkedList<DownCable> dcl1=new LinkedList<DownCable>();
 				LinkedList<DownCable> dcl2=new LinkedList<DownCable>();
+				LinkedList<DownCable> dcl3=new LinkedList<DownCable>();
 				dcl1.add(dc1);
 				dcl2.add(dc2);
+				dcl3.add(dc3);
 				//RFCPs
 				RCFP rp1 = Network.defineRelationPropertiesForCF(r1, "none",5);
 				RCFP rp2 = Network.defineRelationPropertiesForCF(r2, "none", 5);
-				
+				RCFP rp3 = Network.defineRelationPropertiesForCF(r2, "none", 5);
 				LinkedList<RCFP> relCF1 = new LinkedList<RCFP>();
 				LinkedList<RCFP> relCF2 = new LinkedList<RCFP>();
+				LinkedList<RCFP> relCF3 = new LinkedList<RCFP>();
 				relCF1.add(rp1);
 				relCF2.add(rp2);
+				relCF3.add(rp3);
 				//case frames
 				CaseFrame cs1=Network.defineCaseFrame("Entity", relCF1);
 				CaseFrame cs2=Network.defineCaseFrame("Entity", relCF2);
+				//CaseFrame cs2=Network.defineCaseFrame("Entity", relCF2);
+				
 				//down cable sets
 				DownCableSet dcs1=new DownCableSet(dcl1, cs1);
 				DownCableSet dcs2=new DownCableSet(dcl2, cs2);
+				DownCableSet dcs3=new DownCableSet(dcl3, cs2);
 				
 				//molecular nodes
 				PatternNode f1=new PatternNode("Infimum", "f1", dcs1);
 				
 				PatternNode f2=new PatternNode("Infimum","f2",dcs2);
-			      
-				//test 1
+			    
+				PatternNode f3=new PatternNode("Infimum","f2",dcs3);
+				//test 1 : pass
 				ns1.addNode(f2);//f1(x,f2(z))
 				Substitutions vutirSub=new LinearSubstitutions();
 				vutirSub.putIn(new Binding(z,cons));
+				
+				MatchingSet terms=new MatchingSet();
+				terms.add( x);
+				terms.add( z);
+				terms.add(f2);
                Matcher matcher=new Matcher();
+              System.out.println(matcher.violatesUTIRorOccursCheck(terms, vutirSub, new LinearSubstitutions(), 3));
+	          //test 2 
+              vutirSub.putIn(new Binding(x,f3));
+              //System.out.println(f2);
+              //System.out.println(vutirSub);
+             // System.out.println(matcher.termVere(f2, new LinearSubstitutions(),vutirSub,  new LinearSubstitutions(), new LinearSubstitutions()));
+            // System.out.println(matcher.violatesUTIRorOccursCheck(terms, vutirSub, new LinearSubstitutions(), 3));
+	          
 	}
 	
 	
 	public static void main(String[] args) throws Exception {
-		//testVarhere(); pass partial
+		//testVarhere();// pass partial
 		//testSetUnify(); fail
 		//testViolatesUTIR(); //pass partial
-		testVere(); //pass partial
-		//testVioaltesUTIRorOccurs();
+	//	testVere(); //pass partial
+		testVioaltesUTIRorOccurs();
 	}
 
 }

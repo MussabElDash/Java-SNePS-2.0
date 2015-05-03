@@ -64,29 +64,80 @@ public class MatchingTests {
 		MatchingSet terms=new MatchingSet();
 		terms.add(x);
 //		//test2 : pass
-//		sourceList.add(conflictingSSub);
-//		targetList.add(conflictingTSub);
+		sourceList.add(conflictingSSub);
+		targetList.add(conflictingTSub);
 //		//test3 : pass
 //		sourceList2.add(emptySSub2);
-//		targetList2.add(emptyTSub2);  
+	//	targetList2.add(emptyTSub2);  
 //		//test4 : pass
-//		sourceList2.add(conflictingSSub2);
-//		targetList2.add(conflictingTSub2);
+		//sourceList2.add(conflictingSSub2);
+		//targetList2.add(conflictingTSub2);
 //		//test5 : pass
 //		sourceList2.add(redundantSSub2);
 //		targetList2.add(reduntantTSub2);
-//		
+        //test 6  f(g(t),g(y)) y-> t  : pass
+		//node sets
+		NodeSet ns1=new NodeSet();
+		ns1.addNode(y);
+	
+		NodeSet ns2=new NodeSet();
+		ns2.addNode(cons);
+		;
+		//relations
+		Relation r1=new Relation("r1", "Entity", "none", 5);
+		Relation r2=new Relation("r2", "Entity", "none", 5);
+		//down cables
+		DownCable dc1=new DownCable(r1, ns1);
+		DownCable dc2=new DownCable(r1, ns2);
+		//down cable lists
+		LinkedList<DownCable> dcl1=new LinkedList<DownCable>();
+		LinkedList<DownCable> dcl2=new LinkedList<DownCable>();
+		dcl1.add(dc1);
+		dcl2.add(dc2);
+		//RFCPs
+		RCFP rp1 = Network.defineRelationPropertiesForCF(r1, "none",5);
+		//RCFP rp2 = Network.defineRelationPropertiesForCF(r2, "none", 5);
+		
+		LinkedList<RCFP> relCF1 = new LinkedList<RCFP>();
+		LinkedList<RCFP> relCF2 = new LinkedList<RCFP>();
+		relCF1.add(rp1);
+		relCF2.add(rp1);
+		//case frames
+		CaseFrame cs1=Network.defineCaseFrame("Entity", relCF1);
+		//CaseFrame cs2=Network.defineCaseFrame("Entity", relCF2);
+		//down cable sets
+		DownCableSet dcs1=new DownCableSet(dcl1, cs1);
+		DownCableSet dcs2=new DownCableSet(dcl2, cs1);
+		
+		
+		PatternNode g=new PatternNode("Infimum", "f1", dcs1);
+		PatternNode g2=new PatternNode("Infimum", "f1", dcs2);
+		MatchingSet terms2=new MatchingSet();
+		
+		terms2.add(y);
+		
+		terms2.add(cons);
+		terms2.add(g);
+		terms2.add(g2);
+		
+		sourceList2.add(emptySSub);
+		targetList2.add(emptyTSub);
 		//pre test
-		printSubs(sourceList,"Source");		
-	    printSubs(targetList,"Target");
+		//printSubs(sourceList,"Source");		
+	    //printSubs(targetList,"Target");
 	    printSubs(sourceList2,"Source2");		
 	    printSubs(targetList2,"Target2");
 	    //test
-	    matcher.VARHERE(x, cons, sourceList, targetList, true, true,terms,1);
-		//matcher.VARHERE(x, y, sourceList2, targetList2, true, true);
+	   // matcher.VARHERE(x, cons, sourceList, targetList, true, true,terms,1);
+		//matcher.VARHERE(x, y, sourceList2, targetList2, true, true,terms,1);
+	    //test 6
+	
+	   // System.out.println(Matcher.sameFunction(g, g2));
+	  //  System.out.println(terms2);
+	    System.out.println(matcher.VARHERE(y, cons, sourceList2, targetList2, true, true, terms2, 4));
         //post test
-		printSubs(sourceList,"Source");		
-        printSubs(targetList,"Target");	
+		//printSubs(sourceList,"Source");		
+        //printSubs(targetList,"Target");	
         printSubs(sourceList2,"Source2");		
 	    printSubs(targetList2,"Target2");
 	}
@@ -293,7 +344,133 @@ public class MatchingTests {
         targetR.update(targetR.getBindingByVariable(x), q);
         System.out.println(matcher.vere(q, sourceR, targetR, sourceS, targetS));
 	}
-	public static void testHere(){
+	public static void testHere() throws Exception{
+		
+		//Nodes
+				VariableNode x=new VariableNode("Entity", "x");
+				VariableNode y=new VariableNode("Entity", "y");
+				Node cons = new Node("Base", "Entity","constant");
+				Node cons2 = new Node("Base", "Entity","constant2");
+				Matcher matcher=new Matcher();
+				//sub lists
+				LinkedList<Substitutions> sourceList=new LinkedList<Substitutions>();
+				LinkedList<Substitutions> targetList=new LinkedList<Substitutions>();
+				
+				LinkedList<Substitutions> sourceList2=new LinkedList<Substitutions>();
+				LinkedList<Substitutions> targetList2=new LinkedList<Substitutions>();
+				//subs
+				Substitutions emptySSub=new LinearSubstitutions();
+				Substitutions emptyTSub=new LinearSubstitutions();
+				
+				Substitutions emptySSub2=new LinearSubstitutions();
+				Substitutions emptyTSub2=new LinearSubstitutions();
+				
+				Substitutions conflictingSSub=new LinearSubstitutions();
+				Substitutions conflictingTSub=new LinearSubstitutions();
+				
+				Substitutions conflictingSSub2=new LinearSubstitutions();
+				Substitutions conflictingTSub2=new LinearSubstitutions();
+				
+				Substitutions redundantSSub2=new LinearSubstitutions();
+				Substitutions reduntantTSub2=new LinearSubstitutions();
+				
+				
+				conflictingSSub.putIn(new Binding(x,cons2));
+				
+				conflictingTSub2.putIn(new Binding(y,cons2));
+				
+				redundantSSub2.putIn(new Binding(x,y));
+				reduntantTSub2.putIn(new Binding(y,x));
+				
+				//test1 : pass
+				sourceList.add(emptySSub);
+				targetList.add(emptyTSub);
+				MatchingSet terms=new MatchingSet();
+				terms.add(x);
+//				//test 
+//				sourceList.add(conflictingSSub);
+//				targetList.add(conflictingTSub);
+//				//test 
+//				sourceList2.add(emptySSub2);
+			//	targetList2.add(emptyTSub2);  
+//				//test 
+				//sourceList2.add(conflictingSSub2);
+				//targetList2.add(conflictingTSub2);
+//				//test 
+//				sourceList2.add(redundantSSub2);
+//				targetList2.add(reduntantTSub2);
+		        //test 4  f(g(t),g(y)) y-> t  : pass
+				//node sets
+				NodeSet ns1=new NodeSet();
+				ns1.addNode(y);
+			
+				NodeSet ns2=new NodeSet();
+				ns2.addNode(cons);
+				;
+				//relations
+				Relation r1=new Relation("r1", "Entity", "none", 5);
+				Relation r2=new Relation("r2", "Entity", "none", 5);
+				//down cables
+				DownCable dc1=new DownCable(r1, ns1);
+				DownCable dc2=new DownCable(r1, ns2);
+				//down cable lists
+				LinkedList<DownCable> dcl1=new LinkedList<DownCable>();
+				LinkedList<DownCable> dcl2=new LinkedList<DownCable>();
+				dcl1.add(dc1);
+				dcl2.add(dc2);
+				//RFCPs
+				RCFP rp1 = Network.defineRelationPropertiesForCF(r1, "none",5);
+//				//RCFP rp2 = Network.defineRelationPropertiesForCF(r2, "none", 5);
+//				
+				LinkedList<RCFP> relCF1 = new LinkedList<RCFP>();
+				LinkedList<RCFP> relCF2 = new LinkedList<RCFP>();
+				relCF1.add(rp1);
+				relCF2.add(rp1);
+//				//case frames
+				CaseFrame cs1=Network.defineCaseFrame("Entity", relCF1);
+				//CaseFrame cs2=Network.defineCaseFrame("Entity", relCF2);
+//				//down cable sets
+				DownCableSet dcs1=new DownCableSet(dcl1, cs1);
+				DownCableSet dcs2=new DownCableSet(dcl2, cs1);
+//				
+//				
+				PatternNode g=new PatternNode("Infimum", "f1", dcs1);
+				PatternNode g2=new PatternNode("Infimum", "f1", dcs2);
+				MatchingSet terms2=new MatchingSet();
+//				
+				terms2.add(y);
+//				
+//				terms2.add(cons);
+				terms2.add(g);
+//				terms2.add(g2);
+//			System.out.println(g);
+//			System.out.println(g2);
+				sourceList2.add(emptySSub);
+				targetList2.add(emptyTSub);
+//				//pre test
+//				printSubs(sourceList,"Source");		
+//			    printSubs(targetList,"Target");
+			    printSubs(sourceList2,"Source2");		
+			    printSubs(targetList2,"Target2");
+			    //test 1 : pass
+			  //  matcher.hERE(x, cons, sourceList, targetList, true, true,terms,1);
+			    //test 2 : pass
+			    terms.remove(x);
+			    terms.add(cons);
+			  //  matcher.hERE(cons, x, sourceList, targetList, true, true,terms,1);
+			    //test 3 ; pass
+			  //matcher.hERE(cons, cons2, sourceList, targetList, true, true,terms,1);
+			  //test 4 : pass
+		matcher.hERE(g, g2, sourceList2, targetList2, true, true, terms2, 2);	
+			   // System.out.println(Matcher.sameFunction(g, g2));
+			  //  System.out.println(terms2);
+//			    System.out.println(matcher.hERE(y, cons, sourceList2, targetList2, true, true, terms2, 4));
+		        //post test
+//				printSubs(sourceList,"Source");		
+//		        printSubs(targetList,"Target");	
+		        printSubs(sourceList2,"Source2");		
+			    printSubs(targetList2,"Target2");
+			
 		
 	}
 	public static void testMatch(){
@@ -377,7 +554,7 @@ public class MatchingTests {
 				terms.add(f2);
                Matcher matcher=new Matcher();
               System.out.println(matcher.violatesUTIRorOccursCheck(terms, vutirSub, new LinearSubstitutions(), 3));
-	          //test 2 
+	          //test 2 : pass 
               vutirSub.putIn(new Binding(x,f3));
               //System.out.println(f2);
               //System.out.println(vutirSub);
@@ -388,11 +565,12 @@ public class MatchingTests {
 	
 	
 	public static void main(String[] args) throws Exception {
-		//testVarhere();// pass partial
+		//testVarhere();// pass
 		//testSetUnify(); fail
-		//testViolatesUTIR(); //pass partial
-	//	testVere(); //pass partial
-		testVioaltesUTIRorOccurs();
+		//testViolatesUTIR(); //pass 
+	//	testVere(); //pass
+		//testVioaltesUTIRorOccurs(); pass
+		testHere();
 	}
 
 }

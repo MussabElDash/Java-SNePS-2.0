@@ -71,5 +71,9 @@ public MatchingSet(){
 		
 		return nodes;
 	}
+	
+	public String toString(){
+		return VariableBaseNodes.toString()+MolecularNodes.toString();
+	}
 
 }

@@ -1,29 +1,45 @@
+package SNePSLOG;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import sneps.Nodes.*;
+import sneps.Network;
+import sneps.SemanticClasses.Entity;
+import sneps.Relation;
+import sneps.CaseFrame;
+import sneps.RCFP;
+
+
 
 import java_cup.runtime.*;
+
+
 
 	
 /* Terminals (tokens returned by the scanner). */
 terminal		 NM,QM,LP,ID,EM, RP, CL, DT, II, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURLY,ANDENTAIL,
-ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT;
+ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD;
 
 /* Non-terminals */
-nonterminal	String		condH,  entailment, terminalPunctuation,SNePSLOGsymbol,qvar,symbolSequence,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,atomicTerm,termSetSequence,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,termSetH,atomicTermH,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,defineRelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper;
+nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,defineRelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper,helperQ,helperQQ,SymbolTest,termSetSequence,symbolSequence;
 
-
+nonterminal Node SNePSLOGsymbol,atomicTerm;
+nonterminal ArrayList<String> condH,symbolH,termSetH;
+nonterminal ArrayList<Node> atomicTermH;
 
 /* The grammar */
 
 
-command ::= wffNameCommand:w00 {:RESULT=w00;:}| snepslogCommand:w01{:RESULT=w01;:} | wffCommand:w10 {:RESULT=w10;:};
+command ::= wffNameCommand:w00 {:RESULT=w00;:} | wffCommand:w10 {:RESULT=w10;:} | SymbolTest:sS {:RESULT=sS;:};
 
 wffNameCommand ::= SNePSLOGsymbol:ss terminalPunctuation:pp {:RESULT=ss+":"+pp;:};
 wffCommand ::= wff:wow terminalPunctuation:p {:RESULT=wow+"/"+p;:};
 
 
-snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} | ADDTOCONTEXT SNePSLOGsymbol:s termSet:t activateH:a3{:RESULT="addContext "+s+t+a3;:}  | ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} | CLEARKB activateH:a9 {:RESULT="clearKB"+a9;:} | DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}| LISTASSERTEDWFFS describeContextH:dc activateH:ah{:RESULT=dc+ah;:}| LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}|  REMOVEFROMCONTEXT SNePSLOGsymbol:sym termSet:termm {:RESULT="remove from the context "+sym+" "+termm;:}|SETMODE1 activateH{:RESULT="set mode to 1";:}|SETMODE2 activateH{:RESULT="set mode to 2";:}|SETMODE3 activateH{:RESULT="set mode to 3";:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
+/*snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} | ADDTOCONTEXT SNePSLOGsymbol:s termSet:t activateH:a3{:RESULT="addContext "+s+t+a3;:}  | ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} | CLEARKB activateH:a9 {:RESULT="clearKB"+a9;:} | DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}| LISTASSERTEDWFFS describeContextH:dc activateH:ah{:RESULT=dc+ah;:}| LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}|  REMOVEFROMCONTEXT SNePSLOGsymbol:sym termSet:termm {:RESULT="remove from the context "+sym+" "+termm;:}|SETMODE1 activateH{:RESULT="set mode to 1";:}|SETMODE2 activateH{:RESULT="set mode to 2";:}|SETMODE3 activateH{:RESULT="set mode to 3";:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
 
 describeContextH ::= symbolSequence:sss  {:RESULT=sss;:} | {:RESULT="";:};
-describeTermH ::= termSet:tt  {:RESULT=tt+"";:} | {:RESULT="";:};
+describeTermH ::= termSet:tt  {:RESULT=tt+"";:} | {:RESULT="";:};*/
 
 traceH ::= SNePSLOGfunction:f SNePSLOGfunctionH:fh {:RESULT=f+fh;:};
 SNePSLOGfunctionH ::= traceH:t {:RESULT=t;:}|{:RESULT="";:}; 
@@ -89,20 +105,108 @@ nexistsTerm ::= NEXISTS nexistsParamters:np LP symbolSequence:s RP LP termSet:t1
 nexistsParamters ::= LP NM:i COMA NM:j COMA NM:k RP {:RESULT="("+i+","+j+","+k+")";:}|LP NM:j1 RP{:RESULT="("+j1+")";:}| LP NM:i1 COMA NM:k1 RP {:RESULT="("+i1+","+k1+")";:};
 
 
-atomicTerm ::=  SNePSLOGsymbol:s atomicTermH:at {:RESULT=s+at;:}| qvar:q atomicTermH:qh{:RESULT=q+qh;:} | withSomeTerm:ws {:RESULT=ws;:}|withAllTerm:wa {:RESULT=wa;:}|LP wff:w RP{:RESULT="("+w+")";:};
+atomicTerm ::=  identifier:s atomicTermH:at {:
+	
+	if(at.size() == 0){
+		if(Network.getNodes().containsKey(s+"")){
+	RESULT=Network.getNodes().get(s+"");
+	}
+	else{
+	Entity t = new Entity();
+	Node res = Network.buildBaseNode(s+"",t);
+	RESULT=res;
+	}	
+	}
+	else{
+		RESULT=null;
 
-atomicTermH ::= LP termSetSequence:t2 RP{:RESULT="("+t2+")";:}| LP symbolSequence:se{:RESULT=se;:} RP;
+	}
 
-withSomeTerm ::= WITHSOME LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 RP {:RESULT="withSomeTerm "+s+"-"+t1+"-"+t2;:} | WITHSOME LP symbolSequence:s1 COMA termSet:t3 COMA termSet:t4 termSet:t5 RP {:RESULT="withSomeTerm "+s1+"-"+t3+"-"+t4+"-"+t5;:};
+:}
+| 
+qvar:q atomicTermH:qh{:
+if(qh.size() == 0){
+	Node r = Network.buildVariableNode();
+	AP.addToVariables(r.getId(),q);
+	RESULT=r;
+}
+else{
+	int mode = AP.getMode();
+	if(mode == 1){
+		Relation r1 = Network.defineRelation("rel", "Entity", "none", 1);
+		Node n1 = Network.buildVariableNode();
+		AP.addToVariables(n1.getId(),q);
+		
+		LinkedList<RCFP> relCF = new LinkedList<RCFP>();
+		int tall = qh.size();
+		Object [][] hey = new Object[tall+1][2];
+		
+		hey[0][0] = r1;
+		hey[0][1] = n1;
+		
+
+		for(int j=0;j<qh.size();j++){
+		Relation temp = Network.defineRelation("a"+j+1, "Entity", "none", 1);
+		RCFP tmp = Network.defineRelationPropertiesForCF(temp, "none", 1);
+		relCF.add(tmp);
+		hey[j+1][0] = temp;
+		hey[j+1][1] = qh.get(j);
+	}
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+	}
+	else {
+	System.out.println("your are not allowed to perform such operation in this mode");
+	RESULT=null;
+	}
+}
+
+:} ;
+/*| LP wff:w RP{:RESULT="("+w+")";:};*/
+
+atomicTermH ::= LP termSetSequence:t2 RP{:
+
+String [] split = t2.split(" ");
+if(split.length < 1) {
+	RESULT= new ArrayList<Node>();
+}
+else{
+	ArrayList<Node> result = new ArrayList<Node>();
+	for(int i=0;i<split.length;i++){
+		Node temp = Network.getNodes().get(split[i]);
+		result.add(temp);
+	}
+	RESULT=result;
+}
+
+;:};
 
 
-withAllTerm ::= WITHALL LP symbolSequence:s COMA termSet:t1 COMA termSet:t2 RP{:RESULT="withAllTerm "+s+"-"+t1+"-"+t2;:} | WITHALL LP symbolSequence:s1 COMA termSet:t3 COMA termSet:t4 termSet:t5 RP{:RESULT="withAllTerm "+s1+"-"+t3+"-"+t4+"-"+t5;:};
+termSetSequence ::= termSet:t1 termSetH:t2 {:
+t2.add(t1+"");
+AP.reverse(t2);
+RESULT=AP.convertArrayToString(t2);
+:};
+termSetH ::= COMA termSetSequence:ts {:
+ArrayList<String> result = new ArrayList<String>();
+result.add(ts+"");
+:}
+|
+{:
+RESULT=new ArrayList<String>();
+:};
 
-termSetSequence ::= termSet:t1 termSetH:t2 {:RESULT=t1+t2;:};
-termSetH ::= COMA termSet:ts {:RESULT=" and "+ts;:}|{:RESULT="";:};
+symbolSequence ::= SNePSLOGsymbol:s condH:c {:
+c.add(s+"");
+AP.reverse(c);
+RESULT=AP.convertArrayToString(c);
+:};
+condH ::= COMA symbolSequence:s1{:
+ArrayList<String> res = new ArrayList<String>();
+res.add(s1+"");
 
-symbolSequence ::= SNePSLOGsymbol:s condH:c {:RESULT=s+" "+c;:};
-condH ::= symbolSequence:s1{:RESULT=s1;:} | {:RESULT="";:};
+;:} | {:RESULT=new ArrayList<String>();:};
 
 
 lispList ::= LP lispString:l lispStringH:l1 RP{:RESULT=l+" "+l1;:};
@@ -112,12 +216,69 @@ lispString ::= identifier:i {:RESULT=i+"";:};
 
 identifier ::= ID:ii {:RESULT=ii+"";:};
 
-qvar ::= QM SNePSLOGsymbol:s {:RESULT="query"+s;:};
-
-SNePSLOGsymbol ::= WF NM:n{:RESULT="wff"+n;:} | lispString:sol {:RESULT=sol;:};
+qvar ::= QM identifier:s {:RESULT=s+"";:};
 
 
-terminalPunctuation ::= DT {:RESULT="terminal punctuation in sneps.\n";:}| COMA {:RESULT="terminal punctuation in sneps.\n";:}|  error {:RESULT = "Not a grammatical sneps!\n";System.out.println("Not sneps!");:};
+SNePSLOGsymbol ::= WF NM:n{:
+	
+	if(Network.getNodesWithIDs().get((int)n)!= null){
+		RESULT=Network.getNodesWithIDs().get((int)n);
+	}
+	else {
+	System.out.println("Molecular Node reffered to by WFF"+n+" is not exist!");
+	}
+
+:}
+| 
+lispString:sol {:
+	if(Network.getNodes().containsKey(sol+"")){
+	RESULT=Network.getNodes().get(sol+"");
+	}
+	else{
+	Entity t = new Entity();
+	Node res = Network.buildBaseNode(sol+"",t);
+	RESULT=res;
+	}
+	
+:};
+
+
+/*SymbolTest ::= NM:n identifier:i {:
+	Entity t = new Entity();
+	Node res = Network.buildBaseNode(i+"",t);
+	
+	RESULT="Done from creating node:"+i;
+	AP.printBuildingNodeResults(res,i+"");
+
+:};*/
+
+SymbolTest ::= NM:n identifier:i symbolH:h{:
+h.add(n+""+i);
+AP.reverse(h);
+RESULT=AP.convertArrayToString(h);
+for(int count=0;count<h.size();count++){
+	System.out.print(h.get(count)+"/");
+}
+System.out.println();
+:};
+
+symbolH ::= COMA SymbolTest:st {:
+ArrayList<String> res = new ArrayList<String>();
+res.add(st+"");
+RESULT=res;
+:} 
+| /*like an else*/
+{:
+RESULT=new ArrayList<String>();
+
+:};
+
+
+terminalPunctuation ::= DT:d {:RESULT=d+"";:}| QM:q helperQ:q1{:RESULT=q+q1+"";:}|EM:e {:RESULT=e+"";:}|error {:RESULT = "Not a grammatical sneps!\n";System.out.println("Not sneps!");:};
+
+helperQ ::= QM:qq {:RESULT=qq+"";:} | LP:left NM:i helperQQ:option RP:right {:RESULT=left+""+i+option+right+"";:}|{:RESULT="";:};
+
+helperQQ ::= NM:j {:RESULT=j+"";:}|{:RESULT="";:};
 
 
 

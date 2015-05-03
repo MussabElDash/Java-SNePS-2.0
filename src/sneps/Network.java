@@ -236,6 +236,14 @@ public class Network {
 			throw new CustomException("There is no node named '" + identifier+"' in the network");
 		}
 	}
+	public static Node getNodeById(int id) throws CustomException{
+		if(nodesIndex.get(id)!=null){
+			return nodesIndex.get(id);
+		}
+		else{
+			throw new CustomException("There is no node named '" + id+"' in the network");
+		}
+	}
 	
 	
 	/**

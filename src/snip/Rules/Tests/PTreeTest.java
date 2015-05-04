@@ -14,6 +14,7 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Entity;
+import sneps.SemanticClasses.Infimum;
 import snip.Substitutions;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
@@ -27,8 +28,8 @@ import SNeBR.Support;
 public class PTreeTest {
 	public static void main(String[] args) throws Exception {
 		CaseFrame.createRuleCaseFrame();
-		Relation[] relations = new Relation[14];
-		for (int i = 0; i < 14; i += 2) {
+		Relation[] relations = new Relation[18];
+		for (int i = 0; i < relations.length; i += 2) {
 			relations[i] = Network.defineRelation((char) ('A' + i / 2) + "1",
 					"Infimum", "none", 1);
 			relations[i + 1] = Network.defineRelation((char) ('A' + i / 2)
@@ -106,7 +107,6 @@ public class PTreeTest {
 
 	private static NodeWithVar[] buildNodes(VariableNode[] varNodes,
 			Relation[] relations, CaseFrame[] caseFrames) throws Exception {
-		// TODO Auto-generated method stub
 		NodeWithVar[] res = new NodeWithVar[(relations.length / 2) + 1];
 		res[0] = (NodeWithVar) buildMolecularNode(varNodes[0], varNodes[2],
 				relations[0], relations[1], caseFrames[0]);
@@ -123,6 +123,10 @@ public class PTreeTest {
 		res[6] = (NodeWithVar) buildMolecularNode(varNodes[8], varNodes[9],
 				relations[12], relations[13], caseFrames[6]);
 		res[7] = varNodes[0];
+		res[8] = (NodeWithVar) buildPropositionNode(relations[14],
+				relations[15], caseFrames[7], "a", "b");
+		res[9] = (NodeWithVar) buildPropositionNode(relations[16],
+				relations[17], caseFrames[8], "c", "d");
 		return res;
 	}
 
@@ -137,13 +141,24 @@ public class PTreeTest {
 		return Network.buildMolecularNode(a1, caseFrame);
 	}
 
+	private static MolecularNode buildPropositionNode(Relation relation,
+			Relation relation2, CaseFrame caseFrame, String name1, String name2)
+			throws CustomException, Exception {
+		Object[][] a1 = new Object[2][2];
+		a1[0][0] = relation;
+		a1[0][1] = Network.buildBaseNode(name1, new Infimum());
+		a1[1][0] = relation2;
+		a1[1][1] = Network.buildBaseNode(name2, new Infimum());
+		return Network.buildMolecularNode(a1, caseFrame);
+	}
+
 	private static MolecularNode buildConsequent(VariableNode... varNodes)
 			throws Exception {
 		Object[][] a1 = new Object[varNodes.length][2];
 		Relation[] relations = new Relation[varNodes.length];
 		LinkedList<RCFP> rcfps = new LinkedList<RCFP>();
 		for (int i = 0; i < varNodes.length; i++) {
-			relations[i] = Network.defineRelation("H" + (i + 1), "Proposition",
+			relations[i] = Network.defineRelation("Z" + (i + 1), "Proposition",
 					"none", 1);
 			rcfps.add(Network.defineRelationPropertiesForCF(relations[i],
 					"none", 1));
@@ -164,7 +179,8 @@ public class PTreeTest {
 		Object[][] a1 = new Object[8][2];
 		for (int i = 0; i < 7; i++) {
 			a1[i][0] = ant;
-			a1[i][1] = (MolecularNode) antNodesTemp[i];;
+			a1[i][1] = (MolecularNode) antNodesTemp[i];
+			;
 		}
 		a1[7][0] = conq;
 		a1[7][1] = consequentNode;

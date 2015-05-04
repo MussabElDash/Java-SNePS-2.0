@@ -155,6 +155,7 @@ public class PTree extends ContextRUIS {
 				varNotProccessed.remove(var);
 			}
 		}
+		res.addAll(patterns);
 		return res;
 	}
 

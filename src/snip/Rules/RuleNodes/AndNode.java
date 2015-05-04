@@ -3,12 +3,10 @@ package snip.Rules.RuleNodes;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Set;
 
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
-import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Report;
@@ -33,20 +31,7 @@ public class AndNode extends RuleNode {
 		super(syn, sym);
 		contextRuiNotSent = new Hashtable<Integer, Set<RuleUseInfo>>();
 		NodeSet antNodes = this.getDownNodeSet("&ant");
-		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars,
-				antNodesWithoutVars);
-		this.antsWithoutVarsNumber = this.antNodesWithoutVars.size();
-		this.antsWithVarsNumber = this.antNodesWithVars.size();
-		this.shareVars = this.allShareVars(antNodesWithVars);
-		if (shareVars) {
-			NodeWithVar pn = (NodeWithVar) antNodesWithVars.getNode(0);
-			LinkedList<VariableNode> varNodes = pn.getFreeVariables();
-			vars = new int[varNodes.size()];
-			Iterator<VariableNode> varIter = varNodes.iterator();
-			for (int i = 0; i < vars.length && varIter.hasNext(); i++) {
-				vars[i] = varIter.next().getId();
-			}
-		}
+		this.processNodes(antNodes);
 	}
 
 	@Override
@@ -116,7 +101,8 @@ public class AndNode extends RuleNode {
 		set.add(tRui);
 	}
 
-	private void sendRui(RuleUseInfo tRui, Context context) {
+	@Override
+	protected void sendRui(RuleUseInfo tRui, Context context) {
 		// TODO Auto-generated method stub
 		if (tRui.getPosCount() == this.antsWithVarsNumber) {
 			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {

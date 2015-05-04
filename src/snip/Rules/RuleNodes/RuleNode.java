@@ -2,12 +2,15 @@ package snip.Rules.RuleNodes;
 
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PropositionNode;
+import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.AntecedentToRuleChannel;
@@ -17,6 +20,9 @@ import snip.Report;
 import snip.RuleToConsequentChannel;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
+import snip.Rules.DataStructures.FlagNode;
+import snip.Rules.DataStructures.FlagNodeSet;
+import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndexing;
 import snip.Rules.Interfaces.NodeWithVar;
@@ -71,6 +77,23 @@ public abstract class RuleNode extends PropositionNode {
 		contextConstantNegativeNodes = new Hashtable<Integer, Set<Integer>>();
 	}
 
+	protected void processNodes(NodeSet antNodes) {
+		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars,
+				antNodesWithoutVars);
+		this.antsWithoutVarsNumber = this.antNodesWithoutVars.size();
+		this.antsWithVarsNumber = this.antNodesWithVars.size();
+		this.shareVars = this.allShareVars(antNodesWithVars);
+		if (shareVars) {
+			NodeWithVar pn = (NodeWithVar) antNodesWithVars.getNode(0);
+			LinkedList<VariableNode> varNodes = pn.getFreeVariables();
+			vars = new int[varNodes.size()];
+			Iterator<VariableNode> varIter = varNodes.iterator();
+			for (int i = 0; i < vars.length && varIter.hasNext(); i++) {
+				vars[i] = varIter.next().getId();
+			}
+		}
+	}
+
 	/**
 	 * Applies the rule handler after receiving a report
 	 * 
@@ -79,7 +102,42 @@ public abstract class RuleNode extends PropositionNode {
 	 * @param signature
 	 *            Node
 	 */
-	abstract public void applyRuleHandler(Report report, Node signature);
+	public void applyRuleHandler(Report report, Node signature) {
+		Context context = report.getContext();
+		RuleUseInfo rui;
+		if (report.isPositive()) {
+			FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.putIn(fn);
+			rui = new RuleUseInfo(report.getSubstituions(), 1, 0, fns);
+		} else {
+			FlagNode fn = new FlagNode(signature, report.getSupport(), 2);
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.putIn(fn);
+			rui = new RuleUseInfo(report.getSubstituions(), 0, 1, fns);
+		}
+		ContextRUIS crtemp = null;
+		if (this.getContextRUISSet().hasContext(context)) {
+			crtemp = this.getContextRUISSet().getContextRUIS(context);
+		} else {
+			crtemp = addContextRUIS(context);
+		}
+		if (shareVars) {
+			SIndexing scrtemp = (SIndexing) crtemp;
+			RuleUseInfo ruiRes = scrtemp.insert(rui, vars);
+			sendRui(ruiRes, context);
+			return;
+		}
+		RuleUseInfoSet rcrtemp = (RuleUseInfoSet) crtemp;
+		RuleUseInfoSet res = rcrtemp.insert(rui);
+		if (res == null)
+			res = new RuleUseInfoSet();
+		for (RuleUseInfo tRui : res) {
+			sendRui(tRui, context);
+		}
+	}
+
+	abstract protected void sendRui(RuleUseInfo tRui, Context context);
 
 	/**
 	 * Nullifies all instance variables previously used in this node in-order to

@@ -931,7 +931,6 @@ public class Network {
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
-		System.out.println((caseFrame == CaseFrame.andRule) + " Here");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],

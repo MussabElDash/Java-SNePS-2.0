@@ -6,15 +6,16 @@ import sneps.SyntaticClasses.Molecular;
 import snip.Rules.DataStructures.RuleUseInfo;
 import SNeBR.Context;
 
-public class AndOrNode extends RuleNode {
+public class ThreshNode extends RuleNode {
 
 	private int min, max;
 
-	public AndOrNode(Molecular syn, Proposition sym) {
+	public ThreshNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-		NodeSet minNode = this.getDownNodeSet("min");
+		// TODO Auto-generated constructor stub
+		NodeSet minNode = this.getDownNodeSet("thresh");
 		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
-		NodeSet maxNode = this.getDownNodeSet("max");
+		NodeSet maxNode = this.getDownNodeSet("threshmax");
 		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("arg");
 		this.processNodes(antNodes);

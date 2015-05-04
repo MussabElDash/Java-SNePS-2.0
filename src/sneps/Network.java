@@ -38,7 +38,10 @@ import sneps.SyntaticClasses.Closed;
 import sneps.SyntaticClasses.Pattern;
 import sneps.SyntaticClasses.Variable;
 import snip.Rules.RuleNodes.AndNode;
+import snip.Rules.RuleNodes.AndOrNode;
+import snip.Rules.RuleNodes.NumericalNode;
 import snip.Rules.RuleNodes.OrNode;
+import snip.Rules.RuleNodes.ThreshNode;
 import SNeBR.Context;
 
 public class Network {
@@ -835,10 +838,10 @@ public class Network {
 			if (node.getClass().getSimpleName().equals("VariableNode")
 					&& !r.isQuantifier())
 				return true;
-			if (node.getSyntactic().getClass().getSimpleName().equals("Pattern")) {
-				Pattern pattern = (Pattern)node.getSyntactic();
-				LinkedList<VariableNode> varNodes = pattern
-						.getFreeVariables();
+			if (node.getSyntactic().getClass().getSimpleName()
+					.equals("Pattern")) {
+				Pattern pattern = (Pattern) node.getSyntactic();
+				LinkedList<VariableNode> varNodes = pattern.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
 					VariableNode v = varNodes.get(j);
 					boolean flag = false;
@@ -899,7 +902,12 @@ public class Network {
 				propNode = new AndNode(p, prop);
 			else if (caseFrame == CaseFrame.orRule)
 				propNode = new OrNode(p, prop);
-			// TODO Continue the rest of hte cases
+			else if (caseFrame == CaseFrame.andOrRule)
+				propNode = new AndOrNode(p, prop);
+			else if (caseFrame == CaseFrame.threshRule)
+				propNode = new ThreshNode(p, prop);
+			else if (caseFrame == CaseFrame.numericalRule)
+				propNode = new NumericalNode(p, prop);
 			else
 				propNode = new PropositionNode(p, prop);
 			return propNode;

@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
@@ -59,7 +60,28 @@ public class PTree extends ContextRUIS {
 	 */
 	public RuleUseInfoSet insert(RuleUseInfo rui) {
 		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
-		return subTreesMap.get(pattern).insert(rui);
+		PSubTree subTree = subTreesMap.get(pattern);
+		RuleUseInfoSet returned = subTree.insert(rui);
+		Stack<RuleUseInfoSet> stack = new Stack<RuleUseInfoSet>();
+		for (PSubTree sub : subTrees) {
+			if (sub == subTree)
+				continue;
+			RuleUseInfoSet tSet = sub.getRootRUIS();
+			if (tSet == null)
+				continue;
+			stack.push(tSet);
+		}
+		stack.push(returned);
+		return multiply(stack);
+	}
+
+	private RuleUseInfoSet multiply(Stack<RuleUseInfoSet> infoSets) {
+		RuleUseInfoSet first = infoSets.pop();
+		while (!infoSets.isEmpty()) {
+			RuleUseInfoSet second = infoSets.pop();
+			first = first.combine(second);
+		}
+		return first;
 	}
 
 	/**

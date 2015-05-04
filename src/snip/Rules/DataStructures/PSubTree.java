@@ -1,6 +1,5 @@
 package snip.Rules.DataStructures;
 
-
 public class PSubTree {
 	private PTreeNode root;
 
@@ -23,10 +22,9 @@ public class PSubTree {
 	public RuleUseInfoSet insert(RuleUseInfo rui) {
 		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
 		PTreeNode leaf = getLeafPattern(pattern, root);
-		Integer key = leaf.insertIntoTree(rui);
-		if (key == null)
-			return new RuleUseInfoSet();
-		return root.getRUIS(key);
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		leaf.insertIntoTree(rui, res);
+		return res;
 	}
 
 	private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
@@ -39,5 +37,7 @@ public class PSubTree {
 			return getLeafPattern(pattern, right);
 	}
 
-	// private Rs
+	public RuleUseInfoSet getRootRUIS() {
+		return root.getRUIS(0);
+	}
 }

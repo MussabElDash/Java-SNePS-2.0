@@ -1,18 +1,15 @@
 package snip.Rules.RuleNodes;
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
-import sneps.Nodes.PatternNode;
 import sneps.Nodes.PropositionNode;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
-import sneps.SyntaticClasses.Pattern;
-import sneps.SyntaticClasses.Term;
-import sneps.SyntaticClasses.Variable;
 import snip.AntecedentToRuleChannel;
 import snip.Channel;
 import snip.ChannelTypes;
@@ -20,7 +17,7 @@ import snip.Report;
 import snip.RuleToConsequentChannel;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
-import snip.Rules.DataStructures.PTree;
+import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndexing;
 import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
@@ -62,8 +59,16 @@ public abstract class RuleNode extends PropositionNode {
 
 	protected ContextRUISSet contextRUISSet;
 
+	private Hashtable<Integer, Set<Integer>> contextConstantPositiveNodes,
+			contextConstantNegativeNodes;
+
 	public RuleNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
+		antNodesWithoutVars = new NodeSet();
+		antNodesWithVars = new NodeSet();
+		contextRUISSet = new ContextRUISSet();
+		contextConstantPositiveNodes = new Hashtable<Integer, Set<Integer>>();
+		contextConstantNegativeNodes = new Hashtable<Integer, Set<Integer>>();
 	}
 
 	/**
@@ -71,6 +76,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * 
 	 * @param report
 	 *            Report
+	 * @param signature
+	 *            Node
 	 */
 	abstract public void applyRuleHandler(Report report, Node signature);
 
@@ -80,6 +87,8 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public void clear() {
 		contextRUISSet.clear();
+		contextConstantPositiveNodes.clear();
+		contextConstantNegativeNodes.clear();
 	}
 
 	/**
@@ -139,10 +148,7 @@ public abstract class RuleNode extends PropositionNode {
 		if (shareVars)
 			return this.addContextRUIS(new SIndexing(c));
 		else {
-			PTree pTree = new PTree(c);
-			ContextRUIS cr = this.addContextRUIS(pTree);
-			pTree.buildTree(antNodesWithVars);
-			return cr;
+			return createContextRUISNonShared(c);
 		}
 	}
 
@@ -155,9 +161,20 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public ContextRUIS addContextRUIS(ContextRUIS cRuis) {
 		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
-		ContextRUIS cr = cRuis;
 		contextRUISSet.putIn(cRuis);
-		return cr;
+		return cRuis;
+	}
+
+	/**
+	 * Returns a new ContextRUI that is used in-case the antecedents/arguments
+	 * do not share the same variables is to be associated with the Context c
+	 * 
+	 * @param c
+	 *            Context
+	 * @return ContextRUIS
+	 */
+	protected ContextRUIS createContextRUISNonShared(Context c) {
+		return new RuleUseInfoSet(c);
 	}
 
 	/**
@@ -176,12 +193,64 @@ public abstract class RuleNode extends PropositionNode {
 			NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			Term t = n.getSyntactic();
-			if (t instanceof Variable || t instanceof Pattern)
+			if (n instanceof NodeWithVar)
 				withVars.addNode(n);
 			else
 				WithoutVars.addNode(n);
 		}
+	}
+
+	/**
+	 * Adds the constant Node node (Node without variables) to the set of
+	 * previously reported constant nodes in the Context context with the sign
+	 * sign that indicates whether the node is positive or not
+	 * 
+	 * @param context
+	 *            Context
+	 * @param node
+	 *            Node
+	 * @param sign
+	 *            boolean
+	 */
+	public void addConstantToContext(Context context, Node node, boolean sign) {
+		Hashtable<Integer, Set<Integer>> hashtable;
+		if (sign)
+			hashtable = contextConstantPositiveNodes;
+		else
+			hashtable = contextConstantNegativeNodes;
+
+		Set<Integer> nodes = hashtable.get(context.getId());
+		if (nodes == null) {
+			nodes = new HashSet<Integer>();
+			hashtable.put(context.getId(), nodes);
+		}
+		nodes.add(node.getId());
+	}
+
+	/**
+	 * Gets the number of positive constant reports in the Context context
+	 * 
+	 * @param context
+	 *            Context
+	 * @return int
+	 */
+	public int getPositiveCount(Context context) {
+		if (contextConstantPositiveNodes.containsKey(context.getId()))
+			return contextConstantPositiveNodes.get(context.getId()).size();
+		return 0;
+	}
+
+	/**
+	 * Gets the number of negative constant reports in the Context context
+	 * 
+	 * @param context
+	 *            Context
+	 * @return int
+	 */
+	public int getNegativeCount(Context context) {
+		if (contextConstantNegativeNodes.containsKey(context.getId()))
+			return contextConstantNegativeNodes.get(context.getId()).size();
+		return 0;
 	}
 
 	@Override
@@ -232,7 +301,7 @@ public abstract class RuleNode extends PropositionNode {
 			processSingleReport(currentChannel);
 			if (currentChannel instanceof AntecedentToRuleChannel) {
 				// TODO Akram: send the correct report :D
-				this.applyRuleHandler(null,null);
+				this.applyRuleHandler(null, null);
 			}
 		}
 	}

@@ -43,22 +43,22 @@ public class PTreeNode {
 		left = null;
 	}
 
-	public Integer insertIntoTree(RuleUseInfo rui) {
+	public void insertIntoTree(RuleUseInfo rui, RuleUseInfoSet set) {
 		int key = insertRUI(rui);
 		// Since it has no sibling, it has no parent, and it is the root
-		if (sibling == null)
-			return key;
-		Integer rootKey = null;
+		if (sibling == null) {
+			set.putIn(rui);
+			return;
+		}
 		RuleUseInfoSet siblingSet = sibling.getRUIS(key);
 		if (siblingSet == null)
-			return null;
+			return;
 		for (RuleUseInfo tRui : siblingSet) {
 			RuleUseInfo combinedRui = rui.combine(tRui);
 			if (combinedRui == null)
 				continue;
-			rootKey = parent.insertIntoTree(combinedRui);
+			parent.insertIntoTree(combinedRui, set);
 		}
-		return rootKey;
 	}
 
 	/**

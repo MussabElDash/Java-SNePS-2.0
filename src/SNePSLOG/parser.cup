@@ -8,6 +8,8 @@ import sneps.SemanticClasses.Entity;
 import sneps.Relation;
 import sneps.CaseFrame;
 import sneps.RCFP;
+import sneps.SemanticClasses.Individual;
+
 
 
 
@@ -21,7 +23,7 @@ terminal		 NM,QM,LP,ID,EM, RP, CL, DT, II, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURL
 ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD;
 
 /* Non-terminals */
-nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,defineRelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper,helperQ,helperQQ,SymbolTest,termSetSequence,symbolSequence;
+nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,defineRelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper,helperQ,helperQQ,SymbolTest,termSetSequence,symbolSequence,caseType;
 
 nonterminal Node SNePSLOGsymbol,atomicTerm;
 nonterminal ArrayList<String> condH,symbolH,termSetH;
@@ -105,18 +107,45 @@ nexistsTerm ::= NEXISTS nexistsParamters:np LP symbolSequence:s RP LP termSet:t1
 nexistsParamters ::= LP NM:i COMA NM:j COMA NM:k RP {:RESULT="("+i+","+j+","+k+")";:}|LP NM:j1 RP{:RESULT="("+j1+")";:}| LP NM:i1 COMA NM:k1 RP {:RESULT="("+i1+","+k1+")";:};
 
 
-atomicTerm ::=  identifier:s atomicTermH:at {:
+atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 	
 	if(at.size() == 0){
+		
+		if(type ==""){
 		if(Network.getNodes().containsKey(s+"")){
-	RESULT=Network.getNodes().get(s+"");
-	}
+			RESULT=Network.getNodes().get(s+"");
+		}
+	
 	else{
-	Entity t = new Entity();
-	Node res = Network.buildBaseNode(s+"",t);
-	RESULT=res;
-	}	
+		Entity t = new Entity();
+		Node res = Network.buildBaseNode(s+"",t);
+		RESULT=res;
 	}
+
+		}
+		else {
+			if(Network.getNodes().containsKey(s+"")){
+			RESULT=Network.getNodes().get(s+"");
+		}
+	
+	else{
+		if(type == "Entity"){
+			Entity t = new Entity();
+			Node res = Network.buildBaseNode(s+"",t);
+			RESULT=res;
+		}
+		if(type == "Individual"){
+			Entity t = new Individual();
+			Node res = Network.buildBaseNode(s+"",t);
+			RESULT=res;
+		}
+		
+	}		
+		}
+		
+
+	}
+
 	else{
 		/*-----------------------mode 1----------------------*/
 		if(AP.getMode()== 1){
@@ -232,8 +261,10 @@ else{
 	}
 }
 
-:} ;
+:};
 /*| LP wff:w RP{:RESULT="("+w+")";:};*/
+
+caseType ::= CL identifier:tp {:RESULT=tp+"";:}|{:RESULT="";:};
 
 atomicTermH ::= LP termSetSequence:t2 RP{:
 

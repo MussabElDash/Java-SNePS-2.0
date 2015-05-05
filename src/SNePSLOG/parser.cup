@@ -25,7 +25,7 @@ nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllT
 
 nonterminal Node SNePSLOGsymbol,atomicTerm;
 nonterminal ArrayList<String> condH,symbolH,termSetH;
-nonterminal ArrayList<Node> atomicTermH;
+nonterminal ArrayList<ArrayList<Node>> atomicTermH;
 
 /* The grammar */
 
@@ -118,7 +118,70 @@ atomicTerm ::=  identifier:s atomicTermH:at {:
 	}	
 	}
 	else{
+		/*-----------------------mode 1----------------------*/
+		if(AP.getMode()== 1){
+			Relation r1 = Network.defineRelation("rel", "Entity", "none", 1);
+			Node n1 = Network.buildBaseNode(s+"",new Entity());
+			LinkedList<RCFP> relCF = new LinkedList<RCFP>();
+			int tall = at.size();
+			Object [][] hey = new Object[tall+1][2];
+		
+			hey[0][0] = r1;
+			hey[0][1] = n1;
+		
+			int counterExternal=0;
+			for(int j=0;j<at.size();j++){
+
+			Relation temp = Network.defineRelation("a"+j+1, "Entity", "none", 1);
+			RCFP tmp = Network.defineRelationPropertiesForCF(temp, "none", 1);
+			relCF.add(tmp);
+			for(int c=0;c<at.get(j).size();c++){
+				hey[counterExternal][0] = temp;
+				hey[counterExternal][1] = at.get(j);
+				counterExternal++;	
+		}
+
+		
+	}
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;	
+		}
+		/*-----------------------mode 2----------------------*/
+		else if (AP.getMode() == 2){
+			Relation r2 = Network.defineRelation("rel"+s, "Entity", "none", 1);
+			Node n2 = Network.buildBaseNode(s+"",new Entity());
+			LinkedList<RCFP> relCF = new LinkedList<RCFP>();
+			int tall = at.size();
+			Object [][] hey = new Object[tall+1][2];
+		
+			hey[0][0] = r2;
+			hey[0][1] = n2;
+		
+			int counterExternal=0;
+			for(int j=0;j<at.size();j++){
+
+			Relation temp = Network.defineRelation("rel-arg#"+s+""+j+1, "Entity", "none", 1);
+			RCFP tmp = Network.defineRelationPropertiesForCF(temp, "none", 1);
+			relCF.add(tmp);
+			for(int c=0;c<at.get(j).size();c++){
+				hey[counterExternal][0] = temp;
+				hey[counterExternal][1] = at.get(j);
+				counterExternal++;	
+		}
+
+		
+	}
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+
+		}
+		/*----------------------mode3--------------------------*/
+		else{
 		RESULT=null;
+		}
+		
 
 	}
 
@@ -144,13 +207,20 @@ else{
 		hey[0][0] = r1;
 		hey[0][1] = n1;
 		
-
+		int counterExternal=0;
 		for(int j=0;j<qh.size();j++){
+
+
 		Relation temp = Network.defineRelation("a"+j+1, "Entity", "none", 1);
 		RCFP tmp = Network.defineRelationPropertiesForCF(temp, "none", 1);
 		relCF.add(tmp);
-		hey[j+1][0] = temp;
-		hey[j+1][1] = qh.get(j);
+		for(int c=0;c<qh.get(j).size();c++){
+			hey[counterExternal][0] = temp;
+			hey[counterExternal][1] = qh.get(j);
+			counterExternal++;	
+		}
+
+		
 	}
 		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
 		Node reso = Network.buildMolecularNode(hey, agentAct);
@@ -169,13 +239,23 @@ atomicTermH ::= LP termSetSequence:t2 RP{:
 
 String [] split = t2.split(" ");
 if(split.length < 1) {
-	RESULT= new ArrayList<Node>();
+	RESULT= new ArrayList<ArrayList<Node>>();
 }
 else{
-	ArrayList<Node> result = new ArrayList<Node>();
+	ArrayList<ArrayList<Node>> result = new ArrayList<ArrayList<Node>>();
 	for(int i=0;i<split.length;i++){
-		Node temp = Network.getNodes().get(split[i]);
-		result.add(temp);
+		
+		String forNow = split[i].replaceAll("{","");
+		forNow.replaceAll("}","");
+		String [] needed = forNow.split(",");
+		ArrayList<Node> x = new ArrayList<Node>();
+		
+		for(int count=0;count<needed.length;count++){
+			Node temp = Network.getNodes().get(split[i]);
+			x.add(temp);
+		}
+		result.add(x);
+		
 	}
 	RESULT=result;
 }

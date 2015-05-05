@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import sneps.CaseFrame;
 import sneps.Nodes.Node;
 import sneps.Nodes.VariableNode;
 import sneps.SyntaticClasses.Pattern;
@@ -13,13 +14,26 @@ import java_cup.runtime.Symbol;
 public class AP {
 
 private static Hashtable<Integer,String> variables = new Hashtable<Integer, String>();
+private static Hashtable<String,Object[]> caseFrames = new Hashtable<String, Object[]>();
 private static int  count = 0 ;
 private static ArrayList<String> symbols = new ArrayList<String>();
 private static ArrayList<String> termSets = new ArrayList<String>();
 private static String [] list = new String [10000];
 private static int mode = 1;
+	
 	public static void h() {
 		System.out.println("hi");
+	}
+	
+	public static void addCaseFrames(String s,CaseFrame c,boolean b){
+		Object [] result = new Object[2];
+		result[0] = c;
+		result[1] = b;
+		caseFrames.put(s, result);
+		
+	}
+	public static Object[] getCaseFrame(String key){
+		return caseFrames.get(key);
 	}
 
 	public static boolean find(String x){

@@ -1,10 +1,12 @@
 package SNePSLOG;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import sneps.CaseFrame;
 import sneps.Network;
@@ -23,16 +25,16 @@ private static int  count = 0 ;
 private static ArrayList<String> symbols = new ArrayList<String>();
 private static ArrayList<String> termSets = new ArrayList<String>();
 private static String [] list = new String [10000];
-private static int mode = 3;
+private static int mode = 1;
 private static boolean session = true;
 	
 	public static void h() {
 		System.out.println("hi");
 	}
-	public void setSession(boolean b){
+	public static void setSession(boolean b){
 		session=b;
 	}
-	public boolean getSession(){
+	public static boolean getSession(){
 		return session;
 	}
 	
@@ -230,8 +232,8 @@ private static boolean session = true;
 		return strResult;
 	}
 	public static void main(String[] args) {
-
-		String inFile = "Sample1.in";
+		
+		/*String inFile = "Sample1.in";
 
 		if (args.length > 1) {
 			inFile = args[0];
@@ -261,5 +263,38 @@ private static boolean session = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
+		Scanner beginSession = new Scanner(System.in);
+		String l = beginSession.nextLine();
+		if(l.equalsIgnoreCase("(snepslog)")){
+			Scanner sc = new Scanner(System.in);
+			while(getSession()){
+				try{
+					System.out.print(":");
+					String line = sc.nextLine();
+					if(line.equalsIgnoreCase("exit")){
+					System.out.println(".........Exiting SNePSLOG........");	
+					return;
+					}
+					
+					InputStream stream = new ByteArrayInputStream(line.getBytes(StandardCharsets.UTF_8));
+					DataInputStream dis = new DataInputStream(stream);
+					parser parser = new parser(new Lexer(dis));
+					Symbol res = parser.parse();
+					String value = (String) res.value;
+					System.out.println(">"+value);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			
+			}
+				
+			
+		}
+		else{
+			System.out.println("You need to enter (snepslog) first to start the session.");
+		}
+		
 	}
 }

@@ -44,7 +44,7 @@ ASK=ask
 ASKIFNOT=askifnot
 ASKWH=askwh
 ASKWHNOT=askwhnot
-EXIT=exit
+
 
 CONVERSE=converse
 COMPOSE=compose
@@ -162,9 +162,6 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 <YYINITIAL> {KSTAR} { 
 	return new Symbol(sym.KSTAR, yytext());
-}
-<YYINITIAL> {EXIT} { 
-	return new Symbol(sym.EXIT, yytext());
 }
 <YYINITIAL> {KPLUS} { 
 	return new Symbol(sym.KPLUS, yytext());

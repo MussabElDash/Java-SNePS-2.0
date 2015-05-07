@@ -65,16 +65,14 @@ public abstract class RuleNode extends PropositionNode {
 
 	protected ContextRUISSet contextRUISSet;
 
-	private Hashtable<Integer, Set<Integer>> contextConstantPositiveNodes,
-			contextConstantNegativeNodes;
+	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithVars = new NodeSet();
 		contextRUISSet = new ContextRUISSet();
-		contextConstantPositiveNodes = new Hashtable<Integer, Set<Integer>>();
-		contextConstantNegativeNodes = new Hashtable<Integer, Set<Integer>>();
+		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
 	}
 
 	protected void processNodes(NodeSet antNodes) {
@@ -145,8 +143,7 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public void clear() {
 		contextRUISSet.clear();
-		contextConstantPositiveNodes.clear();
-		contextConstantNegativeNodes.clear();
+		contextConstantRUI.clear();
 	}
 
 	/**
@@ -251,7 +248,7 @@ public abstract class RuleNode extends PropositionNode {
 			NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			if (n instanceof NodeWithVar)
+			if (n instanceof NodeWithVar && !(n instanceof RuleNode))
 				withVars.addNode(n);
 			else
 				WithoutVars.addNode(n);
@@ -270,19 +267,12 @@ public abstract class RuleNode extends PropositionNode {
 	 * @param sign
 	 *            boolean
 	 */
-	public void addConstantToContext(Context context, Node node, boolean sign) {
-		Hashtable<Integer, Set<Integer>> hashtable;
-		if (sign)
-			hashtable = contextConstantPositiveNodes;
-		else
-			hashtable = contextConstantNegativeNodes;
-
-		Set<Integer> nodes = hashtable.get(context.getId());
-		if (nodes == null) {
-			nodes = new HashSet<Integer>();
-			hashtable.put(context.getId(), nodes);
-		}
-		nodes.add(node.getId());
+	public RuleUseInfo addConstantRuiToContext(Context context,RuleUseInfo rui) {
+		RuleUseInfo tRui = contextConstantRUI.get(context.getId());
+		if(tRui != null)
+			rui = rui.combine(tRui);
+		contextConstantRUI.put(context.getId(), rui);
+		return rui;
 	}
 
 	/**
@@ -293,8 +283,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return int
 	 */
 	public int getPositiveCount(Context context) {
-		if (contextConstantPositiveNodes.containsKey(context.getId()))
-			return contextConstantPositiveNodes.get(context.getId()).size();
+		if (contextConstantRUI.containsKey(context.getId()))
+			return contextConstantRUI.get(context.getId()).getPosCount();
 		return 0;
 	}
 
@@ -306,9 +296,13 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return int
 	 */
 	public int getNegativeCount(Context context) {
-		if (contextConstantNegativeNodes.containsKey(context.getId()))
-			return contextConstantNegativeNodes.get(context.getId()).size();
+		if (contextConstantRUI.containsKey(context.getId()))
+			return contextConstantRUI.get(context.getId()).getNegCount();
 		return 0;
+	}
+	
+	public static boolean isConstantNode(Node n){
+		return !(n instanceof NodeWithVar) || n instanceof RuleNode;
 	}
 
 	@Override

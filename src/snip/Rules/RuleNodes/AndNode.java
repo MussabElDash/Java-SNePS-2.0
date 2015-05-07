@@ -40,18 +40,19 @@ public class AndNode extends RuleNode {
 			return;
 		}
 
-		Context context = report.getContext();
-		if (!(signature instanceof NodeWithVar)) {
-			this.addConstantToContext(context, signature, true);
-			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber)
-				sendReports(report.getContext());
-			return;
-		}
-
 		FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstituions(), 1, 0, fns);
+
+		Context context = report.getContext();
+		if (isConstantNode(signature)) {
+			int pos = addConstantRuiToContext(context, rui).getPosCount();
+			if (pos != this.antsWithoutVarsNumber)
+				sendReports(report.getContext());
+			return;
+		}
+
 		ContextRUIS crtemp = null;
 		if (this.getContextRUISSet().hasContext(context)) {
 			crtemp = this.getContextRUISSet().getContextRUIS(context);

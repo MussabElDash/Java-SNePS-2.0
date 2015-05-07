@@ -67,7 +67,7 @@ public class PTreeTest {
 		System.out.println("====================================");
 
 		RuleUseInfo rui = getRui((Node) antNodesTemp[0]);
-		RuleUseInfoSet ruis = tree.insert(rui);
+		RuleUseInfoSet ruis = tree.insertRUI(rui);
 		System.out.println(ruis.cardinality());
 	}
 

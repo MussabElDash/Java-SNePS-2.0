@@ -133,10 +133,12 @@ public class HashSubstitution implements Substitutions {
 		return n==null?v:n;
 	}
 
-	@Override
+	
 	public Substitutions insert(Binding m) {
-		// TODO Auto-generated method stub
-		return null;
+		HashSubstitution s=new HashSubstitution();
+		s.insert(this);
+		s.putIn(m);
+		return s;
 	}
 
 	@Override
@@ -145,10 +147,11 @@ public class HashSubstitution implements Substitutions {
 		return false;
 	}
 
-	@Override
+	
 	public Binding getBinding(int x) {
-		// TODO Auto-generated method stub
-		return null;
+		VariableNode[] vns=new VariableNode[sub.size()];
+		vns=sub.keySet().toArray(vns);
+		return new Binding(vns[x], sub.get(vns[x]));
 	}
 
 	@Override
@@ -157,15 +160,17 @@ public class HashSubstitution implements Substitutions {
 		return null;
 	}
 
-	@Override
+	
 	public void clear() {
 		sub=new HashMap<VariableNode,Node>();
 
 	}
 
-	@Override
+	
 	public void insert(Substitutions s) {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < s.cardinality(); i++) 
+			putIn(s.getBinding(i));
+		
 
 	}
 
@@ -182,6 +187,17 @@ public class HashSubstitution implements Substitutions {
 	public String toString(){
 		//TODO: Auto-generated method stub
 		return null;
+	}
+
+	
+	public int termID(int variableID) {
+		VariableNode[] vns=new VariableNode[sub.size()];
+		vns=sub.keySet().toArray(vns);
+		for (int i = 0; i < vns.length; i++)
+			if(vns[i].getId()==variableID)
+				return sub.get(vns[i]).getId();
+		
+		return -1;
 	}
 	
 }

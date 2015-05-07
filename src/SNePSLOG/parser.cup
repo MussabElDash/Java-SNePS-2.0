@@ -1,7 +1,9 @@
 package SNePSLOG;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Hashtable;
 
+import sneps.CustomException;
 import sneps.Nodes.*;
 import sneps.Network;
 import sneps.SemanticClasses.Entity;
@@ -15,15 +17,35 @@ import sneps.SemanticClasses.Individual;
 
 import java_cup.runtime.*;
 
+parser code
+{:
 
+  protected int error_sync_size () {
+		
+	System.out.println(":error_sync_size was called.");
+	return 1; // not recommended by the CUP manual-4-
+	 }
+
+ public void syntax_error(Symbol cur_token) {
+	System.out.println("I’m sorry, but I have to ");
+	System.out.println("report a syntax error.");
+	System.out.println("The last symbol was: "+ cur_token +
+	" (See sym.java)");
+ 	//System.out.println("at line number " + Main.s.getLineNumber());
+	report_error("Syntax error", null);
+ }
+
+
+:}
 
 	
 /* Terminals (tokens returned by the scanner). */
 terminal		 NM,QM,LP,ID,EM, RP, CL, DT, II, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURLY,ANDENTAIL,
-ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD;
+ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD,DEFINERELATION;
 
 /* Non-terminals */
-nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,defineRelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper,helperQ,helperQQ,SymbolTest,termSetSequence,symbolSequence,caseType;
+nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,termSet,prefixedTerm,termSequence,negatedTerm,andorTerm,nexistsTerm,threshTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,definERelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,termHelper,helperQ,helperQQ,SymbolTest,termSetSequence,symbolSequence,caseType,voidCommand;
+
 
 nonterminal Node SNePSLOGsymbol,atomicTerm;
 nonterminal ArrayList<String> condH,symbolH,termSetH;
@@ -32,13 +54,20 @@ nonterminal ArrayList<ArrayList<Node>> atomicTermH;
 /* The grammar */
 
 
-command ::= wffNameCommand:w00 {:RESULT=w00;:} | wffCommand:w10 {:RESULT=w10;:} | SymbolTest:sS {:RESULT=sS;:};
+command ::= wffNameCommand:w00 {:RESULT=w00;:} | wffCommand:w10 {:RESULT=w10;:} | SymbolTest:sS {:RESULT=sS;:}|voidCommand:heh{:RESULT=heh;:}|definERelation:dd {:RESULT=dd;:}|error:e {:RESULT=e+"";
+
+parser.error_sync_size(); parser.syntax_error((Symbol)e);:};
+
+voidCommand ::= SETMODE1 activateH{:AP.clearKnowledgeBase();AP.setMode(1); RESULT="mode1";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:}|SETMODE2 activateH{:AP.clearKnowledgeBase();AP.setMode(2);RESULT="mode2";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:}|SETMODE3 activateH{:AP.clearKnowledgeBase();AP.setMode(3);RESULT="mode3";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:};
+
+
+
 
 wffNameCommand ::= SNePSLOGsymbol:ss terminalPunctuation:pp {:RESULT=ss+":"+pp;:};
 wffCommand ::= wff:wow terminalPunctuation:p {:RESULT=wow+"/"+p;:};
 
 
-/*snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} | ADDTOCONTEXT SNePSLOGsymbol:s termSet:t activateH:a3{:RESULT="addContext "+s+t+a3;:}  | ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} | CLEARKB activateH:a9 {:RESULT="clearKB"+a9;:} | DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}| LISTASSERTEDWFFS describeContextH:dc activateH:ah{:RESULT=dc+ah;:}| LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}|  REMOVEFROMCONTEXT SNePSLOGsymbol:sym termSet:termm {:RESULT="remove from the context "+sym+" "+termm;:}|SETMODE1 activateH{:RESULT="set mode to 1";:}|SETMODE2 activateH{:RESULT="set mode to 2";:}|SETMODE3 activateH{:RESULT="set mode to 3";:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
+/*snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} | ADDTOCONTEXT SNePSLOGsymbol:s termSet:t activateH:a3{:RESULT="addContext "+s+t+a3;:}  | ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} | CLEARKB activateH:a9 {:RESULT="clearKB"+a9;:} | DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}| LISTASSERTEDWFFS describeContextH:dc activateH:ah{:RESULT=dc+ah;:}| LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}|  REMOVEFROMCONTEXT SNePSLOGsymbol:sym termSet:termm {:RESULT="remove from the context "+sym+" "+termm;:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
 
 describeContextH ::= symbolSequence:sss  {:RESULT=sss;:} | {:RESULT="";:};
 describeTermH ::= termSet:tt  {:RESULT=tt+"";:} | {:RESULT="";:};*/
@@ -48,7 +77,28 @@ SNePSLOGfunctionH ::= traceH:t {:RESULT=t;:}|{:RESULT="";:};
 
 
 
-defineRelation ::= identifier:name identifier:type NM:limit ADJUST:ad activateH {:RESULT="defineRelation:"+name+" "+type+" "+limit+" "+ad;:};
+definERelation ::= DEFINERELATION ID:name ID:type ADJUST:ad NM:limit activateH {:
+int mode = AP.getMode();
+if(mode==3){
+try {
+	Relation r = Network.defineRelation(name+"",type+"",ad+"",new Integer(limit+""));
+	RESULT="Relation namely--> "+name+" is successfully created";
+	AP.printDefiningRelationResults(r,"MyNewRelationCreated");
+}
+catch(CustomException e){
+	RESULT=e.getMessage()+"";
+	System.out.println(e.getMessage());
+
+}
+	
+}
+else{
+	System.out.println("Cannot use this command in such mode you need to switch to mode 3 first!");
+	RESULT="Cannot use this command in such mode you need to switch to mode 3 first!";
+}
+
+
+:};
 /* load Cmd*/
 
 
@@ -123,28 +173,23 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 	}
 
 		}
-		else {
-			if(Network.getNodes().containsKey(s+"")){
-			RESULT=Network.getNodes().get(s+"");
-		}
-	
+		
 	else{
-		if(type == "Entity"){
-			Entity t = new Entity();
-			Node res = Network.buildBaseNode(s+"",t);
-			RESULT=res;
+	if(Network.getNodes().containsKey(s+"")){
+		RESULT=null;
+		System.out.println("Node namely: "+s+" is already exist with a semantic type--> "+Network.getNodes().get(s+"").getSemanticType()+" and syntactic type --> "+Network.getNodes().get(s+"").getSyntacticType());
 		}
-		if(type == "Individual"){
-			Entity t = new Individual();
-			Node res = Network.buildBaseNode(s+"",t);
-			RESULT=res;
+		else{
+		Node newNode = new Node("Base",type,s+"");
+		RESULT=newNode;
 		}
+		
 		
 	}		
 		}
 		
 
-	}
+	
 
 	else{
 		/*-----------------------mode 1----------------------*/
@@ -158,7 +203,7 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 			hey[0][0] = r1;
 			hey[0][1] = n1;
 		
-			int counterExternal=0;
+			int counterExternal=1;
 			for(int j=0;j<at.size();j++){
 
 			Relation temp = Network.defineRelation("a"+j+1, "Entity", "none", 1);
@@ -173,8 +218,14 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 		
 	}
 		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
+		try{
 		Node reso = Network.buildMolecularNode(hey, agentAct);
 		RESULT=reso;	
+		}
+		catch(CustomException e){
+		System.out.println(e.getMessage());
+		}
+		
 		}
 		/*-----------------------mode 2----------------------*/
 		else if (AP.getMode() == 2){
@@ -187,7 +238,7 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 			hey[0][0] = r2;
 			hey[0][1] = n2;
 		
-			int counterExternal=0;
+			int counterExternal=1;
 			for(int j=0;j<at.size();j++){
 
 			Relation temp = Network.defineRelation("rel-arg#"+s+""+j+1, "Entity", "none", 1);
@@ -202,13 +253,75 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 		
 	}
 		CaseFrame agentAct = Network.defineCaseFrame("Entity", relCF);
+		try{
 		Node reso = Network.buildMolecularNode(hey, agentAct);
 		RESULT=reso;
+		}
+		catch(CustomException e){
+		System.out.println(e.getMessage());
+		}
+		
 
 		}
 		/*----------------------mode3--------------------------*/
 		else{
-		RESULT=null;
+		
+			Object [] come = AP.getCaseFrame(s);
+			CaseFrame myFrame = (CaseFrame)come[0];
+			boolean notNull = (boolean)come[1];
+			RESULT= null;
+			
+			if(notNull){
+			Node first = Network.getNodes().get(s+"");
+			Hashtable<String,RCFP> relations = myFrame.getRelations();
+			Relation[] used = AP.convertToArrayOfRelations(relations);
+			Object[][] hey = new Object[relations.size()][2];
+			hey[0][0] = used[0];
+			hey[0][1] = first;
+			int counterExternal=1;
+			int counterAlso =1;
+			for(int j=0;j<at.size();j++){
+			Relation temp = used[counterAlso];
+			for(int c=0;c<at.get(j).size();c++){
+				hey[counterExternal][0] = temp;
+				hey[counterExternal][1] = at.get(j);
+				counterExternal++;	
+			}
+			counterAlso++;
+		}
+			try{
+			Node reso = Network.buildMolecularNode(hey, myFrame);
+		RESULT=reso;	
+			}
+			catch(CustomException e){
+				System.out.println(e.getMessage());	
+			}
+
+			}
+			else{
+				Hashtable<String,RCFP> relations = myFrame.getRelations();
+				Relation[] used = AP.convertToArrayOfRelations(relations);
+				Object[][] hey = new Object[relations.size()][2];
+				int counterExternal=0;
+			for(int j=0;j<at.size();j++){
+			Relation temp = used[j];
+			for(int c=0;c<at.get(j).size();c++){
+				hey[counterExternal][0] = temp;
+				hey[counterExternal][1] = at.get(j);
+				counterExternal++;	
+			}
+		}
+
+		try{
+			Node reso = Network.buildMolecularNode(hey, myFrame);
+		RESULT=reso;	
+			}
+			catch(CustomException e){
+				System.out.println(e.getMessage());	
+			}
+		
+			}
+
 		}
 		
 
@@ -218,16 +331,30 @@ atomicTerm ::=  identifier:s caseType:type atomicTermH:at {:
 | 
 qvar:q atomicTermH:qh{:
 if(qh.size() == 0){
+	
+	if(AP.existVariable(q) == null){
 	Node r = Network.buildVariableNode();
-	AP.addToVariables(r.getId(),q);
+	AP.addToVariables(q,r.getId());
 	RESULT=r;
+	}
+	else{
+	RESULT= AP.existVariable(q);
+	}
+	
 }
 else{
 	int mode = AP.getMode();
 	if(mode == 1){
 		Relation r1 = Network.defineRelation("rel", "Entity", "none", 1);
-		Node n1 = Network.buildVariableNode();
-		AP.addToVariables(n1.getId(),q);
+		Node n1 = null;
+		if(AP.existVariable(q) == null){
+		 n1 = Network.buildVariableNode();
+		AP.addToVariables(q,n1.getId());
+		}
+		else{
+		n1 = AP.existVariable(q);
+		}
+		
 		
 		LinkedList<RCFP> relCF = new LinkedList<RCFP>();
 		int tall = qh.size();

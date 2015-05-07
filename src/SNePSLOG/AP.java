@@ -2,10 +2,14 @@ package SNePSLOG;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.CaseFrame;
+import sneps.Network;
+import sneps.RCFP;
+import sneps.Relation;
 import sneps.Nodes.Node;
 import sneps.Nodes.VariableNode;
 import sneps.SyntaticClasses.Pattern;
@@ -13,16 +17,23 @@ import java_cup.runtime.Symbol;
 
 public class AP {
 
-private static Hashtable<Integer,String> variables = new Hashtable<Integer, String>();
+private static Hashtable<String,Integer> variables = new Hashtable<String, Integer>();
 private static Hashtable<String,Object[]> caseFrames = new Hashtable<String, Object[]>();
 private static int  count = 0 ;
 private static ArrayList<String> symbols = new ArrayList<String>();
 private static ArrayList<String> termSets = new ArrayList<String>();
 private static String [] list = new String [10000];
-private static int mode = 1;
+private static int mode = 3;
+private static boolean session = true;
 	
 	public static void h() {
 		System.out.println("hi");
+	}
+	public void setSession(boolean b){
+		session=b;
+	}
+	public boolean getSession(){
+		return session;
 	}
 	
 	public static void addCaseFrames(String s,CaseFrame c,boolean b){
@@ -35,6 +46,20 @@ private static int mode = 1;
 	public static Object[] getCaseFrame(String key){
 		return caseFrames.get(key);
 	}
+	public static Relation[] convertToArrayOfRelations(Hashtable<String,RCFP> n){
+		Relation[] result = new Relation[n.size()];
+		Enumeration<String> enumKey = n.keys();
+		int COUNT=0;
+		while(enumKey.hasMoreElements()){
+			String key = enumKey.nextElement();
+			RCFP val = n.get(key);
+			result[COUNT]=val.getRelation();
+			COUNT++;
+			}
+		return result;
+		
+	}
+	
 
 	public static boolean find(String x){
 		for(int i=0;i<list.length;i++){
@@ -46,6 +71,11 @@ private static int mode = 1;
 
 
 	}
+	public static void clearKnowledgeBase(){
+		variables.clear();
+		Network.getNodes().clear();
+		Network.getNodesWithIDs().clear();
+	}
 	/*
 	********
 
@@ -56,6 +86,20 @@ private static int mode = 1;
 		symbols.add(s);
 
 	}
+	public static Node existVariable(String v){
+		Enumeration<String> enumKey = variables.keys();
+		while(enumKey.hasMoreElements()){
+			String key = enumKey.nextElement();
+			if(key.equalsIgnoreCase(v)){
+				Integer val = variables.get(key);
+				return Network.getNodesWithIDs().get(val);
+			}
+		}
+		return null;
+		
+	}
+	
+	
 
 	public static void addTerm(String s){
 		termSets.add(s);
@@ -99,8 +143,8 @@ private static int mode = 1;
 		}
 		
 	}
-	public static void addToVariables(int i,String s){
-		variables.put(new Integer(i), s);
+	public static void addToVariables(String s,int i){
+		variables.put(s,new Integer(i));
 	}
 
 	public static String build(String x){
@@ -111,6 +155,31 @@ private static int mode = 1;
 
 
 	}
+	public static void printDefiningRelationResults(Relation r, String name){
+		System.out.println("");
+		if(r != null){
+			System.out.println("Relation " + name + " was successfully defined ... ");
+			System.out.println("");
+			System.out.println("Checking its paramters: ");
+			System.out.println("-----------------------");
+			System.out.println("Name: " + r.getName());
+			System.out.println("The Semantic type of nodes that this relation can point at: " + r.getType());
+			System.out.println("Adjustability: " + r.getAdjust());
+			System.out.println("Limit: " + r.getLimit());
+			System.out.println("Path: " + r.getPath());
+			System.out.println("toString: " + r.toString());
+		}
+		else{
+			System.out.println("The Relation named, " + name + ", was not successfully defined ... ");
+		}
+		System.out.println("");
+		System.out.println("...................................................................................." +
+				"....................................");
+		System.out.println("...................................................................................." +
+				"....................................");
+		
+	}
+	
 	
 	public static void printBuildingNodeResults(Node n, String name){
 		System.out.println("");
@@ -178,7 +247,7 @@ private static int mode = 1;
 
 			parser parser = new parser(new Lexer(dis));
 			Symbol res = parser.parse();
-
+			
 			String value = (String) res.value;
 			writer.write(value);
 

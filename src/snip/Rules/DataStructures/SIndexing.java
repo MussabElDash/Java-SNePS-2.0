@@ -1,11 +1,13 @@
 package snip.Rules.DataStructures;
 
 import java.util.Hashtable;
+import java.util.Set;
 
 import SNeBR.Context;
 
 public class SIndexing extends ContextRUIS{
-	Hashtable<Integer, RuleUseInfo> map;
+	private Hashtable<Integer, RuleUseInfo> map;
+	private Set<Integer> sharedVars;
 
 	/**
 	 * Create new Empty Sindexing table and associate it with the Context c
@@ -69,8 +71,20 @@ public class SIndexing extends ContextRUIS{
 	 *            int []
 	 * @return the final RuleUseInfo
 	 */
-	public RuleUseInfo insert(RuleUseInfo rui, int[] ids) {
+	private RuleUseInfo insert(RuleUseInfo rui, int[] ids) {
 		int index = getIndex(ids);
 		return insertInIndex(index, rui);
+	}
+
+	@Override
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		rui = insert(rui, null);
+		res.add(rui);
+		return res;
+	}
+	
+	public void setSharedVars(Set<Integer> sharedVars){
+		this.sharedVars = sharedVars;
 	}
 }

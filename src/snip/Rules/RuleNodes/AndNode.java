@@ -17,7 +17,6 @@ import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndexing;
-import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
 
 public class AndNode extends RuleNode {
@@ -48,7 +47,7 @@ public class AndNode extends RuleNode {
 		Context context = report.getContext();
 		if (isConstantNode(signature)) {
 			int pos = addConstantRuiToContext(context, rui).getPosCount();
-			if (pos != this.antsWithoutVarsNumber)
+			if (pos == this.antsWithoutVarsNumber)
 				sendReports(report.getContext());
 			return;
 		}
@@ -61,12 +60,13 @@ public class AndNode extends RuleNode {
 		}
 		if (shareVars) {
 			SIndexing scrtemp = (SIndexing) crtemp;
-			RuleUseInfo ruiRes = scrtemp.insert(rui, vars);
-			sendRui(ruiRes, context);
+			RuleUseInfoSet ruisRes = scrtemp.insertRUI(rui);
+			for (RuleUseInfo ruiRes : ruisRes)
+				sendRui(ruiRes, context);
 			return;
 		}
 		PTree pcrtemp = (PTree) crtemp;
-		RuleUseInfoSet res = pcrtemp.insert(rui);
+		RuleUseInfoSet res = pcrtemp.insertRUI(rui);
 		if (res == null) {
 			res = new RuleUseInfoSet();
 		}

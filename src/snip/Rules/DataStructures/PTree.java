@@ -58,7 +58,8 @@ public class PTree extends ContextRUIS {
 	 *            the pattern this rule use info is about
 	 * @return RuleUseInfoSet
 	 */
-	public RuleUseInfoSet insert(RuleUseInfo rui) {
+	@Override
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
 		PSubTree subTree = subTreesMap.get(pattern);
 		RuleUseInfoSet returned = subTree.insert(rui);

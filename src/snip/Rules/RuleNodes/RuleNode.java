@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
@@ -58,10 +61,9 @@ public abstract class RuleNode extends PropositionNode {
 	protected boolean shareVars;
 
 	/**
-	 * array containing the id's of all the variables in the antecedents in case
-	 * they all share the same variables. used in SIndexing
+	 * Set of ids of the variables shared by all patterns
 	 */
-	protected int[] vars;
+	protected Set<Integer> sharedVars;
 
 	protected ContextRUISSet contextRUISSet;
 
@@ -81,15 +83,7 @@ public abstract class RuleNode extends PropositionNode {
 		this.antsWithoutVarsNumber = this.antNodesWithoutVars.size();
 		this.antsWithVarsNumber = this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
-		if (shareVars) {
-			NodeWithVar pn = (NodeWithVar) antNodesWithVars.getNode(0);
-			LinkedList<VariableNode> varNodes = pn.getFreeVariables();
-			vars = new int[varNodes.size()];
-			Iterator<VariableNode> varIter = varNodes.iterator();
-			for (int i = 0; i < vars.length && varIter.hasNext(); i++) {
-				vars[i] = varIter.next().getId();
-			}
-		}
+		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
 	/**
@@ -122,12 +116,13 @@ public abstract class RuleNode extends PropositionNode {
 		}
 		if (shareVars) {
 			SIndexing scrtemp = (SIndexing) crtemp;
-			RuleUseInfo ruiRes = scrtemp.insert(rui, vars);
-			sendRui(ruiRes, context);
+			RuleUseInfoSet ruisRes = scrtemp.insertRUI(rui);
+			for (RuleUseInfo ruiRes : ruisRes)
+				sendRui(ruiRes, context);
 			return;
 		}
 		RuleUseInfoSet rcrtemp = (RuleUseInfoSet) crtemp;
-		RuleUseInfoSet res = rcrtemp.insert(rui);
+		RuleUseInfoSet res = rcrtemp.insertRUI(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
 		for (RuleUseInfo tRui : res) {
@@ -161,6 +156,41 @@ public abstract class RuleNode extends PropositionNode {
 				break;
 			}
 		}
+		return res;
+	}
+
+	/**
+	 * Return the intersection of the Variables of the patterns
+	 * 
+	 * @param nodes
+	 *            NodeSet
+	 * @return Set<VariableNode>
+	 */
+	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
+		if (nodes.isEmpty())
+			return new HashSet<VariableNode>();
+		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
+		Set<VariableNode> res = ImmutableSet.copyOf(n.getFreeVariables());
+		for (int i = 1; i < nodes.size(); i++) {
+			n = (NodeWithVar) nodes.getNode(i);
+			Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
+			res = Sets.intersection(res, temp);
+		}
+		return res;
+	}
+
+	/**
+	 * Return the intersection of the Variables of the patterns
+	 * 
+	 * @param nodes
+	 *            NodeSet
+	 * @return Set<VariableNode>
+	 */
+	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
+		Set<VariableNode> vars = getSharedVarsNodes(nodes);
+		Set<Integer> res = new HashSet<Integer>();
+		for (VariableNode var : vars)
+			res.add(var.getId());
 		return res;
 	}
 
@@ -267,9 +297,9 @@ public abstract class RuleNode extends PropositionNode {
 	 * @param sign
 	 *            boolean
 	 */
-	public RuleUseInfo addConstantRuiToContext(Context context,RuleUseInfo rui) {
+	public RuleUseInfo addConstantRuiToContext(Context context, RuleUseInfo rui) {
 		RuleUseInfo tRui = contextConstantRUI.get(context.getId());
-		if(tRui != null)
+		if (tRui != null)
 			rui = rui.combine(tRui);
 		contextConstantRUI.put(context.getId(), rui);
 		return rui;
@@ -300,8 +330,8 @@ public abstract class RuleNode extends PropositionNode {
 			return contextConstantRUI.get(context.getId()).getNegCount();
 		return 0;
 	}
-	
-	public static boolean isConstantNode(Node n){
+
+	public static boolean isConstantNode(Node n) {
 		return !(n instanceof NodeWithVar) || n instanceof RuleNode;
 	}
 

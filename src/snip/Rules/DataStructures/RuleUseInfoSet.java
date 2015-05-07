@@ -45,7 +45,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	 * 
 	 * @return true if new otherwise false
 	 */
-	public boolean isNew() {
+	public boolean isEmpty() {
 		return ruis.isEmpty();
 	}
 
@@ -55,7 +55,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	 * @param r
 	 *            rule use info
 	 */
-	public void putIn(RuleUseInfo r) {
+	public void add(RuleUseInfo r) {
 		ruis.add(r);
 	}
 
@@ -128,7 +128,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 		for (RuleUseInfo tRui : ruis) {
 			RuleUseInfo tmp = rui.combine(tRui);
 			if (tmp != null)
-				res.putIn(tmp);
+				res.add(tmp);
 		}
 		return res;
 	}
@@ -151,7 +151,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 		for (RuleUseInfo rui : this.ruis) {
 			RuleUseInfoSet temp = ruis.combine(rui);
 			for (RuleUseInfo tRui : temp.ruis) {
-				res.putIn(tRui);
+				res.add(tRui);
 			}
 		}
 		return res;
@@ -165,16 +165,20 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	 *            RuleUseInfo
 	 * @return RuleUseInfoSet
 	 */
-	public RuleUseInfoSet insert(RuleUseInfo rui) {
+	public RuleUseInfoSet combineAdd(RuleUseInfo rui) {
 		RuleUseInfoSet temp = this.combine(rui);
-		temp.putIn(rui);
+		temp.add(rui);
 		// for (int i = 0; i < temp.ruis.size(); i++) {
 		// this.putIn(temp.ruis.get(i));
 		// }
 		for (RuleUseInfo tRui : temp.ruis) {
-			this.putIn(tRui);
+			this.add(tRui);
 		}
 		return temp;
+	}
+
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
+		return combineAdd(rui);
 	}
 
 	/**

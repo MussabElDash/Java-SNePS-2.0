@@ -102,4 +102,6 @@ public abstract class ContextRUIS {
 	// public ChannelsSet getChannels() {
 	// return cqChannels;
 	// }
+	
+	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 }

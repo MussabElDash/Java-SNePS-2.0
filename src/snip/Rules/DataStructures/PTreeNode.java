@@ -47,7 +47,7 @@ public class PTreeNode {
 		int key = insertRUI(rui);
 		// Since it has no sibling, it has no parent, and it is the root
 		if (sibling == null) {
-			set.putIn(rui);
+			set.add(rui);
 			return;
 		}
 		RuleUseInfoSet siblingSet = sibling.getRUIS(key);
@@ -79,7 +79,7 @@ public class PTreeNode {
 				ruis = new RuleUseInfoSet();
 				ruisMap.put(0, ruis);
 			}
-			ruis.putIn(rui);
+			ruis.add(rui);
 			return 0;
 		}
 		// The upper part of this method is for incase this node is aroot node
@@ -95,7 +95,7 @@ public class PTreeNode {
 			ruis = new RuleUseInfoSet();
 			ruisMap.put(key, ruis);
 		}
-		ruis.putIn(rui);
+		ruis.add(rui);
 		return key;
 	}
 

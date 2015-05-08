@@ -14,7 +14,9 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Entity;
+import sneps.SemanticClasses.Individual;
 import sneps.SemanticClasses.Infimum;
+import sneps.match.Binding;
 import sneps.match.LinearSubstitutions;
 import sneps.match.Substitutions;
 import snip.Rules.DataStructures.FlagNode;
@@ -67,7 +69,11 @@ public class PTreeTest {
 		}
 		System.out.println("====================================");
 
-		RuleUseInfo rui = getRui((Node) antNodesTemp[0]);
+		Node bob = Network.buildBaseNode("Bob", new Individual());
+		Node mary = Network.buildBaseNode("mary", new Individual());
+
+		RuleUseInfo rui = getRui((Node) antNodesTemp[0], varNodes[0],
+				varNodes[1], bob, mary);
 		RuleUseInfoSet ruis = tree.insertRUI(rui);
 		System.out.println(ruis.cardinality());
 	}
@@ -190,11 +196,15 @@ public class PTreeTest {
 		return mc;
 	}
 
-	private static RuleUseInfo getRui(Node n) {
-		FlagNode fn = new FlagNode(n, new Support(), 1);
+	private static RuleUseInfo getRui(Node signature, VariableNode var1,
+			VariableNode var2, Node sub1, Node sub2) {
+		FlagNode fn = new FlagNode(signature, new Support(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
-		RuleUseInfo rui = new RuleUseInfo(new LinearSubstitutions(), 1, 0, fns);
+		Substitutions sub = new LinearSubstitutions();
+		sub = sub.insert(new Binding(var1, sub1));
+		sub = sub.insert(new Binding(var2, sub2));
+		RuleUseInfo rui = new RuleUseInfo(sub, 1, 0, fns);
 		return rui;
 	}
 }

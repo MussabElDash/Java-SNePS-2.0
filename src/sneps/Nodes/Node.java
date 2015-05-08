@@ -24,6 +24,7 @@ import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Closed;
 import sneps.SyntaticClasses.Term;
+import sneps.match.LinearSubstitutions;
 import snip.AntecedentToRuleChannel;
 import snip.Channel;
 import snip.ChannelTypes;
@@ -32,7 +33,6 @@ import snip.MatchChannel;
 import snip.Report;
 import snip.RuleToConsequentChannel;
 import snip.Runner;
-import snip.Substitutions;
 import snip.Switch;
 import SNeBR.Context;
 import SNeBR.PropositionSet;
@@ -376,19 +376,18 @@ public class Node {
 	public void processSingleReport(Channel currentChannel) {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
-			Report alteredReport = new Report(
-					currentReport.getSubstituions(),
-					currentReport.getSupport(), currentReport.getSign(),
-					this, currentReport.getNode(),
-					currentReport.getContext());
+			Report alteredReport = new Report(currentReport.getSubstituions(),
+					currentReport.getSupport(), currentReport.getSign(), this,
+					currentReport.getNode(), currentReport.getContext());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}
-			for(Channel outChannel : outgoingChannels) {
+			for (Channel outChannel : outgoingChannels) {
 				outChannel.addReport(alteredReport);
 			}
 		}
 	}
+
 	public void processReports() {
 		for (Channel currentChannel : outgoingChannels) {
 			processSingleReport(currentChannel);
@@ -400,8 +399,8 @@ public class Node {
 		System.out.println(this.getSyntactic());
 		if (this.getSyntactic() instanceof Closed) {
 			// Channel currentChannel;
-			Report reply = new Report(new Substitutions(), null, true, this,
-					null, currentChannel.getContext());
+			Report reply = new Report(new LinearSubstitutions(), null, true,
+					this, null, currentChannel.getContext());
 			currentChannel.addReport(reply);
 		} else {
 			PropositionSet propSet = new PropositionSet();
@@ -435,7 +434,7 @@ public class Node {
 						// TODO Akram: resources available ?
 						if (!(currentChannel instanceof MatchChannel)) {
 							// Sending requests to matched channels nodes
-							//TODO Ahmed Akram: call network.match
+							// TODO Ahmed Akram: call network.match
 							NodeSet matchedNodes = Network.match(this);
 							toBeSentTo.clear();
 							for (int i = 0; i < matchedNodes.size(); ++i) {

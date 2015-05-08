@@ -63,13 +63,19 @@ public class GeneralSIndexing<E extends ContextRUIS> extends ContextRUIS {
 			NoSuchMethodException, SecurityException {
 		E tempRui = map.get(x);
 		if (tempRui == null) {
-			Constructor<E> cons = clazz.getConstructor(Context.class);
-			tempRui = cons.newInstance(getContext());
-			if (tempRui instanceof PTree)
-				((PTree) tempRui).buildTree(nodesWithVars);
+			tempRui = getNewContextRUIS();
 		}
 		RuleUseInfoSet res = tempRui.insertRUI(rui);
 		return res;
+	}
+	
+	public E getNewContextRUIS() throws NoSuchMethodException,
+			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		Constructor<E> cons = clazz.getConstructor(Context.class);
+		E tempRui = cons.newInstance(getContext());
+//		if (tempRui instanceof PTree)
+//			((PTree) tempRui).buildTree(nodesWithVars);
+		return tempRui;
 	}
 
 	/**

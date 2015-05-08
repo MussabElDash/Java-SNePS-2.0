@@ -238,7 +238,7 @@ public abstract class RuleNode extends PropositionNode {
 				Class<? extends ContextRUIS> clazz = getContextRUISNonSharedClass();
 				GeneralSIndexing<? extends ContextRUIS> gsi = new GeneralSIndexing<>(
 						c, sharedVars, antNodesWithVars, clazz);
-				this.addContextRUIS(gsi);
+				return this.addContextRUIS(gsi);
 			}
 			return this.addContextRUIS(createContextRUISNonShared(c));
 		}

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import sneps.Nodes.MolecularNode;
 import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 
 public class MatchingSet  {
 	
@@ -74,6 +75,12 @@ public MatchingSet(){
 	
 	public String toString(){
 		return VariableBaseNodes.toString()+MolecularNodes.toString();
+	}
+	
+	public void add(NodeSet ns){
+		for (int i = 0; i < ns.size(); i++) 
+			add(ns.getNode(i));
+		
 	}
 
 }

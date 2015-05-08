@@ -134,7 +134,7 @@ public class MatchingTests {
 	
 	   // System.out.println(Matcher.sameFunction(g, g2));
 	  //  System.out.println(terms2);
-	    System.out.println(matcher.VARHERE(y, cons, sourceList2, targetList2, true, true, terms2, 4));
+	    System.out.println(matcher.VARHERE(y, cons, sourceList2, targetList2, true, true, terms2, 4,new MatchingSet(),0));
         //post test
 		//printSubs(sourceList,"Source");		
         //printSubs(targetList,"Target");	
@@ -461,7 +461,15 @@ public class MatchingTests {
 			    //test 3 ; pass
 			  //matcher.hERE(cons, cons2, sourceList, targetList, true, true,terms,1);
 			  //test 4 : pass
-		matcher.hERE(g, g2, sourceList2, targetList2, true, true, terms2, 2);	
+		//matcher.hERE(g, g2, sourceList2, targetList2, true, true, terms2, 2);
+			//test 5 : pass
+			    MatchingSet termst2=new MatchingSet();
+			    System.out.println(g);
+			    System.out.println(g2);
+			    termst2.add(g2);
+			    termst2.add(cons);
+			    matcher.hERE(g2, g, sourceList2, targetList2, true, true, terms2, 2,termst2,2);
+				//test 6
 			   // System.out.println(Matcher.sameFunction(g, g2));
 			  //  System.out.println(terms2);
 //			    System.out.println(matcher.hERE(y, cons, sourceList2, targetList2, true, true, terms2, 4));

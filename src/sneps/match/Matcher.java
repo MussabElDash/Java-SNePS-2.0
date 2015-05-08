@@ -16,11 +16,10 @@ import sneps.Nodes.VariableNode;
 
 public class Matcher {
 
-	 public LinkedList<Object[]> Match(MolecularNode sourceNode,
-	 Network network, boolean UVBR) throws Exception {
+	 public LinkedList<Object[]> Match(MolecularNode sourceNode, boolean UVBR) throws Exception {
 	 LinkedList<Object[]> matches = new LinkedList<Object[]>();
 	 CaseFrame sourceCF = sourceNode.getDownCableSet().getCaseFrame();
-	 NodeSet candidateNodes = network.getMolecularNodes().get(
+	 NodeSet candidateNodes = Network.getMolecularNodes().get(
 	 sourceCF.getId());
 	
 	 for (int i = 0; i < candidateNodes.size(); i++) {
@@ -403,8 +402,7 @@ public class Matcher {
 				"Molecular") ? "Molecular" : targetNode.getSyntacticType();
 		if (sourceType.equals("Variable") || targetType.equals("Variable"))
 			return true;
-		if (sourceType == targetType)
-			// TODO: check identifying nodes
+		if (sourceType.equals(targetType))
 			return (sourceNode.getIdentifier().equals(targetNode
 					.getIdentifier()));
 		else

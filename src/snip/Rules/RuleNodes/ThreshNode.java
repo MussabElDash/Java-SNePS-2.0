@@ -12,7 +12,6 @@ public class ThreshNode extends RuleNode {
 
 	public ThreshNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-		// TODO Auto-generated constructor stub
 		NodeSet minNode = this.getDownNodeSet("thresh");
 		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
 		NodeSet maxNode = this.getDownNodeSet("threshmax");
@@ -22,7 +21,7 @@ public class ThreshNode extends RuleNode {
 	}
 
 	protected void sendRui(RuleUseInfo ruiRes, Context context) {
-		// TODO Auto-generated method stub
+		// TODO Mussab Auto-generated method stub
 
 	}
 

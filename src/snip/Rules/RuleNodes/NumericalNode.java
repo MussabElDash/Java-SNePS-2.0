@@ -12,7 +12,6 @@ public class NumericalNode extends RuleNode {
 
 	public NumericalNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-		// TODO Auto-generated constructor stub
 		NodeSet maxNode = this.getDownNodeSet("i");
 		i = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("&ant");
@@ -21,7 +20,7 @@ public class NumericalNode extends RuleNode {
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Auto-generated method stub
+		// TODO Mussab Auto-generated method stub
 
 	}
 

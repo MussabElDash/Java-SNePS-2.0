@@ -5,25 +5,38 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.Nodes.NodeSet;
 import SNeBR.Context;
 
 public class GeneralSIndexing<E extends ContextRUIS> extends ContextRUIS {
 	private Hashtable<Integer, E> map;
 	private Class<E> clazz;
 	private Set<Integer> sharedVars;
+	private NodeSet nodesWithVars;
 
 	/**
 	 * Create new Empty GeneralSIndexing table and associate it with the Context
-	 * c
+	 * context and use the sharedVars as the vars to hash on, clazz a class of
+	 * RuleUseInfoSet or PTreeis and used to instantiate either of them. <br>
+	 * <br>
+	 * nodesWithVars is a NodeSet containing the nodes used building the PTree
+	 * and it's not needed in case RuleUseInfoSet is used.
 	 * 
-	 * @param c
+	 * @param context
 	 *            Context
+	 * @param sharedVars
+	 *            Set<Integer>
+	 * @param nodesWithVars
+	 *            NodeSet
+	 * @param clazz
+	 *            Class<E extends ContextRUIS>
 	 */
 	public GeneralSIndexing(Context context, Set<Integer> sharedVars,
-			Class<E> clazz) {
+			NodeSet nodesWithVars, Class<E> clazz) {
 		super(context);
 		this.clazz = clazz;
 		this.sharedVars = sharedVars;
+		this.nodesWithVars = nodesWithVars;
 		map = new Hashtable<Integer, E>();
 	}
 
@@ -52,6 +65,8 @@ public class GeneralSIndexing<E extends ContextRUIS> extends ContextRUIS {
 		if (tempRui == null) {
 			Constructor<E> cons = clazz.getConstructor(Context.class);
 			tempRui = cons.newInstance(getContext());
+			if (tempRui instanceof PTree)
+				((PTree) tempRui).buildTree(nodesWithVars);
 		}
 		RuleUseInfoSet res = tempRui.insertRUI(rui);
 		return res;
@@ -105,13 +120,12 @@ public class GeneralSIndexing<E extends ContextRUIS> extends ContextRUIS {
 	@Override
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		try {
-			int[] ids = new int[sharedVars.size()];
+			int[] vars = new int[sharedVars.size()];
 			int index = 0;
-			for(int var:sharedVars){
-				// TODO Mussab change hashCode to the id of the bound variable
-				ids[index++] = rui.getSub().hashCode();
+			for (int varId : sharedVars) {
+				vars[index++] = rui.getSub().termID(varId);
 			}
-			return insert(rui, null);
+			return insert(rui, vars);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

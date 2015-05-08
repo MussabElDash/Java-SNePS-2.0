@@ -1,6 +1,6 @@
 package snip.Rules.DataStructures;
 
-import snip.Substitutions;
+import sneps.match.Substitutions;
 
 public class RuleUseInfo {
 	private Substitutions sub;
@@ -107,9 +107,7 @@ public class RuleUseInfo {
 	 * @return true or false
 	 */
 	public boolean isVarsCompatible(RuleUseInfo r) {
-		// return sub.isCompatible(r.sub);
-		// TODO
-		throw new UnsupportedOperationException();
+		return sub.isCompatible(r.sub);
 	}
 
 	/**
@@ -159,11 +157,8 @@ public class RuleUseInfo {
 	 */
 	public RuleUseInfo combine(RuleUseInfo rui) {
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
-			// TODO
-			throw new UnsupportedOperationException();
-			// return new RuleUseInfo(this.getSub().union(rui.getSub()),
-			// this.pos
-			// + rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
+			return new RuleUseInfo(this.getSub().union(rui.getSub()), this.pos
+					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
 		}
 		return null;
 	}

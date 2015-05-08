@@ -12,10 +12,11 @@ import SNeBR.Context;
 
 public abstract class ContextRUIS {
 	private Context context;
+
 	// private ChannelsSet cqChannels;
-//	private Sindexing s;
-//	private Ptree p;
-//	private RuleUseInfoSet r;
+	// private Sindexing s;
+	// private Ptree p;
+	// private RuleUseInfoSet r;
 
 	// /**
 	// * Create new ContextRUIS
@@ -39,24 +40,26 @@ public abstract class ContextRUIS {
 	// r = new RuleUseInfoSet();
 	// }
 	// }
-	
+
 	/**
 	 * Create new ContextRUIS
 	 * 
-	 * @param context Context
+	 * @param context
+	 *            Context
 	 */
-	public ContextRUIS(Context context){
+	public ContextRUIS(Context context) {
 		this.context = context;
 	}
-//
-//	/**
-//	 * Return the Sindexing
-//	 * 
-//	 * @return Sindexing
-//	 */
-//	public Sindexing getSindexing() {
-//		return s;
-//	}
+
+	//
+	// /**
+	// * Return the Sindexing
+	// *
+	// * @return Sindexing
+	// */
+	// public Sindexing getSindexing() {
+	// return s;
+	// }
 
 	// /**
 	// * Return the Ptree
@@ -81,9 +84,9 @@ public abstract class ContextRUIS {
 	 * 
 	 * @param c
 	 */
-//	public void addChannel(Channel c) {
-//		cqChannels.putIn(c);
-//	}
+	// public void addChannel(Channel c) {
+	// cqChannels.putIn(c);
+	// }
 
 	/**
 	 * Return the context
@@ -102,6 +105,16 @@ public abstract class ContextRUIS {
 	// public ChannelsSet getChannels() {
 	// return cqChannels;
 	// }
-	
+
+	/**
+	 * Insert a new rule use info in the this ContextRUI and return the rule use
+	 * info set result from combining it with rule use infos in the way
+	 * 
+	 * @param rui
+	 *            RuleUseInfo
+	 * @param pattern
+	 *            the pattern this rule use info is about
+	 * @return RuleUseInfoSet
+	 */
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 }

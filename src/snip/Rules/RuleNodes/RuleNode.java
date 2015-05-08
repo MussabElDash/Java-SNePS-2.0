@@ -25,6 +25,7 @@ import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
+import snip.Rules.DataStructures.GeneralSIndexing;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndexing;
@@ -202,7 +203,6 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return NodeSet
 	 */
 	public NodeSet getDownNodeSet(String name) {
-		// TODO Make sure of the cables
 		return this.getDownCableSet().getDownCable(name).getNodeSet();
 	}
 
@@ -214,7 +214,6 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return NodeSet
 	 */
 	public NodeSet getUpNodeSet(String name) {
-		// TODO Make sure of the cables
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
@@ -230,10 +229,18 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return ContextRUIS
 	 */
 	public ContextRUIS addContextRUIS(Context c) {
-		if (shareVars)
-			return this.addContextRUIS(new SIndexing(c));
-		else {
-			return createContextRUISNonShared(c);
+		if (shareVars) {
+			SIndexing si = new SIndexing(c);
+			si.setSharedVars(sharedVars);
+			return this.addContextRUIS(si);
+		} else {
+			if (sharedVars.size() != 0) {
+				Class<? extends ContextRUIS> clazz = getContextRUISNonSharedClass();
+				GeneralSIndexing<? extends ContextRUIS> gsi = new GeneralSIndexing<>(
+						c, sharedVars, antNodesWithVars, clazz);
+				this.addContextRUIS(gsi);
+			}
+			return this.addContextRUIS(createContextRUISNonShared(c));
 		}
 	}
 
@@ -260,6 +267,15 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	protected ContextRUIS createContextRUISNonShared(Context c) {
 		return new RuleUseInfoSet(c);
+	}
+
+	/**
+	 * Returns the class of the ContextRUI to be used in the GeneralSindexing
+	 * 
+	 * @return
+	 */
+	protected Class<? extends ContextRUIS> getContextRUISNonSharedClass() {
+		return RuleUseInfoSet.class;
 	}
 
 	/**

@@ -21,7 +21,7 @@ public class AndOrNode extends RuleNode {
 	}
 
 	protected void sendRui(RuleUseInfo ruiRes, Context context) {
-		// TODO Auto-generated method stub
+		// TODO Mussab Auto-generated method stub
 
 	}
 

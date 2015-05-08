@@ -7,12 +7,13 @@
  */
 package snip.Rules.DataStructures;
 
+import SNeBR.Support;
 import sneps.Nodes.Node;
 
 public class FlagNode {
 
 	private Node node;
-	private Object support;
+	private Support support;
 	private int flag;
 
 	/**
@@ -25,7 +26,7 @@ public class FlagNode {
 	 * @param f
 	 *            true or false
 	 */
-	public FlagNode(Node n, Object s, int f) {
+	public FlagNode(Node n, Support s, int f) {
 		node = n;
 		support = s;
 		flag = f;

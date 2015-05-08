@@ -15,7 +15,8 @@ import sneps.Nodes.NodeSet;
 import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Entity;
 import sneps.SemanticClasses.Infimum;
-import snip.Substitutions;
+import sneps.match.LinearSubstitutions;
+import sneps.match.Substitutions;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.PSubTree;
@@ -193,7 +194,7 @@ public class PTreeTest {
 		FlagNode fn = new FlagNode(n, new Support(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
-		RuleUseInfo rui = new RuleUseInfo(new Substitutions(), 1, 0, fns);
+		RuleUseInfo rui = new RuleUseInfo(new LinearSubstitutions(), 1, 0, fns);
 		return rui;
 	}
 }

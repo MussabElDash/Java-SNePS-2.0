@@ -11,7 +11,7 @@ package snip.Rules.DataStructures;
 import java.util.Hashtable;
 import java.util.Set;
 
-import snip.Substitutions;
+import sneps.match.Substitutions;
 
 public class PTreeNode {
 	private Hashtable<Integer, RuleUseInfoSet> ruisMap;
@@ -85,9 +85,10 @@ public class PTreeNode {
 		// The upper part of this method is for incase this node is aroot node
 		// and the lower part for other nodes in the tree
 		int[] ids = new int[intersectionWithSibling.size()];
+		int index = 0;
 		Substitutions subs = rui.getSub();
 		for (int id : intersectionWithSibling) {
-			// TODO fill ids with the vars in the rui
+			ids[index++] = rui.getSub().termID(id);
 		}
 		int key = getKey(ids);
 		RuleUseInfoSet ruis = ruisMap.get(key);

@@ -83,6 +83,10 @@ public class AndNode extends RuleNode {
 		return cr;
 	}
 
+	protected Class<? extends ContextRUIS> getContextRUISNonSharedClass() {
+		return PTree.class;
+	}
+
 	private void sendReports(Context context) {
 		Iterator<RuleUseInfo> iter = contextRuiNotSent.get(context.getId())
 				.iterator();
@@ -104,7 +108,7 @@ public class AndNode extends RuleNode {
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Auto-generated method stub
+		// TODO Mussab Auto-generated method stub
 		if (tRui.getPosCount() == this.antsWithVarsNumber) {
 			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {
 				addNotSentRui(tRui, context);

@@ -69,7 +69,6 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	// */
 	// public int getIndex(RuleUseInfo r) {
 	// for (int i = 0; i < ruis.size(); i++) {
-	// // TODO
 	// throw new UnsupportedOperationException();
 	// // if (r.getSub().isEqual(rs.get(i).getSub())) {
 	// // return i;

@@ -79,7 +79,12 @@ public class SIndexing extends ContextRUIS{
 	@Override
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		RuleUseInfoSet res = new RuleUseInfoSet();
-		rui = insert(rui, null);
+		int[] vars = new int[sharedVars.size()];
+		int index = 0;
+		for(int varId: sharedVars){
+			vars[index++] = rui.getSub().termID(varId);
+		}
+		rui = insert(rui, vars);
 		res.add(rui);
 		return res;
 	}

@@ -16,7 +16,6 @@ import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
-import snip.Rules.DataStructures.SIndexing;
 import SNeBR.Context;
 
 public class AndNode extends RuleNode {
@@ -58,15 +57,7 @@ public class AndNode extends RuleNode {
 		} else {
 			crtemp = addContextRUIS(context);
 		}
-		if (shareVars) {
-			SIndexing scrtemp = (SIndexing) crtemp;
-			RuleUseInfoSet ruisRes = scrtemp.insertRUI(rui);
-			for (RuleUseInfo ruiRes : ruisRes)
-				sendRui(ruiRes, context);
-			return;
-		}
-		PTree pcrtemp = (PTree) crtemp;
-		RuleUseInfoSet res = pcrtemp.insertRUI(rui);
+		RuleUseInfoSet res = crtemp.insertRUI(rui);
 		if (res == null) {
 			res = new RuleUseInfoSet();
 		}
@@ -76,15 +67,16 @@ public class AndNode extends RuleNode {
 	}
 
 	@Override
+	protected NodeSet getPatternNodes() {
+		return antNodesWithVars;
+	}
+
+	@Override
 	protected ContextRUIS createContextRUISNonShared(Context c) {
 		PTree pTree = new PTree(c);
 		ContextRUIS cr = this.addContextRUIS(pTree);
 		pTree.buildTree(antNodesWithVars);
 		return cr;
-	}
-
-	protected Class<? extends ContextRUIS> getContextRUISNonSharedClass() {
-		return PTree.class;
 	}
 
 	private void sendReports(Context context) {

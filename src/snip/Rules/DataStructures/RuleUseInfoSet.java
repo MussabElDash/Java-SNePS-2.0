@@ -17,6 +17,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 		Iterable<RuleUseInfo> {
 	// private Vector<RuleUseInfo> ruis;
 	private Set<RuleUseInfo> ruis;
+	private boolean singleton;
 
 	// private VectorHashSet<RuleUseInfo> ruis;
 
@@ -33,11 +34,12 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	/**
 	 * Create a new empty rule use info set for ContextRUIS use
 	 */
-	public RuleUseInfoSet(Context c) {
+	public RuleUseInfoSet(Context c, boolean singleton) {
 		super(c);
 		// ruis = new Vector<RuleUseInfo>();
 		// ruis = new VectorHashSet<RuleUseInfo>();
 		ruis = new HashSet<RuleUseInfo>();
+		this.singleton = singleton;
 	}
 
 	/**
@@ -173,11 +175,17 @@ public class RuleUseInfoSet extends ContextRUIS implements
 		for (RuleUseInfo tRui : temp.ruis) {
 			this.add(tRui);
 		}
-		return temp;
+		return this;
 	}
 
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		return combineAdd(rui);
+		if (!singleton)
+			return combineAdd(rui);
+		if (isEmpty())
+			add(rui);
+		else
+			ruis = combine(rui).ruis;
+		return this;
 	}
 
 	/**

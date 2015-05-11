@@ -2,12 +2,7 @@ package snip.Rules.RuleNodes;
 
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
@@ -25,12 +20,14 @@ import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.ContextRUISSet;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
-import snip.Rules.DataStructures.GeneralSIndexing;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
-import snip.Rules.DataStructures.SIndexing;
+import snip.Rules.DataStructures.SIndex;
 import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 public abstract class RuleNode extends PropositionNode {
 
@@ -115,15 +112,7 @@ public abstract class RuleNode extends PropositionNode {
 		} else {
 			crtemp = addContextRUIS(context);
 		}
-		if (shareVars) {
-			SIndexing scrtemp = (SIndexing) crtemp;
-			RuleUseInfoSet ruisRes = scrtemp.insertRUI(rui);
-			for (RuleUseInfo ruiRes : ruisRes)
-				sendRui(ruiRes, context);
-			return;
-		}
-		RuleUseInfoSet rcrtemp = (RuleUseInfoSet) crtemp;
-		RuleUseInfoSet res = rcrtemp.insertRUI(rui);
+		RuleUseInfoSet res = crtemp.insertRUI(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
 		for (RuleUseInfo tRui : res) {
@@ -229,17 +218,11 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return ContextRUIS
 	 */
 	public ContextRUIS addContextRUIS(Context c) {
-		if (shareVars) {
-			SIndexing si = new SIndexing(c);
-			si.setSharedVars(sharedVars);
+		if (sharedVars.size() != 0) {
+			SIndex si = new SIndex(c, sharedVars, SIndex.SINGLETONRUIS,
+					getPatternNodes());
 			return this.addContextRUIS(si);
 		} else {
-			if (sharedVars.size() != 0) {
-				Class<? extends ContextRUIS> clazz = getContextRUISNonSharedClass();
-				GeneralSIndexing<? extends ContextRUIS> gsi = new GeneralSIndexing<>(
-						c, sharedVars, antNodesWithVars, clazz);
-				return this.addContextRUIS(gsi);
-			}
 			return this.addContextRUIS(createContextRUISNonShared(c));
 		}
 	}
@@ -266,7 +249,7 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return ContextRUIS
 	 */
 	protected ContextRUIS createContextRUISNonShared(Context c) {
-		return new RuleUseInfoSet(c);
+		return new RuleUseInfoSet(c, false);
 	}
 
 	/**
@@ -274,8 +257,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * 
 	 * @return
 	 */
-	protected Class<? extends ContextRUIS> getContextRUISNonSharedClass() {
-		return RuleUseInfoSet.class;
+	protected NodeSet getPatternNodes() {
+		return null;
 	}
 
 	/**

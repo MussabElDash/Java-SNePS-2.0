@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import com.google.common.collect.Sets;
-
 import sneps.CaseFrame;
 import sneps.CustomException;
 import sneps.Network;
@@ -25,11 +23,11 @@ import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
-import snip.Rules.DataStructures.SIndexing;
+import snip.Rules.DataStructures.SIndex;
 import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Support;
 
-public class SIndexingTest {
+public class SingletonSIndexTest {
 	public static void main(String[] args) throws Exception {
 		CaseFrame.createRuleCaseFrame();
 		Relation[] relations = new Relation[9];
@@ -54,14 +52,17 @@ public class SIndexingTest {
 		System.out.println("Variable Nodes: " + Arrays.toString(varNodes));
 		System.out
 				.println("Antecedent Nodes: " + Arrays.toString(antNodesTemp));
+
 		NodeSet nodeSet = new NodeSet();
 		for (NodeWithVar mn : antNodesTemp)
 			nodeSet.addNode((Node) mn);
-		SIndexing indexing = new SIndexing(null);
+
 		HashSet<Integer> varsIds = new HashSet<>();
 		for (VariableNode varNode : varNodes)
 			varsIds.add(varNode.getId());
-		indexing.setSharedVars(varsIds);
+
+		SIndex indexing = new SIndex(null, varsIds, SIndex.SINGLETONRUIS,
+				nodeSet);
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());
 		Node mary = Network.buildBaseNode("mary", new Individual());
@@ -69,13 +70,13 @@ public class SIndexingTest {
 		Node eldash = Network.buildBaseNode("eldash", new Individual());
 
 		System.out.println("====================================");
-		System.out.println("Inserting a RUIS in the SIndexing");
+		System.out.println("Inserting a RUIS in the SIndex");
 		insertIntoSIndexing(indexing, bob, mary, mussab, antNodesTemp, varNodes);
 
-		System.out.println("Inserting another RUIS in the SIndexing");
+		System.out.println("Inserting another RUIS in the SIndex");
 		insertIntoSIndexing(indexing, mussab, bob, mary, antNodesTemp, varNodes);
 
-		System.out.println("Inserting yet another RUIS in the SIndexing");
+		System.out.println("Inserting yet another RUIS in the SIndex");
 		insertIntoSIndexing(indexing, mussab, bob, eldash, antNodesTemp,
 				varNodes);
 	}
@@ -174,15 +175,17 @@ public class SIndexingTest {
 		return rui;
 	}
 
-	private static void insertIntoSIndexing(SIndexing sindexing, Node c1,
+	private static void insertIntoSIndexing(SIndex sindexing, Node c1,
 			Node c2, Node c3, NodeWithVar[] antNodesTemp,
 			VariableNode[] varNodes) {
 		RuleUseInfo rui = getPosRui((Node) antNodesTemp[0], varNodes[0],
 				varNodes[1], varNodes[2], c1, c2, c3);
 		printRuis(sindexing.insertRUI(rui));
+		
 		rui = getNegRui((Node) antNodesTemp[1], varNodes[0], varNodes[1],
 				varNodes[2], c1, c2, c3);
 		printRuis(sindexing.insertRUI(rui));
+
 		rui = getPosRui((Node) antNodesTemp[2], varNodes[0], varNodes[1],
 				varNodes[2], c1, c2, c3);
 		printRuis(sindexing.insertRUI(rui));

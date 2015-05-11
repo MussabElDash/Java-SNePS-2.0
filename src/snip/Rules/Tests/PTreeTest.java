@@ -71,11 +71,15 @@ public class PTreeTest {
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());
 		Node mary = Network.buildBaseNode("mary", new Individual());
+		Node mussab = Network.buildBaseNode("mussab", new Individual());
+		Node eldash = Network.buildBaseNode("eldash", new Individual());
 
-		RuleUseInfo rui = getRui((Node) antNodesTemp[0], varNodes[0],
-				varNodes[1], bob, mary);
-		RuleUseInfoSet ruis = tree.insertRUI(rui);
-		System.out.println(ruis.cardinality());
+		System.out.println("====================================");
+		System.out.println("Inserting a RUI in the Tree");
+
+		insertIntoTree(tree, bob, mary, mussab, eldash, antNodesTemp, varNodes);
+		System.out.println("Inserting another RUI in the Tree");
+		insertIntoTree(tree, mussab, bob, mary, eldash, antNodesTemp, varNodes);
 	}
 
 	private static VariableNode[] getVarNodes(int n) {
@@ -196,6 +200,17 @@ public class PTreeTest {
 		return mc;
 	}
 
+	private static RuleUseInfo getRui(Node signature, VariableNode var,
+			Node subs) {
+		FlagNode fn = new FlagNode(signature, new Support(), 1);
+		FlagNodeSet fns = new FlagNodeSet();
+		fns.insert(fn);
+		Substitutions sub = new LinearSubstitutions();
+		sub = sub.insert(new Binding(var, subs));
+		RuleUseInfo rui = new RuleUseInfo(sub, 1, 0, fns);
+		return rui;
+	}
+
 	private static RuleUseInfo getRui(Node signature, VariableNode var1,
 			VariableNode var2, Node sub1, Node sub2) {
 		FlagNode fn = new FlagNode(signature, new Support(), 1);
@@ -206,5 +221,34 @@ public class PTreeTest {
 		sub = sub.insert(new Binding(var2, sub2));
 		RuleUseInfo rui = new RuleUseInfo(sub, 1, 0, fns);
 		return rui;
+	}
+
+	private static void insertIntoTree(PTree tree, Node c1, Node c2, Node c3,
+			Node c4, NodeWithVar[] antNodesTemp, VariableNode[] varNodes) {
+		RuleUseInfo rui = getRui((Node) antNodesTemp[0], varNodes[0],
+				varNodes[2], c1, c3);
+		printRuis(tree.insertRUI(rui));
+		rui = getRui((Node) antNodesTemp[1], varNodes[1], varNodes[3], c2, c4);
+		printRuis(tree.insertRUI(rui));
+		rui = getRui((Node) antNodesTemp[2], varNodes[2], varNodes[3], c3, c4);
+		printRuis(tree.insertRUI(rui));
+		rui = getRui((Node) antNodesTemp[7], varNodes[0], c1);
+		printRuis(tree.insertRUI(rui));
+	}
+
+	private static void printRuis(RuleUseInfoSet ruis) {
+		System.out.println(ruis.cardinality());
+		for (RuleUseInfo tRui : ruis) {
+			System.out.println("====================================");
+			for (int i = 0; i < tRui.getSub().cardinality(); i++) {
+				System.out.print(tRui.getSub().getBinding(i).getVariable()
+						.getIdentifier());
+				System.out.print(" is Bound to: ");
+				System.out.println(tRui.getSub().getBinding(i).getNode()
+						.getIdentifier());
+			}
+		}
+		System.out.println("====================================");
+		System.out.println("====================================");
 	}
 }

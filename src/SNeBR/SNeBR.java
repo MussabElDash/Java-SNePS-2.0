@@ -7,12 +7,12 @@ import sneps.Nodes.PropositionNode;
 import sneps.SemanticClasses.*;
 
 public class SNeBR {
-	public static ContextSet contextSet = new ContextSet();;
-	public static Context currentContext = new Context();;
-	public static HashSet<Support> newPropositionSupport = new HashSet<Support>();
-	public static HashSet<Support> oldPropositionSupport = new HashSet<Support>();
-	public static Proposition newContradictingProp = new Proposition();
-	public static PropositionSet oldContradictingPropSet = new PropositionSet();
+	private static ContextSet contextSet = new ContextSet();;
+	private static Context currentContext = new Context();;
+	private static HashSet<Support> newPropositionSupport = new HashSet<Support>();
+	private static HashSet<Support> oldPropositionSupport = new HashSet<Support>();
+	private static Proposition newContradictingProp = new Proposition();
+	private static PropositionSet oldContradictingPropSet = new PropositionSet();
 
 	private SNeBR() {
 	}

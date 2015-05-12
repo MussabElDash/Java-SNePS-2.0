@@ -63,17 +63,17 @@ public class PropositionNode extends MolecularNode implements NodeWithVar {
 		if (!propSet.propositions.isEmpty()) {
 			context.setConflicting(true);
 			System.out.println("done!!!!");
-			SNeBR.oldPropositionSupport.clear();
-			SNeBR.newPropositionSupport = ((Proposition) this.getSemantic())
-					.getOrigin();
+			SNeBR.getOldPropositionSupport().clear();
+			SNeBR.setNewPropositionSupport(((Proposition) this.getSemantic())
+					.getOrigin());
 			for (Iterator<PropositionNode> iterator = propSet.propositions
 					.iterator(); iterator.hasNext();) {
 				PropositionNode p = iterator.next();
-				SNeBR.oldPropositionSupport.addAll(((Proposition) p
-						.getSemantic()).getOrigin());
+				SNeBR.getOldPropositionSupport().addAll(
+						((Proposition) p.getSemantic()).getOrigin());
 			}
-			SNeBR.restrictionsOfRestrictions(SNeBR.oldPropositionSupport,
-					SNeBR.newPropositionSupport);
+			SNeBR.restrictionsOfRestrictions(SNeBR.getOldPropositionSupport(),
+					SNeBR.getNewPropositionSupport());
 			Contradiction cont = new Contradiction(
 					(Proposition) this.getSemantic(), propSet);
 			context.addCont(cont);

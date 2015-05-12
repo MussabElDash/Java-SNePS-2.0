@@ -147,7 +147,7 @@ public class test {
 		((Proposition)m1.getSemantic()).getOriginSupport().add(s);
 		//SNeBR.assertProposition(m1, "a");
 		//SNeBR.assertProposition(m2, "a");
-		Context a =SNeBR.contextSet.getContext("a");
+		Context a =SNeBR.getContextSet().getContext("a");
 		//Iterator<Contradiction> iterator = a.contradictions.iterator();
 		PropositionSet x=new PropositionSet();
 		x.propositions.add(m2);

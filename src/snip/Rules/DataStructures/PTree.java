@@ -242,7 +242,244 @@ public class PTree extends ContextRUIS {
 		return intersection;
 	}
 
-	public Set<PSubTree> getSubTrees() {
-		return subTrees;
+	/**
+	 * Used in Testing. <br>
+	 * prints the list of propositions in each PSubTree of this PTree
+	 */
+	public void printSubTrees() {
+		for (PSubTree subTree : subTrees) {
+			System.out.println("====================================");
+			System.out.println("A PSubTree:");
+			subTree.printTreePatterns();
+		}
+	}
+
+	private class PSubTree {
+		private PTreeNode root;
+
+		public PSubTree(PTreeNode root) {
+			this.root = root;
+		}
+
+		public void printTreePatterns() {
+			printTreePatterns(root, "");
+		}
+
+		private void printTreePatterns(PTreeNode root, String s) {
+			if (root == null)
+				return;
+			System.out.println(s + root.getPats());
+			printTreePatterns(root.getLeft(), "Left: ");
+			printTreePatterns(root.getRight(), "Right: ");
+		}
+
+		public RuleUseInfoSet insert(RuleUseInfo rui) {
+			int pattern = rui.getFlagNodeSet().iterator().next().getNode()
+					.getId();
+			PTreeNode leaf = getLeafPattern(pattern, root);
+			RuleUseInfoSet res = new RuleUseInfoSet();
+			leaf.insertIntoTree(rui, res);
+			return res;
+		}
+
+		private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
+			if (pNode.getLeft() == null)
+				return pNode;
+			PTreeNode left = pNode.getLeft(), right = pNode.getRight();
+			if (left.getPats().contains(pattern))
+				return getLeafPattern(pattern, left);
+			else
+				return getLeafPattern(pattern, right);
+		}
+
+		public RuleUseInfoSet getRootRUIS() {
+			return root.getRUIS(0);
+		}
+	}
+
+	private class PTreeNode {
+		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
+		private Set<Integer> pats;
+		private Set<Integer> vars;
+		private Set<Integer> intersectionWithSibling;
+		private PTreeNode parent;
+		private PTreeNode right;
+		private PTreeNode left;
+		private PTreeNode sibling;
+
+		/**
+		 * Create a new subtree with the parent up (if up is null then this node
+		 * is the root)
+		 * 
+		 * @param p
+		 *            list of patterns ids
+		 * @param d
+		 *            list of directions
+		 * @param parent
+		 *            TreeNode
+		 */
+		public PTreeNode(Set<Integer> p, Set<Integer> v) {
+			ruisMap = new Hashtable<Integer, RuleUseInfoSet>();
+			pats = p;
+			vars = v;
+			parent = null;
+			right = null;
+			left = null;
+		}
+
+		public void insertIntoTree(RuleUseInfo rui, RuleUseInfoSet set) {
+			int key = insertRUI(rui);
+			// Since it has no sibling, it has no parent, and it is the root
+			if (sibling == null) {
+				set.add(rui);
+				return;
+			}
+			RuleUseInfoSet siblingSet = sibling.getRUIS(key);
+			if (siblingSet == null)
+				return;
+			for (RuleUseInfo tRui : siblingSet) {
+				RuleUseInfo combinedRui = rui.combine(tRui);
+				if (combinedRui == null)
+					continue;
+				parent.insertIntoTree(combinedRui, set);
+			}
+		}
+
+		/**
+		 * Add rui to the rule use info set of this node and returns the key
+		 * that was mapped to the rui
+		 * 
+		 * @param rui
+		 *            RuleUseInfo
+		 *
+		 * @return int
+		 *
+		 */
+		public int insertRUI(RuleUseInfo rui) {
+			// Since it has no sibling, it has no parent, and it is the root
+			if (sibling == null) {
+				RuleUseInfoSet ruis = ruisMap.get(0);
+				if (ruis == null) {
+					ruis = new RuleUseInfoSet();
+					ruisMap.put(0, ruis);
+				}
+				ruis.add(rui);
+				return 0;
+			}
+			// The upper part of this method is for incase this node is aroot
+			// node
+			// and the lower part for other nodes in the tree
+			int[] ids = new int[intersectionWithSibling.size()];
+			int index = 0;
+			for (int id : intersectionWithSibling) {
+				ids[index++] = rui.getSub().termID(id);
+			}
+			int key = getKey(ids);
+			RuleUseInfoSet ruis = ruisMap.get(key);
+			if (ruis == null) {
+				ruis = new RuleUseInfoSet();
+				ruisMap.put(key, ruis);
+			}
+			ruis.add(rui);
+			return key;
+		}
+
+		/**
+		 * Return the rule use info set that maps to set of variables'
+		 * substitutions' key
+		 * 
+		 * @param index
+		 *            int
+		 * 
+		 * @return RuleUseInfoSet
+		 */
+		public RuleUseInfoSet getRUIS(int index) {
+			return ruisMap.get(index);
+		}
+
+		/**
+		 * Return the right child of this node
+		 * 
+		 * @return
+		 */
+		public PTreeNode getRight() {
+			return right;
+		}
+
+		/**
+		 * Return the left child of this node
+		 * 
+		 * @return
+		 */
+		public PTreeNode getLeft() {
+			return left;
+		}
+
+		/**
+		 * insert a left and right children
+		 * 
+		 * @param leftNode
+		 *            PTreeNode that to be inserted as a left child
+		 * @param rightNode
+		 *            PTreeNode that to be inserted as a right child
+		 * @param intersection
+		 */
+		public void insertLeftAndRight(PTreeNode leftNode, PTreeNode rightNode,
+				Set<Integer> intersection) {
+			leftNode.parent = this;
+			rightNode.parent = this;
+			leftNode.sibling = rightNode;
+			rightNode.sibling = leftNode;
+			leftNode.intersectionWithSibling = intersection;
+			rightNode.intersectionWithSibling = intersection;
+			left = leftNode;
+			right = rightNode;
+		}
+
+		/**
+		 * Return the list of patterns
+		 * 
+		 * @return int[]
+		 */
+		public Set<Integer> getPats() {
+			return pats;
+		}
+
+		/**
+		 * Return the list of variables
+		 * 
+		 * @return
+		 */
+		public Set<Integer> getVars() {
+			return vars;
+		}
+
+		/**
+		 * Get the index of a RuleUseInfo in the table by the id's of its
+		 * substitutions
+		 * 
+		 * @param x
+		 *            int[]
+		 * @return int
+		 */
+		private int getKey(int[] x) {
+			int p = 16777619;
+			int hash = (int) 2166136261L;
+			for (int i = 0; i < x.length; ++i) {
+				hash += (hash ^ x[i]) * p;
+			}
+			hash += hash << 13;
+			hash ^= hash >> 7;
+			hash += hash << 3;
+			hash ^= hash >> 17;
+			hash += hash << 5;
+			return hash;
+		}
+
+		@Override
+		public String toString() {
+			return pats.toString();
+		}
+
 	}
 }

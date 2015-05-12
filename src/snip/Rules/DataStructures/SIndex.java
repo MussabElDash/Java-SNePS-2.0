@@ -1,6 +1,5 @@
 package snip.Rules.DataStructures;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Set;
 

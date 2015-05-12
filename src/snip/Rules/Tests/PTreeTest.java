@@ -21,7 +21,6 @@ import sneps.match.LinearSubstitutions;
 import sneps.match.Substitutions;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
-import snip.Rules.DataStructures.PSubTree;
 import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
@@ -61,12 +60,9 @@ public class PTreeTest {
 			nodeSet.addNode((Node) mn);
 		PTree tree = new PTree(null);
 		tree.buildTree(nodeSet);
+		
+		tree.printSubTrees();
 
-		for (PSubTree subTree : tree.getSubTrees()) {
-			System.out.println("====================================");
-			System.out.println("A PSubTree:");
-			subTree.printTreePatterns();
-		}
 		System.out.println("====================================");
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());

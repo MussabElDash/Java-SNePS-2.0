@@ -5,29 +5,23 @@ import java.util.Iterator;
 
 import sneps.Nodes.PropositionNode;
 import sneps.SemanticClasses.*;
-public class SNeBR {
-	public static ContextSet contextSet =new ContextSet();;
-	public static Context currentContext=new Context();;
-	public static HashSet<Support> newPropositionSupport= new HashSet<Support>();
-	public static HashSet<Support> oldPropositionSupport= new HashSet<Support>();
-	public static Proposition newContradictingProp = new Proposition();
-	public static PropositionSet oldContradictingPropSet= new PropositionSet();
 
-	/**
-	 * contstructor of this class
-	 */
-	public SNeBR() {
-		contextSet = new ContextSet();
-		currentContext = new Context();
-		newPropositionSupport = new HashSet<Support>();
-		oldPropositionSupport = new HashSet<Support>();
+public class SNeBR {
+	public static ContextSet contextSet = new ContextSet();;
+	public static Context currentContext = new Context();;
+	public static HashSet<Support> newPropositionSupport = new HashSet<Support>();
+	public static HashSet<Support> oldPropositionSupport = new HashSet<Support>();
+	public static Proposition newContradictingProp = new Proposition();
+	public static PropositionSet oldContradictingPropSet = new PropositionSet();
+
+	private SNeBR() {
 	}
 
 	/**
          * 
          */
-	public Support createSupport(PropositionSet propSet) {
-		Context c = this.contextSet.getContext(propSet);
+	public static Support createSupport(PropositionSet propSet) {
+		Context c = contextSet.getContext(propSet);
 		Support s = new Support(c);
 		return s;
 
@@ -39,12 +33,12 @@ public class SNeBR {
 	 * @param context
 	 *            the context i want to make the current context
 	 */
-	public void setCurrentContext(Context context) {
-		this.currentContext = context;
+	public static void setCurrentContext(Context context) {
+		currentContext = context;
 	}
 
-	public Context getCurrentContext() {
-		return this.currentContext;
+	public static Context getCurrentContext() {
+		return currentContext;
 	}
 
 	public Context getContextByName(String name) {
@@ -87,7 +81,8 @@ public class SNeBR {
 	 * @param name
 	 *            the name of the context i want to remove the proposition from
 	 */
-	public static Context removeProposition(PropositionNode proposition, String name) {
+	public static Context removeProposition(PropositionNode proposition,
+			String name) {
 		Context context = contextSet.getContext(name);
 
 		if (context == null) {
@@ -97,7 +92,8 @@ public class SNeBR {
 		} else if (context.hypothesisSet.propositions.contains(proposition)) {
 			context.RemoveName(name);
 			Context newContext = new Context(context);
-			if (((Proposition)proposition.getSemantic()).getContextSet().contextSet.contains(context)) {
+			if (((Proposition) proposition.getSemantic()).getContextSet()
+					.contains(context)) {
 				newContext.hypothesisSet.propositions.remove(proposition);
 				newContext.removePropFromRestriction(proposition);
 				newContext.addName(name);
@@ -154,7 +150,8 @@ public class SNeBR {
 	 * @param name
 	 *            the name of the context
 	 */
-	public static Context assertProposition(PropositionNode proposition, String name) {
+	public static Context assertProposition(PropositionNode proposition,
+			String name) {
 		Context context = contextSet.getContext(name);
 		if (context == null) {
 			Context newContext = new Context(proposition, name);
@@ -169,7 +166,8 @@ public class SNeBR {
 				newContext.addPropToRestriction(proposition);
 				newContext = afterAssert(newContext);
 				context.addContextToProp(newContext);
-				((Proposition) proposition.getSemantic()).addContext(newContext);
+				((Proposition) proposition.getSemantic())
+						.addContext(newContext);
 				context.RemoveName(name);
 				newContext.addName(name);
 				proposition.contradiction(newContext);
@@ -208,8 +206,6 @@ public class SNeBR {
 			HashSet<Support> oldPropositionSupport) {
 		SNeBR.oldPropositionSupport = oldPropositionSupport;
 	}
-
-
 
 	public static Proposition getNewContradictingProp() {
 		return newContradictingProp;
@@ -320,7 +316,7 @@ public class SNeBR {
 	 * @return the chosen context whether it turns out to be an old or new one
 	 */
 	public static Context afterAssert(Context context) {
-		for (Iterator<Context> iterator = contextSet.contextSet.iterator(); iterator
+		for (Iterator<Context> iterator = contextSet.iterator(); iterator
 				.hasNext();) {
 			Context temp = iterator.next();
 			if (context.hypothesisSet.propositions
@@ -346,7 +342,7 @@ public class SNeBR {
 	 */
 	// must change like the other after removed
 	public static Context afterRemoved(Context context, String name) {
-		for (Iterator<Context> iterator = contextSet.contextSet.iterator(); iterator
+		for (Iterator<Context> iterator = contextSet.iterator(); iterator
 				.hasNext();) {
 			Context cont = iterator.next();
 			if (cont.hypothesisSet.propositions
@@ -372,8 +368,8 @@ public class SNeBR {
 	 * @return returns the context chosen whether it's an old or a new one
 	 */
 	private static Context afterRemoved(Context context) {
-		
-		for (Iterator<Context> iterator = contextSet.contextSet.iterator(); iterator
+
+		for (Iterator<Context> iterator = contextSet.iterator(); iterator
 				.hasNext();) {
 			Context cont = iterator.next();
 			if (cont.hypothesisSet.propositions
@@ -381,7 +377,7 @@ public class SNeBR {
 				context.unionRestriction(cont);
 				contextSet.contextSet.remove(cont);
 				contextSet.contextSet.add(context);
-				System.out.println(contextSet.contextSet.contains(context)+"zzzzz");
+				System.out.println(contextSet.contains(context) + "zzzzz");
 				return context;
 			}
 
@@ -402,14 +398,16 @@ public class SNeBR {
 	 */
 	public static void propositionsToBeDiscarded(PropositionSet propSet,
 			String whichSupport, Context context, Contradiction contradiction) {
-		newPropositionSupport=contradiction.newContradictingProp.getOriginSupport();
-		for (Iterator<PropositionNode> iterator = contradiction.oldContradictingPropSet.propositions.iterator(); iterator
-				.hasNext();) {
-			oldPropositionSupport.addAll(((Proposition)(iterator.next().getSemantic())).getOriginSupport());
+		newPropositionSupport = contradiction.newContradictingProp
+				.getOriginSupport();
+		for (Iterator<PropositionNode> iterator = contradiction.oldContradictingPropSet.propositions
+				.iterator(); iterator.hasNext();) {
+			oldPropositionSupport.addAll(((Proposition) (iterator.next()
+					.getSemantic())).getOriginSupport());
 		}
 		if (whichSupport.equals("oldPropositionSupport")) {
 			if (context.contradictions.contains(contradiction)) {
-				System.out.println(oldPropositionSupport.size()+"sss");
+				System.out.println(oldPropositionSupport.size() + "sss");
 				context.contradictions.remove(contradiction);
 				restrictionOfContext(oldPropositionSupport, context,
 						newPropositionSupport);
@@ -447,16 +445,17 @@ public class SNeBR {
 		for (Iterator<Support> iterator = supportSet.iterator(); iterator
 				.hasNext();) {
 			Support support = iterator.next();
-			if (support.assertedInContext(context)){
+			if (support.assertedInContext(context)) {
 				context.addRestriction(support.originSet, null, supportSet2);
-			}else {
+			} else {
 				System.out.println("zz");
 				PropositionSet propSet = new PropositionSet();
 				for (Iterator<PropositionNode> iterator1 = support.originSet.hypothesisSet.propositions
 						.iterator(); iterator1.hasNext();) {
 					PropositionNode prop1 = iterator1.next();
 
-					if (!((Proposition) prop1.getSemantic()).isAsserted(context))
+					if (!((Proposition) prop1.getSemantic())
+							.isAsserted(context))
 						propSet.propositions.add(prop1);
 				}
 				context.addRestriction(support.originSet, propSet, supportSet2);
@@ -475,8 +474,8 @@ public class SNeBR {
 	 * @param supportSet2
 	 *            the second set of supports
 	 */
-	public static void restrictionsOfRestrictions(
-			HashSet<Support> supportSet1, HashSet<Support> supportSet2) {
+	public static void restrictionsOfRestrictions(HashSet<Support> supportSet1,
+			HashSet<Support> supportSet2) {
 		for (Iterator<Support> iterator1 = supportSet1.iterator(); iterator1
 				.hasNext();) {
 			Support S1 = iterator1.next();
@@ -502,24 +501,22 @@ public class SNeBR {
 	private static void multipleRemove(PropositionSet propSet, Context context) {
 		Context newContext = new Context(context);
 		newContext.addNames(context.getNames());
-		for (Iterator<PropositionNode> iterator = propSet.propositions.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<PropositionNode> iterator = propSet.propositions
+				.iterator(); iterator.hasNext();) {
 			PropositionNode prop = iterator.next();
 			newContext.hypothesisSet.propositions.remove(prop);
 			newContext.removePropFromRestriction(prop);
-			
+
 		}
 		newContext = afterRemoved(newContext);
-		System.out.println(contextSet.contextSet.contains(newContext));
-		if(newContext.contradictions.size()==0){
+		System.out.println(contextSet.contains(newContext));
+		if (newContext.contradictions.size() == 0) {
 			newContext.setConflict(false);
-		
+
 		}
-		
+
 		context.clearNames();
-		
+
 	}
-
-
 
 }

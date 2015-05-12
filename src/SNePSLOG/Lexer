@@ -14,6 +14,7 @@ import java_cup.runtime.Symbol;
 %type java_cup.runtime.Symbol
 
 %eofval{
+	System.out.println(sym.EOF);
 	return new Symbol(sym.EOF, null);
 %eofval}
 
@@ -44,7 +45,9 @@ ASK=ask
 ASKIFNOT=askifnot
 ASKWH=askwh
 ASKWHNOT=askwhnot
-
+PRINT=print
+MODE=mode
+TEST=test
 
 CONVERSE=converse
 COMPOSE=compose
@@ -142,6 +145,12 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 <YYINITIAL> "<=>" { 
 	return new Symbol(sym.DOUBLEIMPLICATION, yytext());
 }
+<YYINITIAL> "[" { 
+	return new Symbol(sym.LSQUARE, yytext());
+}
+<YYINITIAL> "]" { 
+	return new Symbol(sym.RSQUARE, yytext());
+}
 <YYINITIAL> "~" { 
 	return new Symbol(sym.NOT, yytext());
 }
@@ -150,6 +159,9 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 <YYINITIAL> {ADJUST} { 
 	return new Symbol(sym.ADJUST, yytext());
+}
+<YYINITIAL> {TEST} { 
+	return new Symbol(sym.TEST, yytext());
 }
 <YYINITIAL> {CONVERSE} { 
 	return new Symbol(sym.CONVERSE, yytext());
@@ -270,6 +282,12 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 <YYINITIAL> {SETDEFAULTCONTEXT} { 
 	return new Symbol(sym.SETDEFAULTCONTEXT, yytext());
+}
+<YYINITIAL> {PRINT} { 
+	return new Symbol(sym.PRINT, yytext());
+}
+<YYINITIAL> {MODE} { 
+	return new Symbol(sym.MODE, yytext());
 }
 <YYINITIAL> {SETMODE1} { 
 	return new Symbol(sym.SETMODE1, yytext());

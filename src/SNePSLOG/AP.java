@@ -27,7 +27,10 @@ private static ArrayList<String> termSets = new ArrayList<String>();
 private static String [] list = new String [10000];
 private static int mode = 1;
 private static boolean session = true;
+
 	
+
+
 	public static void h() {
 		System.out.println("hi");
 	}
@@ -223,6 +226,13 @@ private static boolean session = true;
 	    }
 	    return list;
 	}
+	public static ArrayList<Node> reverseNodesList(ArrayList<Node> list) {
+	    for(int i = 0, j = list.size() - 1; i < j; i++) {
+	        list.add(i, list.remove(j));
+	    }
+	    return list;
+	}
+	
 
 	public static String convertArrayToString(ArrayList<String> list){
 		String strResult ="";

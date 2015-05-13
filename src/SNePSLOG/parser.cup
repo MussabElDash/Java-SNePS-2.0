@@ -44,10 +44,10 @@ terminal		 NM,QM,LP,ID,EM, RP, CL, DT, II, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURL
 ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD,DEFINERELATION,PRINT,MODE,TEST,LSQUARE,RSQUARE;
 
 /* Non-terminals */
-nonterminal	String		  entailment, terminalPunctuation,qvar,withSomeTerm,withAllTerm,prefixedTerm,wff,nexistsParamters,helpersConnectives,infixedTerm,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,definERelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,helperQ,helperQQ,caseType,voidCommand,getMode,SymbolTest;
+nonterminal	String		   terminalPunctuation,qvar,withSomeTerm,withAllTerm,nexistsParamters,helpersConnectives,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,definERelation,identifier,unipath,unipathHelper,unipathType,path,pathH,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,helperQ,helperQQ,caseType,voidCommand,getMode,SymbolTest;
 
 
-nonterminal Node SNePSLOGsymbol,atomicTerm,andorTerm,threshTerm,negatedTerm,nexistsTerm,sesy;
+nonterminal Node SNePSLOGsymbol,atomicTerm,andorTerm,threshTerm,negatedTerm,nexistsTerm,sesy,prefixedTerm,entailment,infixedTerm,wff;
 nonterminal ArrayList<String> symbolH;
 nonterminal ArrayList<ArrayList<Node>> atomicTermH,termSetSequence,termSetH;
 nonterminal ArrayList<Node> termHelper,termSequence,termSet,symbolSequence,condH;
@@ -124,12 +124,412 @@ SNePSLOGfunction ::= PARSING {:RESULT="parsing";:}|ACTING {:RESULT="acting";:}|T
 
 wff ::=  infixedTerm:e1 {:RESULT=e1;:} | entailment:e{:RESULT=e;:} |prefixedTerm:p{:RESULT=p;:};
 
-infixedTerm ::= prefixedTerm:p1 helpersConnectives:h1 prefixedTerm:p2 {:RESULT=p1+" "+h1+" "+p2;:} | prefixedTerm:p3 helpersConnectives:h2 infixedTerm:i2 {:RESULT=p3+" "+h2+" "+i2;:};
+infixedTerm ::= prefixedTerm:p1 helpersConnectives:h1 prefixedTerm:p2 {:
+
+	if(h1.equalsIgnoreCase("and")){
+
+		Entity tmin = new Entity();
+		Node n = Network.buildBaseNode(2+"",tmin);
+	
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minRel = Network.defineRelation("min","Entity","none",1);
+		Relation maxRel = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minRel;
+		hey[0][1] = n;
+
+		hey[1][0] = maxRel;
+		hey[1][1] = n;
+
+		hey[2][0] = args;
+		hey[2][1] = p1;
+
+		hey[3][0] = args;
+		hey[3][1] = p2;
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxRel, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+	}
+	else if(h1.equalsIgnoreCase("or")){
+		Entity tmin = new Entity();
+		Node one = Network.buildBaseNode(1+"",tmin);
+
+		Entity tn = new Entity();
+		Node n = Network.buildBaseNode(2+"",tn);
+		
+	
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minRel = Network.defineRelation("min","Entity","none",1);
+		Relation maxRel = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minRel;
+		hey[0][1] = one;
+
+		hey[1][0] = maxRel;
+		hey[1][1] = n;
+
+		hey[2][0] = args;
+		hey[2][1] = p1;
+
+		hey[3][0] = args;
+		hey[3][1] = p2;
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxRel, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;	
+	}
+	/*<=>*/
+	else{
+		Entity tThreshMin = new Entity();
+		Node one = Network.buildBaseNode(1+"",tThreshMin);
+		
+		
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minThresh = Network.defineRelation("min","Entity","none",1);
+		Relation maxThresh = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minThresh;
+		hey[0][1] = one;
+
+		hey[1][0] = maxThresh;
+		hey[1][1] = one;
+
+		hey[2][0] = args;
+		hey[2][1] = p1;
+		
+		hey[3][0] = args;
+		hey[3][1] = p2;
+		
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minThresh, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxThresh, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);	
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+			
+
+	}
+:}
+| 
+prefixedTerm:p3 helpersConnectives:h2 infixedTerm:i2 {:
+
+	if(h2.equalsIgnoreCase("and")){
+
+		Entity tmin = new Entity();
+		Node n = Network.buildBaseNode(2+"",tmin);
+	
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minRel = Network.defineRelation("min","Entity","none",1);
+		Relation maxRel = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minRel;
+		hey[0][1] = n;
+
+		hey[1][0] = maxRel;
+		hey[1][1] = n;
+
+		hey[2][0] = args;
+		hey[2][1] = p3;
+
+		hey[3][0] = args;
+		hey[3][1] = i2;
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxRel, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+	}
+	else if(h2.equalsIgnoreCase("or")){
+		Entity tmin = new Entity();
+		Node one = Network.buildBaseNode(1+"",tmin);
+
+		Entity tn = new Entity();
+		Node n = Network.buildBaseNode(2+"",tn);
+		
+	
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minRel = Network.defineRelation("min","Entity","none",1);
+		Relation maxRel = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minRel;
+		hey[0][1] = one;
+
+		hey[1][0] = maxRel;
+		hey[1][1] = n;
+
+		hey[2][0] = args;
+		hey[2][1] = p3;
+
+		hey[3][0] = args;
+		hey[3][1] = i2;
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxRel, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;	
+	}
+	/*<=>*/
+	else{
+		Entity tThreshMin = new Entity();
+		Node one = Network.buildBaseNode(1+"",tThreshMin);
+		
+		
+		Relation args = Network.defineRelation("args","Entity","none",1);
+		Relation minThresh = Network.defineRelation("min","Entity","none",1);
+		Relation maxThresh = Network.defineRelation("max","Entity","none",1);
+
+		Object [][] hey = new Object [4][2];
+
+		hey[0][0] = minThresh;
+		hey[0][1] = one;
+
+		hey[1][0] = maxThresh;
+		hey[1][1] = one;
+
+		hey[2][0] = args;
+		hey[2][1] = p3;
+		
+		hey[3][0] = args;
+		hey[3][1] = i2;
+		
+
+		LinkedList<RCFP> mido = new LinkedList<RCFP>();
+		RCFP rc1 = Network.defineRelationPropertiesForCF(minThresh, "none", 1);
+		RCFP rc2 = Network.defineRelationPropertiesForCF(maxThresh, "none", 1);
+		RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
+		mido.add(rc1);
+		mido.add(rc2);
+		mido.add(rc3);	
+
+		CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+		Node reso = Network.buildMolecularNode(hey, agentAct);
+		RESULT=reso;
+			
+
+	}
+
+:};
  
 helpersConnectives ::= AND{:RESULT="and";:} | OR{:RESULT="or";:}| DOUBLEIMPLICATION{:RESULT="<=>";:};
 
 
-entailment ::= termSet:t1 ARROW termSet:t2 {:RESULT=t1+ "ARROW "+t2;:}|termSet:t3 ORENTAIL termSet:t4 {:RESULT=t3+" ORENTAIL "+t4;:}  | termSet:t5 ANDENTAIL termSet:t6 {:RESULT=t5+" ANDENTAIL "+t6;:} | termSet:t7 II termSet:t8 {:RESULT=t7+" numerical entail "+t8;:};	
+/*
+***entailments***
+A => B (arrow)
+A &=> B (andEntail)
+A v=> B (orEntail)
+A i=> B (II)
+*/
+entailment ::= termSet:t1 ARROW termSet:t2 {:
+	
+	
+	Relation anty = Network.defineRelation("ant","Entity","none",1);
+	Relation cq = Network.defineRelation("cq","Entity","none",1);
+
+	Object [][] hey = new Object [t1.size()+t2.size()][2];
+
+	
+
+	int iForArray = 0;
+	int iCounter =0;
+	while(iCounter <= t1.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t1.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	int iCount =0;
+	while(iCount <= t2.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t2.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	LinkedList<RCFP> mido = new LinkedList<RCFP>();
+	RCFP rc1 = Network.defineRelationPropertiesForCF(anty, "none", 1);
+	RCFP rc2 = Network.defineRelationPropertiesForCF(cq, "none", 1);
+	
+	mido.add(rc1);
+	mido.add(rc2);
+	
+
+	CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+	Node reso = Network.buildMolecularNode(hey, agentAct);
+	RESULT=reso;	
+
+:}
+|
+termSet:t3 ORENTAIL termSet:t4 {:
+	
+	Relation anty = Network.defineRelation("ant","Entity","none",1);
+	Relation cq = Network.defineRelation("cq","Entity","none",1);
+
+	Object [][] hey = new Object [t3.size()+t4.size()][2];
+
+	
+
+	int iForArray = 0;
+	int iCounter =0;
+	while(iCounter <= t3.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t3.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	int iCount =0;
+	while(iCount <= t4.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t4.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	LinkedList<RCFP> mido = new LinkedList<RCFP>();
+	RCFP rc1 = Network.defineRelationPropertiesForCF(anty, "none", 1);
+	RCFP rc2 = Network.defineRelationPropertiesForCF(cq, "none", 1);
+	
+	mido.add(rc1);
+	mido.add(rc2);
+	
+
+	CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+	Node reso = Network.buildMolecularNode(hey, agentAct);
+	RESULT=reso;	
+:}
+| 
+termSet:t5 ANDENTAIL termSet:t6 {:
+Relation anty = Network.defineRelation("&ant","Entity","none",1);
+	Relation cq = Network.defineRelation("cq","Entity","none",1);
+
+	Object [][] hey = new Object [t6.size()+t5.size()][2];
+
+	
+
+	int iForArray = 0;
+	int iCounter =0;
+	while(iCounter <= t5.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t5.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	int iCount =0;
+	while(iCount <= t6.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t6.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	LinkedList<RCFP> mido = new LinkedList<RCFP>();
+	RCFP rc1 = Network.defineRelationPropertiesForCF(anty, "none", 1);
+	RCFP rc2 = Network.defineRelationPropertiesForCF(cq, "none", 1);
+	
+	mido.add(rc1);
+	mido.add(rc2);
+	
+
+	CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+	Node reso = Network.buildMolecularNode(hey, agentAct);
+	RESULT=reso;	
+:} 
+| 
+termSet:t7 II:sign termSet:t8 {:
+
+	Relation thresh = Network.defineRelation("thresh","Entity","none",1);
+	Relation anty = Network.defineRelation("&ant","Entity","none",1);
+	Relation cq = Network.defineRelation("cq","Entity","none",1);
+	String all = sign+"";
+	String i = all.charAt(0)+"";
+	Object [][] hey = new Object [1+t7.size()+t8.size()][2];
+
+	hey[0][0] = thresh;
+	hey[0][1] = Network.buildBaseNode(i,new Entity());
+
+	int iForArray = 1;
+	int iCounter =0;
+	while(iCounter <= t7.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t7.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
+	int iCount =0;
+	while(iCount <= t8.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t8.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+
+
+	
+	LinkedList<RCFP> mido = new LinkedList<RCFP>();
+	RCFP rc1 = Network.defineRelationPropertiesForCF(anty, "none", 1);
+	RCFP rc2 = Network.defineRelationPropertiesForCF(cq, "none", 1);
+	RCFP rc3 = Network.defineRelationPropertiesForCF(thresh, "none", 1);
+	mido.add(rc1);
+	mido.add(rc2);
+	mido.add(rc3);
+
+	CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
+	Node reso = Network.buildMolecularNode(hey, agentAct);
+	RESULT=reso;	
+
+
+:};	
 
 
 
@@ -165,9 +565,9 @@ RESULT=new ArrayList<Node>();
 
 
 
-prefixedTerm ::= negatedTerm:n{:RESULT=n+"";:} | andorTerm:a{:RESULT=a+"";:} | 
-allTerm:l{:RESULT=l+"";:} | nexistsTerm:x{:RESULT=x+"";:}
-| threshTerm:h{:RESULT=h+"";:} | atomicTerm:i{:RESULT=i+"";:};
+prefixedTerm ::= negatedTerm:n{:RESULT=n;:} | andorTerm:a{:RESULT=a;:} | 
+allTerm:l{:RESULT=null;:} | nexistsTerm:x{:RESULT=x;:}
+| threshTerm:h{:RESULT=h;:} | atomicTerm:i{:RESULT=i;:};
 
 
 allTerm ::= ALL LP symbolSequence:s	RP LP wff:w RP {:RESULT=s+" "+w;:};
@@ -176,21 +576,39 @@ negatedTerm ::= NOT atomicTerm:a{:
 
 	
 	
-	Relation not = Network.defineRelation("not","Entity","none",1);
+	Entity tmin = new Entity();
+	Node min = Network.buildBaseNode(0+"",tmin);
 	
-	Object [][] hey = new Object [1][2];
+	Entity tmax = new Entity();
+	Node max = Network.buildBaseNode(0+"",tmax);
 
-	hey[0][0] = not;
-	hey[0][1] = a;
+	Relation args = Network.defineRelation("args","Entity","none",1);
+	Relation minRel = Network.defineRelation("min","Entity","none",1);
+	Relation maxRel = Network.defineRelation("max","Entity","none",1);
 
-	
+	Object [][] hey = new Object [3][2];
+
+	hey[0][0] = minRel;
+	hey[0][1] = min;
+
+	hey[1][0] = maxRel;
+	hey[1][1] = max;
+
+	hey[2][0] = args;
+	hey[2][1] = a;
+
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();
-	RCFP rc1 = Network.defineRelationPropertiesForCF(not, "none", 1);
+	RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
+	RCFP rc2 = Network.defineRelationPropertiesForCF(maxRel, "none", 1);
+	RCFP rc3 = Network.defineRelationPropertiesForCF(args, "none", 1);
 	mido.add(rc1);
+	mido.add(rc2);
+	mido.add(rc3);
 
 	CaseFrame agentAct = Network.defineCaseFrame("Entity", mido);
 	Node reso = Network.buildMolecularNode(hey, agentAct);
 	RESULT=reso;
+	
 	
 
 :};
@@ -209,7 +627,7 @@ if(x>=0 && y>=x){
 	Relation minRel = Network.defineRelation("min","Entity","none",1);
 	Relation maxRel = Network.defineRelation("max","Entity","none",1);
 
-	Object [][] hey = new Object [3][2];
+	Object [][] hey = new Object [2+t.size()][2];
 
 	hey[0][0] = minRel;
 	hey[0][1] = min;
@@ -217,8 +635,15 @@ if(x>=0 && y>=x){
 	hey[1][0] = maxRel;
 	hey[1][1] = max;
 
-	hey[2][0] = args;
-	hey[2][1] = t;
+	int iForArray = 2;
+	int iCounter =0;
+	while(iCounter <= t.size()){
+		hey[iForArray][0] = args;
+		hey[iForArray][1] = t.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+	
 
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();
 	RCFP rc1 = Network.defineRelationPropertiesForCF(minRel, "none", 1);
@@ -254,7 +679,7 @@ if(x>=0 && y>=x)
 	Relation minThresh = Network.defineRelation("min","Entity","none",1);
 	Relation maxThresh = Network.defineRelation("max","Entity","none",1);
 
-	Object [][] hey = new Object [3][2];
+	Object [][] hey = new Object [2+t.size()][2];
 
 	hey[0][0] = minThresh;
 	hey[0][1] = n1;
@@ -262,9 +687,14 @@ if(x>=0 && y>=x)
 	hey[1][0] = maxThresh;
 	hey[1][1] = n2;
 
-	hey[2][0] = args;
-	hey[2][1] = t;
-
+int iForArray = 2;
+	int iCounter =0;
+	while(iCounter <= t.size()){
+		hey[iForArray][0] = args;
+		hey[iForArray][1] = t.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();
 	RCFP rc1 = Network.defineRelationPropertiesForCF(minThresh, "none", 1);
 	RCFP rc2 = Network.defineRelationPropertiesForCF(maxThresh, "none", 1);
@@ -296,13 +726,19 @@ if(x>=0)
 	Relation minThresh = Network.defineRelation("threshi","Entity","none",1);
 
 
-	Object [][] hey = new Object [2][2];
+	Object [][] hey = new Object [1+t1.size()][2];
 
 	hey[0][0] = minThresh;
 	hey[0][1] = n1;
 
-	hey[1][0] = args;
-	hey[1][1] = t1;
+	int iForArray = 1;
+	int iCounter = 0;
+	while(iCounter <= t1.size()){
+		hey[iForArray][0] = args;
+		hey[iForArray][1] = t1.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
 
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();
 	RCFP rc1 = Network.defineRelationPropertiesForCF(minThresh, "none", 1);
@@ -344,7 +780,7 @@ if(counter == 1){ /*means only j*/
 	Relation anty = Network.defineRelation("&ant","Entity","none",1);
 	Relation cq = Network.defineRelation("cq","Entity","none",1);
 
-	Object [][] hey = new Object [4][2];
+	Object [][] hey = new Object [2+t1.size()+t2.size()][2];
 
 	hey[0][0] = emax;
 	hey[0][1] = jNode;
@@ -352,12 +788,23 @@ if(counter == 1){ /*means only j*/
 	hey[1][0] = pveb;
 	hey[1][1] = s;
 
-	hey[2][0] = anty;
-	hey[2][1] = t1;
-	
-	hey[2][0] = cq;
-	hey[2][1] = t2;
+	int iForArray = 2;
+	int iCounter =0;
+	while(iCounter <= t1.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t1.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
 
+
+	int iCount =0;
+	while(iCount <= t2.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t2.get(iCount);
+		iForArray++;
+		iCount++;
+	}
 
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();
 	RCFP rc1 = Network.defineRelationPropertiesForCF(emax, "none", 1);
@@ -402,11 +849,23 @@ else if(counter ==2){/*means only ik*/
 	hey[2][0] = pveb;
 	hey[2][1] = s;
 
-	hey[3][0] = anty;
-	hey[3][1] = t1;
-	
-	hey[4][0] = cq;
-	hey[4][1] = t2;
+	int iForArray = 2;
+	int iCounter =0;
+	while(iCounter <= t1.size()){
+		hey[iForArray][0] = anty;
+		hey[iForArray][1] = t1.get(iCounter);
+		iForArray++;
+		iCounter++;
+	}
+
+
+	int iCount =0;
+	while(iCount <= t2.size()){
+		hey[iForArray][0] = cq;
+		hey[iForArray][1] = t2.get(iCount);
+		iForArray++;
+		iCount++;
+	}
 
 
 	LinkedList<RCFP> mido = new LinkedList<RCFP>();

@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import sneps.Relation;
 import sneps.Cables.DownCable;
 import sneps.Cables.DownCableSet;
-import sneps.Nodes.MolecularNode;
+import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.VariableNode;
 
@@ -99,7 +99,7 @@ public class Pattern extends Molecular {
 	 * 
 	 * @return true if both nodes has the same free variables, and false otherwise.
 	 */
-	public boolean hasSameFreeVariablesAs(MolecularNode mNode) {
+	public boolean hasSameFreeVariablesAs(Node mNode) {
 		if(mNode.getSyntacticType().equals("Pattern")){
 			LinkedList<VariableNode> freeVars = ((Pattern)mNode.getSyntactic()).getFreeVariables();
 			if (freeVars.size() != this.freeVariables.size())

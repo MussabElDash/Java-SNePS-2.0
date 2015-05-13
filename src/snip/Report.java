@@ -4,6 +4,7 @@ package snip;
 import sneps.Nodes.Node;
 import SNeBR.Context;
 import SNeBR.Support;
+import sneps.match.Substitutions;
 
 public class Report {
 
@@ -26,12 +27,12 @@ public class Report {
 	}
 
 	public Substitutions getSubstituions() {
-		// TODO
+		// TODO Akram
 		return null;
 	}
 
 	 public Support getSupport() {
-		 // TODO
+		 // TODO Akram
 		 return null;
 	 }
 
@@ -52,7 +53,6 @@ public class Report {
 	}
 
 //	public void addBinding(Binding m) {
-//		// TODO
 //		// this.substitution.putIn(m);
 //	}
 

@@ -15,8 +15,9 @@ import java.util.LinkedList;
 import sneps.Cables.DownCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Pattern;
+import snip.Rules.Interfaces.NodeWithVar;
 
-public class PatternNode extends MolecularNode{
+public class PatternNode extends MolecularNode implements NodeWithVar{
 
 	/**
 	 * The first constructor of this class.
@@ -74,8 +75,8 @@ public class PatternNode extends MolecularNode{
 	 * 
 	 * @return true if both nodes has the same free variables, and false otherwise.
 	 */
-	public boolean hasSameFreeVariablesAs(PatternNode patternNode){
-		return ((Pattern)this.getSyntactic()).hasSameFreeVariablesAs(patternNode);
+	public boolean hasSameFreeVariablesAs(NodeWithVar patternNode){
+		return ((Pattern)this.getSyntactic()).hasSameFreeVariablesAs((Node)patternNode);
 	}
 
 }

@@ -380,10 +380,10 @@ public class LinearSubstitutions implements Substitutions
                 {
                         for(int j=0;j<sl.sub.size();j++)
                         {
-                                if(sl.sub.get(j).getVariable()==this.sub.get(i).getVariable())
+                                if(sl.sub.get(j).getVariable()==this.sub.get(i).getVariable()){
                                         if(sl.sub.get(j).getNode()!=this.sub.get(i).getNode())
                                                 return false;
-                                        else if(sl.sub.get(j).getNode()==this.sub.get(i).getNode())
+                                }else if(sl.sub.get(j).getNode()==this.sub.get(i).getNode())
                                                 if(sl.sub.get(j).getVariable()!=
                                                         this.sub.get(i).getVariable())
                                                                 return false;

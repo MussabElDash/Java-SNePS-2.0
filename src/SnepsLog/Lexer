@@ -1,4 +1,10 @@
 import java_cup.runtime.Symbol;
+
+
+
+
+
+
 %%
 %class Lexer
 
@@ -10,16 +16,26 @@ import java_cup.runtime.Symbol;
 	return new Symbol(sym.EOF, null);
 %eofval}
 
+
+
+
 DIGIT=[0-9]	
-ALPHA=[a-zA-z]
+
+
+
+
 NUMBER=({DIGIT})+([.]({DIGIT})+)?
+ALPHA=[a-zA-z]
 ALPHA_NUMERIC={ALPHA}|{DIGIT}
-IDENTIFIER=({ALPHA})+|{ALPHA}({ALPHA_NUMERIC})*
 
 
 
 
-ACTIVIATE=activate
+WFF=wff 
+ACTIVATE=activate
+WITHSOME=withsome
+WITHALL=withall
+
 ACTIVATEASSERT=activate!
 ADDTOCONTEXT=add-to-context
 ASK=ask
@@ -53,7 +69,7 @@ LISTCONTEXTS=list-contexts
 LISTTERMS=list-terms
 LISTWFFS=list-wffs
 LOAD=load
-WFF=wff
+
 
 NORMAL=normal
 
@@ -85,20 +101,16 @@ NOR=nor
 XOR=xor
 IFF=iff
 
+
 ANDOR=andor
-NOT=^
 THRESH=thresh
 ALL=all
-NEXIST=nexist
-
-WITHSOME=withsome
-WITHALL=withall
+NEXISTS=nexists
 
 
 
 
-
-
+IDENTIFIER=({ALPHA})+
 
 
 
@@ -106,19 +118,75 @@ WITHALL=withall
 
 
 WHITE_SPACE=([\ \n\r\t\f\b])+
+
+
+
+
 %%
 <YYINITIAL> {WHITE_SPACE} { }
+
+
+
+
+<YYINITIAL> {WFF} { 
+	return new Symbol(sym.WF, yytext());
+}
+
+<YYINITIAL> {AND} { 
+	return new Symbol(sym.AND, yytext());
+}
+
+<YYINITIAL> {OR} { 
+	return new Symbol(sym.OR, yytext());
+}
+
+
+
+<YYINITIAL> "<=>" { 
+	return new Symbol(sym.DOUBLEIMPLICATION, yytext());
+}
+
+<YYINITIAL> "~" { 
+	return new Symbol(sym.NOT, yytext());
+}
+
+<YYINITIAL> {ANDOR} { 
+	return new Symbol(sym.ANDOR, yytext());
+}
+<YYINITIAL> {THRESH} { 
+	return new Symbol(sym.THRESH, yytext());
+}
+
+<YYINITIAL> {NEXISTS} { 
+	return new Symbol(sym.NEXISTS, yytext());
+}
+
+<YYINITIAL> {ALL} { 
+	return new Symbol(sym.ALL, yytext());
+}
+
 
 <YYINITIAL> {NUMBER} { 
 	return new Symbol(sym.NM, ""+Integer.parseInt(yytext()));
 }
+
+
+<YYINITIAL> {WITHSOME} { 
+	return new Symbol(sym.WITHSOME, yytext());
+}
+
+<YYINITIAL> {WITHALL} { 
+	return new Symbol(sym.WITHALL, yytext());
+}
+
+
 <YYINITIAL> {IDENTIFIER} { 
 	return new Symbol(sym.ID, yytext());
 }
 
-<YYINITIAL> {WFF} { 
-	return new Symbol(sym.WFF, yytext());
-}
+
+
+
 <YYINITIAL> "?" { 
 	return new Symbol(sym.QM, yytext());
 }
@@ -133,17 +201,36 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 
 
+
+<YYINITIAL> "=>" { 
+	return new Symbol(sym.ARROW, yytext());
+}
+
+
 <YYINITIAL> "&=>" { 
-	return new Symbol(sym.AE, yytext());
+	return new Symbol(sym.ANDENTAIL, yytext());
 }
 
 <YYINITIAL> "v=>" { 
-	return new Symbol(sym.OE, yytext());
+	return new Symbol(sym.ORENTAIL, yytext());
 }
 
-<YYINITIAL> "=>" { 
+<YYINITIAL> {NUMBER}"=>" { 
 	return new Symbol(sym.II, yytext());
 }
+
+
+<YYINITIAL> "{" { 
+	return new Symbol(sym.RCURLY, yytext());
+}
+<YYINITIAL> "}" { 
+	return new Symbol(sym.LCURLY, yytext());
+}
+
+
+
+
+
 
 <YYINITIAL> {DIGIT}+"=>" { 
 	return new Symbol(sym.NE, yytext());
@@ -152,41 +239,17 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 
 
 
-<YYINITIAL> ";" { 
-	return new Symbol(sym.SM, yytext());
-}
+
+
+
 
 <YYINITIAL> ":" { 
 	return new Symbol(sym.CL, yytext());
 }
 
-<YYINITIAL> "=" { 
-	return new Symbol(sym.AO, yytext());
-}
 
-<YYINITIAL> "==" { 
-	return new Symbol(sym.EQ, yytext());
-}
 
-<YYINITIAL> "<" { 
-	return new Symbol(sym.LT, yytext());
-}
 
-<YYINITIAL> ">" { 
-	return new Symbol(sym.MT, yytext());
-}
-
-<YYINITIAL> "*" { 
-	return new Symbol(sym.ML, yytext());
-}
-
-<YYINITIAL> "||" { 
-	return new Symbol(sym.OO, yytext());
-}
-
-<YYINITIAL> "&&" { 
-	return new Symbol(sym.AA, yytext());
-}
 
 <YYINITIAL> "(" { 
 	return new Symbol(sym.LP, yytext());
@@ -199,6 +262,11 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 	return new Symbol(sym.EM, yytext());
 }
 
+
+
+
 <YYINITIAL> . {
 	return new Symbol(sym.error, "Error!");
 }
+
+

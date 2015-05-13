@@ -24,6 +24,10 @@ public class PropositionSet {
 	public void removePropSet(PropositionSet propSet) {
 		this.propositions.removeAll(propSet.propositions);
 	}
+	
+	public void addProposition(PropositionNode node) {
+		propositions.add(node);
+	}
 
 	public boolean assertedInContext(Context context) {
 		if (context.hypothesisSet.propositions.containsAll(this.propositions))
@@ -31,8 +35,8 @@ public class PropositionSet {
 		return false;
 	}
 
-	public HashSet split() {
-		HashSet split = new HashSet<PropositionSet>();
+	public HashSet<PropositionSet> split() {
+		HashSet<PropositionSet> split = new HashSet<PropositionSet>();
 		int i = 0;
 		PropositionSet newSet1 = new PropositionSet();
 		PropositionSet newSet2 = new PropositionSet();

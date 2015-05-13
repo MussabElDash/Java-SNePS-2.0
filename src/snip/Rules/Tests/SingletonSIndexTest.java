@@ -79,6 +79,10 @@ public class SingletonSIndexTest {
 		System.out.println("Inserting yet another RUIS in the SIndex");
 		insertIntoSIndexing(indexing, mussab, bob, eldash, antNodesTemp,
 				varNodes);
+
+		System.out
+				.println("The number of different substitutions of the shared variables: "
+						+ indexing.getSize());
 	}
 
 	private static VariableNode[] getVarNodes(int n) {

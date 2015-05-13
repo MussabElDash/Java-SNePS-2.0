@@ -83,6 +83,10 @@ public class PTreeSindexTest {
 		System.out.println("Inserting yet another RUIS in the SIndex");
 		insertIntoSIndexing(indexing, mussab, bob, eldash, mary, tweety,
 				antNodesTemp, varNodes);
+
+		System.out
+				.println("The number of different substitutions of the shared variables: "
+						+ indexing.getSize());
 	}
 
 	private static VariableNode[] getVarNodes(int n) {

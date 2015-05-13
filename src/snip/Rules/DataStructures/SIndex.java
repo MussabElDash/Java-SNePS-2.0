@@ -133,4 +133,13 @@ public class SIndex extends ContextRUIS {
 		return insert(rui, vars);
 	}
 
+	/**
+	 * Used in Testing
+	 * 
+	 * @return int the number of different substitutions of the shared variables
+	 */
+	public int getSize() {
+		return map.size();
+	}
+
 }

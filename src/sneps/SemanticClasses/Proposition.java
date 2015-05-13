@@ -80,7 +80,8 @@ public class Proposition extends Entity {
 	}
 
 	public void addContext(Context context) {
-		this.contextSet.add(context);
+		if (!this.contextSet.contains(context))
+			this.contextSet.add(context);
 	}
 
 	public void addAllContexts(HashSet<Context> contexts) {

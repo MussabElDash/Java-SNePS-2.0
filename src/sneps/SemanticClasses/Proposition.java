@@ -2,10 +2,12 @@ package sneps.SemanticClasses;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import sneps.Nodes.PropositionNode;
-import SNeBR.*;
+import SNeBR.Context;
+import SNeBR.ContextSet;
+import SNeBR.PropositionSet;
+import SNeBR.Support;
 
 public class Proposition extends Entity {
 	HashSet<Support> originSupport;
@@ -27,8 +29,7 @@ public class Proposition extends Entity {
 	}
 
 	public boolean isAsserted(Context context) {
-		if (this.contextSet.getContextSet().contains(context)
-				|| checkForValidSupport(context))
+		if (this.contextSet.contains(context) || checkForValidSupport(context))
 			return true;
 		return false;
 	}
@@ -37,10 +38,11 @@ public class Proposition extends Entity {
 		for (Iterator<Support> iterator = this.originSupport.iterator(); iterator
 				.hasNext();) {
 			Support support = iterator.next();
-			if (context.getHypothesisSet().propositions.containsAll(support
-					.getOriginSet().getHypothesisSet().propositions)
-					&& !support.getOriginSet().getHypothesisSet().propositions
-							.isEmpty()) {
+			if (!support.getOriginSet().getHypothesisSet().propositions
+					.isEmpty()
+					&& context.getHypothesisSet().propositions
+							.containsAll(support.getOriginSet()
+									.getHypothesisSet().propositions)) {
 				return true;
 			}
 		}
@@ -78,12 +80,11 @@ public class Proposition extends Entity {
 	}
 
 	public void addContext(Context context) {
-		if (!this.contextSet.getContextSet().contains(context))
-			this.contextSet.getContextSet().add(context);
+		this.contextSet.add(context);
 	}
 
 	public void addAllContexts(HashSet<Context> contexts) {
-		this.contextSet.getContextSet().addAll(contexts);
+		this.contextSet.addAll(contexts);
 	}
 
 	public void addSupport(Support support) {
@@ -202,7 +203,7 @@ public class Proposition extends Entity {
 
 	public HashSet<Support> calcOrigin(PropositionSet origins) {
 		if (origins.propositions.size() > 2) {
-			HashSet originsSplit = new HashSet<PropositionSet>();
+			HashSet<PropositionSet> originsSplit = new HashSet<PropositionSet>();
 			originsSplit = origins.split();
 			Iterator<PropositionSet> iterator1 = originsSplit.iterator();
 			HashSet<Support> support1 = new HashSet<Support>();

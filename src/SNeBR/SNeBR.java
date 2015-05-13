@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import sneps.Nodes.PropositionNode;
-import sneps.SemanticClasses.*;
+import sneps.SemanticClasses.Proposition;
 
 public class SNeBR {
 	private static ContextSet contextSet = new ContextSet();;
@@ -43,6 +43,10 @@ public class SNeBR {
 
 	public Context getContextByName(String name) {
 		return contextSet.getContext(name);
+	}
+
+	public Context getContextByID(int id) {
+		return contextSet.getContext(id);
 	}
 
 	/**
@@ -375,14 +379,13 @@ public class SNeBR {
 			if (cont.hypothesisSet.propositions
 					.equals(context.hypothesisSet.propositions)) {
 				context.unionRestriction(cont);
-				contextSet.contextSet.remove(cont);
-				contextSet.contextSet.add(context);
-				System.out.println(contextSet.contains(context) + "zzzzz");
+				contextSet.remove(cont);
+				contextSet.add(context);
 				return context;
 			}
 
 		}
-		contextSet.contextSet.add(context);
+		contextSet.add(context);
 		return context;
 	}
 

@@ -35,8 +35,8 @@ public class PropositionSet {
 		return false;
 	}
 
-	public HashSet split() {
-		HashSet split = new HashSet<PropositionSet>();
+	public HashSet<PropositionSet> split() {
+		HashSet<PropositionSet> split = new HashSet<PropositionSet>();
 		int i = 0;
 		PropositionSet newSet1 = new PropositionSet();
 		PropositionSet newSet2 = new PropositionSet();

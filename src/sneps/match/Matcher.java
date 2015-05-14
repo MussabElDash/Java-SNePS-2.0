@@ -4,8 +4,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import SNeBR.Context;
-import SNeBR.SNeBR;
 import sneps.CaseFrame;
 import sneps.Network;
 import sneps.PathTrace;
@@ -19,6 +17,13 @@ import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
 import sneps.Paths.Path;
+import snip.Rules.RuleNodes.AndNode;
+import snip.Rules.RuleNodes.AndOrNode;
+import snip.Rules.RuleNodes.NumericalNode;
+import snip.Rules.RuleNodes.OrNode;
+import snip.Rules.RuleNodes.RuleNode;
+import snip.Rules.RuleNodes.ThreshNode;
+import SNeBR.SNeBR;
 
 public class Matcher {
 
@@ -640,7 +645,7 @@ public class Matcher {
 				continue;
 			PathTrace pathTrace=new PathTrace();
 			//TODO: pathtrace and context
-			LinkedList<Object[]> pathNs=path.follow(sourceNode,pathTrace ,SNeBR.currentContext);
+			LinkedList<Object[]> pathNs=path.follow(sourceNode,pathTrace ,SNeBR.getCurrentContext());
 			
 			for (int i = 0; i < pathNs.size(); i++) {
 				Node currentNode=(Node) pathNs.get(i)[0];
@@ -743,7 +748,74 @@ public class Matcher {
 	}
 
 	public boolean checkRuleCompatibility(MolecularNode sourceNode,MolecularNode targetNode){
-		return false;
+		Class sClass=sourceNode.getClass();
+		Class tClass=targetNode.getClass();
+		if(!RuleNode.class.isAssignableFrom(sClass)&&!RuleNode.class.isAssignableFrom(tClass))
+			return true;
+		if(!sClass.equals(tClass))
+			return false;
+		if(sClass.equals(AndOrNode.class)){
+			int ti=((AndOrNode) targetNode).getMin();
+			int tj =((AndOrNode) targetNode).getMax();
+			int tn=((AndOrNode) targetNode).getArg();
+			int si=((AndOrNode) sourceNode).getMin();
+			int sj =((AndOrNode) sourceNode).getMax();
+			int sn=((AndOrNode) sourceNode).getArg();
+			if(tn>sn)
+				return false;
+			if(ti!=(Math.max(si-(sn-tn), 0)))
+				return false;
+			if(tj!=sj)
+				return false;
+			return true;
+		}else if(sClass.equals(AndNode.class)){
+		int	sourceAndant=((AndNode) sourceNode).getAndant();
+		int	targetAndant=((AndNode) targetNode).getAndant();
+		int	sourceCq=((AndNode) sourceNode).getCq();
+		int	targetCq=((AndNode) targetNode).getCq();
+		//TODO: dcq
+		if(sourceAndant!=targetAndant)
+			return false;
+		if(targetCq>sourceCq)
+			return false;
+		
+		return true;
+		}
+		else if(sClass.equals(OrNode.class)){
+			int sourceAnt=((OrNode) sourceNode).getAnt();
+			int targetAnt=((OrNode) targetNode).getAnt();
+			int sourceCq=((OrNode) sourceNode).getCq();
+			int targetCq=((OrNode) targetNode).getCq();
+			//TODO: dcq
+			if(sourceAnt!=targetAnt)
+				return false;
+			if(targetCq>sourceCq)
+				return false;
+			return true;
+		}
+		else if(sClass.equals(ThreshNode.class)){
+			int ti = ((ThreshNode) targetNode).getThresh();
+			int tj = ((ThreshNode) targetNode).getThreshMax();
+			//TODO:correct tj
+			int tn = ((ThreshNode) targetNode).getArg();
+			int si = ((ThreshNode) sourceNode).getThresh();
+			int sj = ((ThreshNode) sourceNode).getThreshMax();
+			//TODO:correct sj
+			int sn = ((ThreshNode) sourceNode).getArg();
+			if(tn>sn)
+				return false;
+			if(ti!=(Math.max(si-(sn-tn),0 )))
+				return false;
+			if(tj!=sj)
+				return false;
+			return true;
+			
+		}
+			
+		else if(sClass.equals(NumericalNode.class)){
+			//TODO
+		}
+		return true;
 	}
 	
 	public LinkedList<Relation> relationDifference(CaseFrame s,CaseFrame t){

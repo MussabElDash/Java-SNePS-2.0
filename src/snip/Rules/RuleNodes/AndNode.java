@@ -24,11 +24,14 @@ public class AndNode extends RuleNode {
 	 * missing reports of the constant nodes
 	 */
 	private Hashtable<Integer, Set<RuleUseInfo>> contextRuiNotSent;
+	private int Andant, cq;
 
 	public AndNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		contextRuiNotSent = new Hashtable<Integer, Set<RuleUseInfo>>();
 		NodeSet antNodes = this.getDownNodeSet("&ant");
+		Andant = antNodes.size();
+		cq = this.getDownNodeSet("cq").size();
 		this.processNodes(antNodes);
 	}
 
@@ -108,6 +111,14 @@ public class AndNode extends RuleNode {
 			}
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	public int getAndant() {
+		return Andant;
+	}
+
+	public int getCq() {
+		return cq;
 	}
 
 }

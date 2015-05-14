@@ -9,8 +9,12 @@ import snip.Rules.DataStructures.RuleUseInfo;
 
 public class OrNode extends RuleNode {
 
+	private int ant,cq;
+	
 	public OrNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
+		ant=getDownNodeSet("ant").size();
+		cq=getDownNodeSet("cq").size();
 	}
 
 	@Override
@@ -29,5 +33,11 @@ public class OrNode extends RuleNode {
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
+	}
+	public int getAnt(){
+		return ant;
+	}
+	public int getCq(){
+		return cq;
 	}
 }

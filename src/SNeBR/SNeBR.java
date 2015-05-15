@@ -41,11 +41,11 @@ public class SNeBR {
 		return currentContext;
 	}
 
-	public Context getContextByName(String name) {
+	public static Context getContextByName(String name) {
 		return contextSet.getContext(name);
 	}
 
-	public Context getContextByID(int id) {
+	public static Context getContextByID(int id) {
 		return contextSet.getContext(id);
 	}
 

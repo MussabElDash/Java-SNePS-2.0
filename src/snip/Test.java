@@ -1,6 +1,5 @@
 package snip;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -21,14 +20,15 @@ public class Test {
 	public Test() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	private static VariableNode var1 = Network.buildVariableNode();
+	private static VariableNode var2 = Network.buildVariableNode();
 
 	public static void main(String[] ar) throws Exception {
 		Runner.initiate();
 
 		// building variable nodes
-		Node var1 = Network.buildVariableNode("x");
-		Node var2 = Network.buildVariableNode("y");
-
+		
 		// defining a new relation with the name: member
 		Relation r1 = Network
 				.defineRelation("husband", "Individual", "none", 1);
@@ -136,13 +136,9 @@ public class Test {
 			m1 = Network.buildMolecularNode(a1, cf1);
 		} catch (Exception exp) {
 		}
-
-		// building another variable node
-		VariableNode varNode1 = Network.buildVariableNode("x");
-
-		VariableNode varNode2 = Network.buildVariableNode("y");
-		Binding bind1 = new Binding(varNode1, b1);
-		Binding bind2 = new Binding(varNode2, b2);
+ 
+		Binding bind1 = new Binding(var1, b1);
+		Binding bind2 = new Binding(var2, b2);
 		Substitutions switchSub = new LinearSubstitutions();
 		switchSub.putIn(bind1);
 		switchSub.putIn(bind2);

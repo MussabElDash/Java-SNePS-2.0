@@ -55,6 +55,7 @@ KSTAR=kstar
 KPLUS=kplus
 IRREFLIXIVERESTRICT=irreflexive-restrict
 DOMAINRESTRICT=domain-restrict
+RANGERESTRICT=range-restrict
 
 BELIFESABOUT=beliefs-about
 AFTERBR=auto|manual
@@ -183,6 +184,9 @@ WHITE_SPACE=([\ \n\r\t\f\b])+
 }
 <YYINITIAL> {DOMAINRESTRICT} { 
 	return new Symbol(sym.DOMAINRESTRICT, yytext());
+}
+<YYINITIAL> {RANGERESTRICT} { 
+	return new Symbol(sym.RANGERESTRICT, yytext());
 }
 <YYINITIAL> {ACTING} { 
 	return new Symbol(sym.ACTING, yytext());

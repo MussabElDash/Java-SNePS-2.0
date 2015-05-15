@@ -1,12 +1,12 @@
 package snip;
 
 import sneps.Nodes.Node;
+import sneps.match.Substitutions;
 import SNeBR.Context;
 
 public class AntecedentToRuleChannel extends Channel {
 
-	public AntecedentToRuleChannel(Filter f, Switch s, Context c, Node d, boolean v) {
-		super(f, s, c, d, v);
+	public AntecedentToRuleChannel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node d, boolean v) {
+		super(switchSubstitution, filterSubstitutions, contextID, d, v);
 	}
-
 }

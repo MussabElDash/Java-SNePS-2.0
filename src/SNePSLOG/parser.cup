@@ -58,7 +58,7 @@ terminal		 NM,QM,LP,ID,EM, RP, CL, DT, II, COMA,WF,WITHSOME,WITHALL,LCURLY,RCURL
 ORENTAIL,ARROW,AND,OR,DOUBLEIMPLICATION,NOT,ANDOR,NEXISTS,THRESH,ALL,PARSING,TRANSLATION,ACTING,INFERENCE,ACTIVATE,ACTIVATEASSERT,ADDTOCONTEXT,ASK,ASKIFNOT,ASKWH,ASKWHNOT,CLEARINFER,CLEARKB,DEFINEFRAME,DEFINEPATH,DEMO,DESCRIBECONTEXT,DESCRIBETERMS,EXPERT,LISP,LISTASSERTEDWFFS,LISTCONTEXTS,LISTTERMS,LISTWFFS,LOAD,NORMAL,PERFORM,REMOVEFROMCONTEXT,SETCONTEXT,SETDEFAULTCONTEXT,SETMODE1,SETMODE2,SETMODE3,SHOW,TRACE,UNDEFINEPATH,UNLABELED,UNTRACE,ADJUST,DASH,CONVERSE,COMPOSE,KSTAR,KPLUS,IRR,DOMAINRESTRICT,BUILD,DEFINERELATION,PRINT,MODE,TEST,LSQUARE,RSQUARE,RANGERESTRICT;
 
 /* Non-terminals */
-nonterminal	String		   terminalPunctuation,qvar,withSomeTerm,withAllTerm,nexistsParamters,helpersConnectives,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,definERelation,identifier,unipathHelper,unipathType,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,helperQ,helperQQ,caseType,voidCommand,getMode,SymbolTest,listAssertedWffCommand,addToContextCommand;
+nonterminal	String		   terminalPunctuation,qvar,withSomeTerm,withAllTerm,nexistsParamters,helpersConnectives,allTerm,SNePSLOGfunction,snepslogCommand,activateH,lispString,lispStringH,lispList,defineH,describeContextH,activateHK,describeTermH,definERelation,identifier,unipathHelper,unipathType,load,wffCommand,wffNameCommand,command,traceH,SNePSLOGfunctionH,helperQ,helperQQ,caseType,voidCommand,getMode,SymbolTest,listAssertedWffCommand,addToContextCommand,definePath,clearKbCommand,contextHelperz;
 
 
 nonterminal Node SNePSLOGsymbol,atomicTerm,andorTerm,threshTerm,negatedTerm,nexistsTerm,sesy,prefixedTerm,entailment,infixedTerm,wff;
@@ -72,7 +72,7 @@ nonterminal ArrayList<Node> termHelper,termSequence,termSet,symbolSequence,condH
 
 
 command ::= wffCommand:w10 {:RESULT=w10;:} | SymbolTest:sS {:
-RESULT=sS;:}|voidCommand:heh{:RESULT=heh;:}|definERelation:dd {:RESULT=dd;:}|getMode:gm {:RESULT=gm;:}|listAssertedWffCommand:law{:RESULT=law;:}|error:e {:RESULT=e+"";parser.syntax_error((Symbol)e);:};
+RESULT=sS;:}|voidCommand:heh{:RESULT=heh;:}|definERelation:dd {:RESULT=dd;:}|getMode:gm {:RESULT=gm;:}|listAssertedWffCommand:law{:RESULT=law;:}|definePath:ded{:RESULT=ded;:}|clearKbCommand:ckc{:RESULT=ckc;:}|error:e {:RESULT=e+"";parser.syntax_error((Symbol)e);:};
 
 voidCommand ::= SETMODE1 activateH{:AP.clearKnowledgeBase();AP.setMode(1); RESULT="mode1";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:}|SETMODE2 activateH{:AP.clearKnowledgeBase();AP.setMode(2);RESULT="mode2";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:}|SETMODE3 activateH{:AP.clearKnowledgeBase();AP.setMode(3);RESULT="mode3";System.out.println("Current Mode -->"+AP.getMode());System.out.println("--> Knowledge Base cleared");:};
 
@@ -82,7 +82,7 @@ getMode ::= PRINT MODE {:RESULT="Current Mode --> "+"("+AP.getMode()+")";:};
 wffCommand ::= wff:wow terminalPunctuation:p {:RESULT=wow+"/"+p;:};
 
 
-/*snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} |ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} | CLEARKB activateH:a9 {:RESULT="clearKB"+a9;:} | DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}|  LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}|  REMOVEFROMCONTEXT SNePSLOGsymbol:sym termSet:termm {:RESULT="remove from the context "+sym+" "+termm;:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
+/*snepslogCommand ::= ACTIVATE wff:w activateH:a1{:RESULT=w+a1;:} | ACTIVATEASSERT wff:w1 activateHK:a2 {:RESULT="believe in: "+w1+a2;:} |ASK wff:w2 activateHK:a4 {:RESULT="ask:"+w2+a4;:}| ASKIFNOT wff:w3 activateHK:a5 {:RESULT="askifnot:"+ w3+a5;:}  |ASKWH wff:w4 activateHK:a6 {:RESULT="askifnot:"+ w4+a6;:} | ASKWHNOT wff:w5 activateHK:a7 {:RESULT="askifnot:"+ w5+a7;:}| CLEARINFER activateH:a8 {:RESULT="clearInfere"+a8;:} |DEFINEFRAME SNePSLOGsymbol:s1 lispList:l defineH:d activateH:a10 {:RESULT="defineFrame"+a10;:}| DESCRIBECONTEXT describeContextH:dd activateH:ac{:RESULT=dd+ac;:} | DESCRIBETERMS describeTermH:d2 activateH:aa {:RESULT=d2+aa;:} | EXPERT activateH:a11 {:RESULT="expert"+a11;:} | LISP activateH:a12 {:RESULT="lisp"+a12; AP.h();:}|  LISTCONTEXTS activateH:a13 {:RESULT="list contexts"+a13;:}| LISTTERMS describeTermH:dterm activateH:aac {:RESULT=dterm+aac;:}| LISTWFFS activateH:a14 {:RESULT="list wffs"+a14;:} | NORMAL activateH:a15 {:RESULT="normal"+a15;:} |  PERFORM atomicTerm:atom {:RESULT="perform "+atom;:}| SHOW termSet:ttt activateH{:RESULT="show:"+ttt;:}| UNDEFINEPATH identifier:iii activateH{:RESULT="undefine path:"+iii;:}| UNLABELED activateH {:RESULT="unlabeled";:}| TRACE traceH:hhh activateH {:RESULT="trace:"+hhh;:} | UNTRACE traceH:halse activateH {:RESULT="trace:"+halse;:}| EM ACTIVATE identifier:ieee LP identifier:iee2 RP activateH:act{:RESULT = "assert! "+ieee+"("+iee2+")"+act;:};
 
 describeContextH ::= symbolSequence:sss  {:RESULT=sss;:} | {:RESULT="";:};
 describeTermH ::= termSet:tt  {:RESULT=tt+"";:} | {:RESULT="";:};*/
@@ -90,16 +90,35 @@ describeTermH ::= termSet:tt  {:RESULT=tt+"";:} | {:RESULT="";:};*/
 traceH ::= SNePSLOGfunction:f SNePSLOGfunctionH:fh {:RESULT=f+fh;:};
 SNePSLOGfunctionH ::= traceH:t {:RESULT=t;:}|{:RESULT="";:}; 
 
+removeFromContextCommand ::= REMOVEFROMCONTEXT identifier:sym termSet:termm {:
+	
 
-addToContextCommand ::= ADDTOCONTEXT identifier:contextName termSet:t activateH:a3{:
-	Context x = SNeBR.getContextByName(contextName);
-	for(int i=0;i<t.size();i++){
-		SNeBR.assertProposition((PropositionNode)t.get(i), x);
+:};
+
+
+addToContextCommand ::= ADDTOCONTEXT contextHelperz:contextName termSet:t activateH:a3{:
+	
+	if(contextName.equalsIgnoreCase("")){
+		for(int i=0;i<t.size();i++){
+			SNeBR.assertProposition((PropositionNode)t.get(i), SNeBR.getCurrentContext());
+		}
 	}
+	else{
+		Context x = SNeBR.getContextByName(contextName);
+		for(int i=0;i<t.size();i++){
+			SNeBR.assertProposition((PropositionNode)t.get(i), x);
+		}
+	}
+	
+	
 	RESULT="process completed...";
 :}; 
 
-listAssertedWffCommand ::= LISTASSERTEDWFFS identifier:contextName activateH:ah{:
+contextHelperz ::= identifier:name {:RESULT=name;:}|{:RESULT="";:};
+
+listAssertedWffCommand ::= LISTASSERTEDWFFS contextHelperz:contextName activateH:ah{:
+	
+	if(!contextName.equalsIgnoreCase("")){
 	Context tmp = SNeBR.getContextByName(contextName);
 	HashSet<PropositionNode> hypos = tmp.getHypothesisSet().getPropositions();
 	int count = 1;
@@ -107,13 +126,35 @@ listAssertedWffCommand ::= LISTASSERTEDWFFS identifier:contextName activateH:ah{
 		RESULT="Error with asserting wffs...";	
 	}
 	else{
-	for(PropositionNode node :hypos){
+		for(PropositionNode node :hypos){
             System.out.println(count+""+"-->"+node.toString());
         }
-    RESULT="asserted wffs listed correctly";
+    	RESULT="asserted wffs listed correctly";
+		}
 	}
+	else{
+	HashSet<PropositionNode> hypos = SNeBR.getCurrentContext().getHypothesisSet().getPropositions();
+	int count = 1;
+	if(hypos.isEmpty()){
+		RESULT="Error with asserting wffs...";	
+	}
+	else{
+		for(PropositionNode node :hypos){
+            System.out.println(count+""+"-->"+node.toString());
+        }
+    	RESULT="asserted wffs listed correctly";
+		}	
+	}
+
+	
+
+
 :};
 
+clearKbCommand ::=  CLEARKB activateH:a9 {:
+	AP.clearKnowledgeBase();
+	RESULT="-->Knowledge Base cleared.";
+:};
 
 definERelation ::= DEFINERELATION ID:name ID:type ADJUST:ad NM:limit activateH {:
 int mode = AP.getMode();
@@ -141,7 +182,10 @@ else{
 
 
 
-definePath ::= DEFINEPATH identifier:snepsRelation path:pk {:RESULT="define-path:"+snepsRelation+"/"+pk;:};
+definePath ::= DEFINEPATH identifier:snepsRelation path:pk {:
+	Network.definePath(Network.defineRelation(snepsRelation,"Entity","none",1), pk);
+	RESULT="path defined";
+:};
 
 
 path ::= unipath:up {:RESULT=up;:}

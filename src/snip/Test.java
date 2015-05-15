@@ -69,15 +69,15 @@ public class Test {
 		}
 		
 		ArrayList<Pair> list = getMatched(m1);
-		
-		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), 0, list.get(0).getNode(), true);
+		System.out.println("Switch subs " + list.get(0).getSwitch());
+		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), 0, m1, true);
 		
 		list.get(0).getNode().receiveRequest(match);
-		Runner.addToLowQueue(list.get(0).getNode());
-		Runner.run();
-
-//		System.out.println(match.getReportsBuffer().size());
-//		System.out.println("Match2 " + match2.getReportsBuffer().size());
+//		Runner.addToLowQueue(list.get(0).getNode());
+		String n = Runner.run();
+		System.out.println("Reports buffer " + match.getReportsBuffer().size());
+		System.out.println(match.getReportsBuffer().get(0).getSubstitutions());
+		System.out.println("Sequence " + n);
 	}
 
 	public static ArrayList<Pair> getMatched(Node node) throws Exception {
@@ -100,10 +100,10 @@ public class Test {
 
 		// defining a new relation with the name: member
 		Relation r1 = Network
-				.defineRelation("husband", "Individual", "none", 1);
+				.defineRelation("husband1", "Individual", "none", 1);
 
 		// defining a new relation with the name: class
-		Relation r2 = Network.defineRelation("wife", "Individual", "none", 1);
+		Relation r2 = Network.defineRelation("wife1", "Individual", "none", 1);
 
 		// building a relation case frame properties structure for relation r1
 		RCFP rp1 = Network.defineRelationPropertiesForCF(r1, "none", 1);

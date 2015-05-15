@@ -6,22 +6,22 @@ import sneps.match.Substitutions;
 
 public class Pair {
 	Node node;
-	Substitutions one, two;
+	Substitutions filterSubs, switchSubs;
 
-	public Pair(Substitutions first, Substitutions sec, Node node) {
+	public Pair(Substitutions filterSubs, Substitutions switchSubs, Node node) {
 		this.node = node;
-		one = first;
-		sec = two;
+		this.filterSubs = filterSubs;
+		this.switchSubs = switchSubs;
 	}
 
 	public Node getNode() {
 		return node;
 	}
 	public Substitutions getFilter() {
-		return one;
+		return filterSubs;
 	}
 
 	public Substitutions getSwitch() {
-		return two;
+		return switchSubs;
 	}
 }

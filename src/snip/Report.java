@@ -23,8 +23,7 @@ public class Report {
 	}
 
 	 public Support getSupport() {
-		 // TODO Akram
-		 return null;
+		 return support;
 	 }
 
 	public int getContextID() {

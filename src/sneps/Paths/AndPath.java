@@ -15,6 +15,7 @@ import java.util.ListIterator;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class AndPath extends Path {
@@ -196,6 +197,15 @@ public class AndPath extends Path {
         while(i.hasNext())
                 result.add(i.next().converse());
         return new AndPath(result);
+	}
+	
+	public LinkedList<Relation> firstRelations(){
+		LinkedList<Relation> relations=new LinkedList<Relation>();
+		for (int i = 0; i < paths.size(); i++) 
+			relations.addAll(paths.get(i).firstRelations());
+		
+		return relations;
+		
 	}
 
 }

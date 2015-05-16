@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class ComposePath extends Path{
@@ -209,6 +210,11 @@ public class ComposePath extends Path{
 		while(i.hasNext())
 			temp.add(i.next().converse());
 		return new ComposePath(temp);
+	}
+
+	@Override
+	public LinkedList<Relation> firstRelations() {
+		return paths.getFirst().firstRelations();
 	}
 
 }

@@ -146,5 +146,12 @@ public class CFResFUnitPath extends Path{
 	public Path converse() {
 		return new CFResBUnitPath(this.relation, this.caseFrame);
 	}
+	
+	public LinkedList<Relation> firstRelations() {
+		LinkedList<Relation> r= new LinkedList<Relation>();
+		r.add(relation);
+		return r;
+			
+		}
 
 }

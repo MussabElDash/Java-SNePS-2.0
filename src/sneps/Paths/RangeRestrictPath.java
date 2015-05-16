@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class RangeRestrictPath extends Path{
@@ -167,4 +168,9 @@ public class RangeRestrictPath extends Path{
 		return new DomainRestrictPath(q, zNode, p.converse());
 	}
 
+	public LinkedList<Relation> firstRelations() {
+		return p.firstRelations();
+			
+		}
+	
 }

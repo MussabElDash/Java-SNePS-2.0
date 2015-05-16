@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class KStarPath extends Path{
@@ -212,5 +213,10 @@ public class KStarPath extends Path{
 	public Path converse() {
 		return new KStarPath(path.converse());
 	}
+	
+	public LinkedList<Relation> firstRelations() {
+		return path.firstRelations();
+			
+		}
 
 }

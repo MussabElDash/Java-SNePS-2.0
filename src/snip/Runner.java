@@ -15,20 +15,24 @@ public class Runner {
 		lowQueue = new ArrayDeque<Node>();
 	}
 
-	public static void run() {
+	public static String run() {
+		String sequence = "";
 		while(!highQueue.isEmpty() || !lowQueue.isEmpty()) {
 			while(!highQueue.isEmpty()) {
 				Node toRunNext = highQueue.poll();
 				toRunNext.processReports();
+				sequence += 'H';
 			}
 			while(!lowQueue.isEmpty()) {
 				System.out.println("in");
 				Node toRunNext = lowQueue.poll();
 				toRunNext.processRequests();
+				sequence += 'L';
 				if(!highQueue.isEmpty())
 					break;
 			}
 		}
+		return sequence;
 	}
 	
 	public static void addToHighQueue(Node node) {

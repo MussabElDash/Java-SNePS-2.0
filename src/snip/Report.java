@@ -1,8 +1,7 @@
 package snip;
 
 
-import sneps.Nodes.Node;
-import SNeBR.Context;
+import sneps.match.Substitutions;
 import SNeBR.Support;
 import sneps.match.Substitutions;
 
@@ -11,59 +10,38 @@ public class Report {
 	private Substitutions substitution;
 	private Support support;
 	private boolean sign;
-	private Node signature;
-	private Node node;
-	private Context context;
+	private int contextID;
 
-	public Report(Substitutions substitution, Support support, boolean sign,
-			Node signature, Node node, Context context) {
-		// TODO Auto-generated constructor stub
+	public Report(Substitutions substitution, Support support, boolean sign, int contextID) {
 		this.substitution = substitution;
 		this.support = support;
-		this.node = node;
 		this.sign = sign;
-		this.signature = signature;
-		this.context = context;
+		this.contextID = contextID;
 	}
 
-	public Substitutions getSubstituions() {
-		// TODO Akram
-		return null;
+	public Substitutions getSubstitutions() {
+		return substitution;
 	}
 
 	 public Support getSupport() {
-		 // TODO Akram
-		 return null;
+		 return support;
 	 }
 
+	public int getContextID() {
+		return contextID;
+	}
+
+	@Override
+	public boolean equals(Object report) {
+		Report castedReport = (Report) report;
+		return this.substitution.equals(castedReport.substitution)
+				&& this.sign == castedReport.sign
+				&& this.contextID == castedReport.contextID;
+	}
+	
 	public boolean getSign() {
 		return sign;
 	}
-
-	public Node getSignature() {
-		return signature;
-	}
-
-	public Node getNode() {
-		return node;
-	}
-
-	public Context getContext() {
-		return context;
-	}
-
-//	public void addBinding(Binding m) {
-//		// this.substitution.putIn(m);
-//	}
-
-//	@Override
-//	public boolean equals(Object report) {
-//		Report castedReport = (Report) report;
-//		return this.substitution.equals(castedReport.substitution)
-//				&& this.sign == castedReport.sign
-//				&& this.node.eqauls(castedReport.node)
-//				&& this.context.equals(castedReport.context));
-//	}
 	
 	public boolean isPositive() {
 		return sign;
@@ -71,14 +49,6 @@ public class Report {
 	
 	public boolean isNegative() {
 		return !sign;
-	}
-	
-	public boolean hasContext() {
-		return !(context == null);
-	}
-	
-	public void setNode(Node node) {
-		this.node = node;
 	}
 
 }

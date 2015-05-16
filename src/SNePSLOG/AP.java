@@ -1,20 +1,12 @@
-package SnepsLog;
+//package SnepsLog;
 
+import java.io.*;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-
-import java_cup.Lexer;
-import java_cup.parser;
 import java_cup.runtime.Symbol;
 
 public class AP {
 
-	public static void h()
-	{
+	public static void h() {
 		System.out.println("hi");
 	}
 
@@ -31,12 +23,13 @@ public class AP {
 			BufferedInputStream bis = new BufferedInputStream(fis);
 			DataInputStream dis = new DataInputStream(bis);
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter("Sample1.out"));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(
+					"Sample1.out"));
 
 			parser parser = new parser(new Lexer(dis));
 			Symbol res = parser.parse();
 
-			String value = (String)res.value;
+			String value = (String) res.value;
 			writer.write(value);
 
 			System.out.println("Done");
@@ -45,7 +38,7 @@ public class AP {
 			bis.close();
 			dis.close();
 			writer.close();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

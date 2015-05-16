@@ -6,6 +6,9 @@ import java.util.LinkedList;
 
 import sneps.CaseFrame;
 import sneps.Network;
+import sneps.PathTrace;
+import sneps.RCFP;
+import sneps.Relation;
 import sneps.Cables.DownCable;
 import sneps.Cables.DownCableSet;
 import sneps.Nodes.MolecularNode;
@@ -13,6 +16,14 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
+import sneps.Paths.Path;
+import snip.Rules.RuleNodes.AndNode;
+import snip.Rules.RuleNodes.AndOrNode;
+import snip.Rules.RuleNodes.NumericalNode;
+import snip.Rules.RuleNodes.OrNode;
+import snip.Rules.RuleNodes.RuleNode;
+import snip.Rules.RuleNodes.ThreshNode;
+import SNeBR.SNeBR;
 
 public class Matcher {
 
@@ -618,7 +629,238 @@ public class Matcher {
 	
 	return boundNode;
 	}
+	
+	public boolean patHERE(MolecularNode sourceNode,MolecularNode targetNode,LinkedList<Substitutions> sList,LinkedList<Substitutions> tList,boolean UVBR,boolean rightOrder,MatchingSet sourceBoundTerms,int sourceOriginalSize,MatchingSet targetBoundTerms,int targetOriginalSize){
+		if(!checkRuleCompatibility(sourceNode,targetNode))
+			return false;
+		boolean flag=false;
+		CaseFrame sourceCF=sourceNode.getDownCableSet().getCaseFrame();
+		CaseFrame targetCF=	targetNode.getDownCableSet().getCaseFrame();	
+		Enumeration<RCFP> RCFPs=targetCF.getRelations().elements();
+		while(RCFPs.hasMoreElements()){
+			RCFP rcfp=RCFPs.nextElement();
+			Relation r=rcfp.getRelation();
+			Path path=r.getPath();
+			if(path==null)
+				continue;
+			PathTrace pathTrace=new PathTrace();
+			//TODO: pathtrace and context
+			LinkedList<Object[]> pathNs=path.follow(sourceNode,pathTrace ,SNeBR.getCurrentContext());
+			
+			for (int i = 0; i < pathNs.size(); i++) {
+				Node currentNode=(Node) pathNs.get(i)[0];
+				PathTrace currentPathTrace=(PathTrace) pathNs.get(i)[1];
+				LinkedList <Relation> currentRelations= currentPathTrace.getFirst();
+				NodeSet currentNodeSet=new NodeSet();
+				//case 1 or 2
+				if((currentRelations.size()==1&&currentRelations.get(0).equals(r))||(sourceCF.equals(targetCF)))
+				{  //TODO: clone?
+					currentNodeSet=sourceNode.getDownCableSet().getDownCable(r.getName()).getNodeSet();
+					//case 2
+					if(!(sourceCF.equals(targetCF)))
+					{
+						if(!caseFramesCompatibleThroughAdjustability(sourceCF,targetCF)){
+							flag=false;
+							break;
+						}
+					}
+					 if(!currentNodeSet.contains(currentNode)){
+						flag=true;
+						currentNodeSet.addNode(currentNode);
+				}
+				
+				}
+				else{
+					//case 3
+					boolean relationAdded=false;
+					if(sourceCF.getRelation(r)==null){
+						sourceCF.getRelations().put(r.getName(), rcfp);
+						relationAdded=true;
+					}
+					else
+						currentNodeSet=sourceNode.getDownCableSet().getDownCable(r.getName()).getNodeSet();
+					//TODO: clone? ^
+					//sourceCF!=targetCF
+					int unusedSize=currentRelations.size();
+					//TODO: 
+					int usedSize=0;
+					if(!sourceCF.getRelations().equals(targetCF.getRelations())){
+						LinkedList<Relation> relations= relationDifference(sourceCF,targetCF);
+						
+						
+						for(Relation relation:relations){
+							 NodeSet sourceRelationNS=sourceNode.getDownCableSet().getDownCable(relation.getName()).getNodeSet();
 
+						 if(unusedSize!=0&&relation.equals(currentRelations.getFirst())){
+							 sourceRelationNS.removeNode(sourceRelationNS.getNode(i));
+							 unusedSize--;
+							 if(sourceRelationNS.isEmpty()){
+								sourceNode.getDownCableSet().getDownCables().remove(relation.getName());
+								//TODO: clone?
+								sourceCF.getRelations().remove(relation.getName());
+							 }
+						 }
+						 else
+							 usedSize+=sourceRelationNS.size();
+						 
+						}
+					}
+					if(usedSize-unusedSize>0)
+						if(!caseFramesCompatibleThroughAdjustability(sourceCF, targetCF)){
+						    flag=false;
+							break;	
+						}
+					if(!currentNodeSet.contains(currentNode)){
+						currentNodeSet.addNode(currentNode);
+						flag=true;
+					}
+					if(relationAdded&&sourceCF.getRelations().containsKey(r.getName()))
+						sourceCF.getRelations().remove(r.getName());
+					
+						
+				}
+				
+			}
+			
+			if(flag&&setUnify(currentNodeSet, ns2, sList, tList, UVBR, rightOrder, sourceBoundTerms, sourceOriginalSize, targetBoundTerms, targetOriginalSize))
+				continue;
+			
+		}
+		
+		return flag;
+	}
+	
+	private boolean caseFramesCompatibleThroughAdjustability(
+			CaseFrame adjusted, CaseFrame goal) {
+		Enumeration<String> adjustedKeys=adjusted.getRelations().keys();
+		Hashtable<String,RCFP> adjustedRelations=adjusted.getRelations();
+		Hashtable<String,RCFP> goalRelations=goal.getRelations();
+		while(adjustedKeys.hasMoreElements()){
+			String adjustedKey=adjustedKeys.nextElement();
+			if(!goalRelations.containsKey(adjustedKey))
+				if(adjustedRelations.get(adjustedKey).getAdjust().equals("reduce")){
+					if(adjustedRelations.get(adjustedKey).getLimit()>0)
+						return false;}
+				else return false;
+				
+		}
+		return true;
+	}
+
+	public boolean checkRuleCompatibility(MolecularNode sourceNode,MolecularNode targetNode){
+		Class sClass=sourceNode.getClass();
+		Class tClass=targetNode.getClass();
+		if(!RuleNode.class.isAssignableFrom(sClass)&&!RuleNode.class.isAssignableFrom(tClass))
+			return true;
+		if(!sClass.equals(tClass))
+			return false;
+		if(sClass.equals(AndOrNode.class)){
+			int ti=((AndOrNode) targetNode).getMin();
+			int tj =((AndOrNode) targetNode).getMax();
+			int tn=((AndOrNode) targetNode).getArg();
+			int si=((AndOrNode) sourceNode).getMin();
+			int sj =((AndOrNode) sourceNode).getMax();
+			int sn=((AndOrNode) sourceNode).getArg();
+			if(tn>sn)
+				return false;
+			if(ti!=(Math.max(si-(sn-tn), 0)))
+				return false;
+			if(tj!=sj)
+				return false;
+			return true;
+		}else if(sClass.equals(AndNode.class)){
+		int	sourceAndant=((AndNode) sourceNode).getAndant();
+		int	targetAndant=((AndNode) targetNode).getAndant();
+		int	sourceCq=((AndNode) sourceNode).getCq();
+		int	targetCq=((AndNode) targetNode).getCq();
+		//TODO: dcq
+		if(sourceAndant!=targetAndant)
+			return false;
+		if(targetCq>sourceCq)
+			return false;
+		
+		return true;
+		}
+		else if(sClass.equals(OrNode.class)){
+			int sourceAnt=((OrNode) sourceNode).getAnt();
+			int targetAnt=((OrNode) targetNode).getAnt();
+			int sourceCq=((OrNode) sourceNode).getCq();
+			int targetCq=((OrNode) targetNode).getCq();
+			//TODO: dcq
+			if(sourceAnt!=targetAnt)
+				return false;
+			if(targetCq>sourceCq)
+				return false;
+			return true;
+		}
+		else if(sClass.equals(ThreshNode.class)){
+			int ti = ((ThreshNode) targetNode).getThresh();
+			int tj = ((ThreshNode) targetNode).getThreshMax();
+			//TODO:correct tj
+			int tn = ((ThreshNode) targetNode).getArg();
+			int si = ((ThreshNode) sourceNode).getThresh();
+			int sj = ((ThreshNode) sourceNode).getThreshMax();
+			//TODO:correct sj
+			int sn = ((ThreshNode) sourceNode).getArg();
+			if(tn>sn)
+				return false;
+			if(ti!=(Math.max(si-(sn-tn),0 )))
+				return false;
+			if(tj!=sj)
+				return false;
+			return true;
+			
+		}
+			
+		else if(sClass.equals(NumericalNode.class)){
+			//TODO
+		}
+		return true;
+	}
+	
+	public LinkedList<Relation> relationDifference(CaseFrame s,CaseFrame t){
+		LinkedList<Relation> relations=new LinkedList<Relation>();
+		RCFP[] sRelations=new RCFP[s.getRelations().size()];
+		sRelations= s.getRelations().values().toArray(sRelations);
+		RCFP[] tRelations=new RCFP[t.getRelations().size()];
+		tRelations= t.getRelations().values().toArray(tRelations);
+		
+		for (int i = 0; i < sRelations.length; i++) {
+			boolean found=false;
+			for (int j = 0; j < tRelations.length; j++) {
+				if(sRelations[i].equals(tRelations[j]))
+					{found=true;break;}
+			}
+			if(!found)
+				relations.add(sRelations[i].getRelation());
+		}
+		
+		
+		return relations;
+	}
+
+	
+	public boolean patHerePossible(MolecularNode sourceNode,MolecularNode targetNode){
+		Hashtable<String,Integer> sourceRelationOccurrences=new Hashtable<String,Integer>();
+		Hashtable<String,Integer> targetRelationOccurrences=new Hashtable<String,Integer>();
+		Hashtable<String,DownCable> sourceDCs=sourceNode.getDownCableSet().getDownCables();
+		Hashtable<String,DownCable> targetDCs=targetNode.getDownCableSet().getDownCables();
+		Enumeration<RCFP> sourceRelations=sourceNode.getDownCableSet().getCaseFrame().getRelations().elements();
+        Enumeration<RCFP> targetRelations=targetNode.getDownCableSet().getCaseFrame().getRelations().elements();
+;
+        while(targetRelations.hasMoreElements()){
+        	Relation targetRelation=targetRelations.nextElement().getRelation();
+        	String targetRelationName=targetRelation.getName();
+        	if(sourceDCs.containsKey(targetRelationName))
+        		targetRelationOccurrences.put(targetRelationName,new Integer(targetDCs.get(targetRelationName).getNodeSet().size()));
+        	Path targetPath;
+        	if((targetPath=targetRelation.getPath())!=null){
+            	
+            }
+        }
+		return false;
+	}
+	
 	// public Node VERE(VariableNode n, Substitutions r, Substitutions s) {
 	//
 	// Stack<VariableNode> path = source(n, r);

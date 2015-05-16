@@ -17,6 +17,7 @@ import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import SNeBR.Context;
+import SNeBR.SNeBR;
 
 public class AndNode extends RuleNode {
 	/**
@@ -44,13 +45,13 @@ public class AndNode extends RuleNode {
 		FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);
-		RuleUseInfo rui = new RuleUseInfo(report.getSubstituions(), 1, 0, fns);
+		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 
-		Context context = report.getContext();
+		Context context = SNeBR.getContextByID(report.getContextID());
 		if (isConstantNode(signature)) {
 			int pos = addConstantRuiToContext(context, rui).getPosCount();
 			if (pos == this.antsWithoutVarsNumber)
-				sendReports(report.getContext());
+				sendReports(context);
 			return;
 		}
 

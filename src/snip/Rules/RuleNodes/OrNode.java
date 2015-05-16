@@ -9,12 +9,12 @@ import snip.Rules.DataStructures.RuleUseInfo;
 
 public class OrNode extends RuleNode {
 
-	private int ant,cq;
-	
+	private int ant, cq;
+
 	public OrNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
-		ant=getDownNodeSet("ant").size();
-		cq=getDownNodeSet("cq").size();
+		ant = getDownNodeSet("ant").size();
+		cq = getDownNodeSet("cq").size();
 	}
 
 	@Override
@@ -22,8 +22,8 @@ public class OrNode extends RuleNode {
 		if (report.isNegative())
 			return;
 
-		Report reply = new Report(report.getSubstituions(),
-				report.getSupport(), true, this, null, report.getContext());
+		Report reply = new Report(report.getSubstitutions(),
+				report.getSupport(), true, report.getContextID());
 		// TODO Mussab
 		throw new UnsupportedOperationException();
 		// ChannelsSet ctemp = this.getOutGoing().getConChannelsSet(
@@ -34,10 +34,12 @@ public class OrNode extends RuleNode {
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
 	}
-	public int getAnt(){
+
+	public int getAnt() {
 		return ant;
 	}
-	public int getCq(){
+
+	public int getCq() {
 		return cq;
 	}
 }

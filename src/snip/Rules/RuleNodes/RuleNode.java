@@ -25,6 +25,7 @@ import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndex;
 import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
+import SNeBR.SNeBR;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -93,18 +94,18 @@ public abstract class RuleNode extends PropositionNode {
 	 *            Node
 	 */
 	public void applyRuleHandler(Report report, Node signature) {
-		Context context = report.getContext();
+		Context context = SNeBR.getContextByID(report.getContextID());
 		RuleUseInfo rui;
 		if (report.isPositive()) {
 			FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
-			rui = new RuleUseInfo(report.getSubstituions(), 1, 0, fns);
+			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 		} else {
 			FlagNode fn = new FlagNode(signature, report.getSupport(), 2);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
-			rui = new RuleUseInfo(report.getSubstituions(), 0, 1, fns);
+			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
 		ContextRUIS crtemp = null;
 		if (this.getContextRUISSet().hasContext(context)) {

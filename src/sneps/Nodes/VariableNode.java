@@ -10,10 +10,13 @@
  */
 package sneps.Nodes;
 
+import java.util.LinkedList;
+
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Variable;
+import snip.Rules.Interfaces.NodeWithVar;
 
-public class VariableNode extends Node {
+public class VariableNode extends Node implements NodeWithVar {
 	
 	/**
 	 * The first constructor of this class.
@@ -48,6 +51,18 @@ public class VariableNode extends Node {
 	 */
 	public VariableNode(String semantic, String name) throws Exception {
 		super("Variable", semantic, name);
+	}
+
+	@Override
+	public LinkedList<VariableNode> getFreeVariables() {
+		LinkedList<VariableNode> temp = new LinkedList<>();
+		temp.add(this);
+		return temp;
+	}
+
+	@Override
+	public boolean hasSameFreeVariablesAs(NodeWithVar node) {
+		return false;
 	}
 
 //////////////////////////////////////main method that was used for testing //////////////////////////////////////	

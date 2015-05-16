@@ -43,5 +43,4 @@ public class Switch {
 	public String toString() {
 		return substitution.toString();
 	}
-
 }

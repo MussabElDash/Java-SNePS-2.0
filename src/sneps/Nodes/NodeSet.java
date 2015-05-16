@@ -9,20 +9,20 @@
  */
 package sneps.Nodes;
 
-import java.util.LinkedList;
+import java.util.Vector;
 
 public class NodeSet {
 	
 	/**
 	 * a list that stores the nodes included in the node set.
 	 */
-	private LinkedList<Node> nodes;
+	private Vector<Node> nodes;
 	
 	/**
 	 * The constructor of the class which initialize an empty node set.
 	 */
 	public NodeSet(){
-		nodes = new LinkedList<Node>();
+		nodes = new Vector<Node>();
 	}
 	
 	/**

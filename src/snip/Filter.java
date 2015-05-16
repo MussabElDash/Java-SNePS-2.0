@@ -19,7 +19,7 @@ public class Filter {
 	public Substitutions getSubstitution() {
 		return substitution;
 	}
-	
+
 	@Override
 	public boolean equals(Object filter) {
 		Filter typeCastedObject = (Filter) filter;

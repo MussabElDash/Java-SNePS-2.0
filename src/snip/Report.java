@@ -3,6 +3,7 @@ package snip;
 
 import sneps.match.Substitutions;
 import SNeBR.Support;
+import sneps.match.Substitutions;
 
 public class Report {
 

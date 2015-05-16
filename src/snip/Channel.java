@@ -1,19 +1,18 @@
 package snip;
 
 import java.util.ArrayList;
-
 import sneps.Nodes.Node;
 import sneps.match.Substitutions;
 
 public abstract class Channel {
-	
+
 	private Filter filter;
 	private Switch switch_;
 	private int contextID;
 	private Node destination;
 	private boolean valve;
 	private ArrayList<Report> reportsBuffer;
-	
+
 	public Channel() {
 		filter = new Filter();
 		switch_ = new Switch();
@@ -32,15 +31,15 @@ public abstract class Channel {
 	public int getContextID() {
 		return contextID;
 	}
-	
+
 	public boolean isValveOpen() {
 		return valve;
 	}
-	
+
 	public void setValve(boolean valve) {
 		this.valve = valve;
 	}
-	
+
 	public boolean addReport(Report report) {
 		System.out.println("Can pass " + filter.canPass(report));
 		if(filter.canPass(report) && contextID == report.getContextID()) {

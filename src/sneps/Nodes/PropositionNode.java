@@ -1,6 +1,7 @@
 package sneps.Nodes;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import sneps.Cables.DownCable;
 import sneps.Cables.UpCable;
@@ -8,14 +9,16 @@ import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import sneps.SyntaticClasses.Pattern;
 import sneps.SyntaticClasses.Term;
+import snip.Rules.Interfaces.NodeWithVar;
 import SNeBR.Context;
 import SNeBR.Contradiction;
 import SNeBR.PropositionSet;
 import SNeBR.SNeBR;
 import SNeBR.Support;
 
-public class PropositionNode extends MolecularNode {
+public class PropositionNode extends MolecularNode implements NodeWithVar {
 
 	public PropositionNode(Molecular syn, Proposition sem) {
 		super(syn, sem);
@@ -28,8 +31,7 @@ public class PropositionNode extends MolecularNode {
 	// public PropositionNode() {
 	// super();
 	// }
-	
-	
+
 	public void contradiction(Context context) {
 		NodeSet nodeSetNegated = checkIfNegated(this);
 		NodeSet nodeSetNegating = checkIfNegating(this);
@@ -61,17 +63,17 @@ public class PropositionNode extends MolecularNode {
 		if (!propSet.propositions.isEmpty()) {
 			context.setConflicting(true);
 			System.out.println("done!!!!");
-			SNeBR.oldPropositionSupport.clear();
-			SNeBR.newPropositionSupport = ((Proposition) this.getSemantic())
-					.getOrigin();
+			SNeBR.getOldPropositionSupport().clear();
+			SNeBR.setNewPropositionSupport(((Proposition) this.getSemantic())
+					.getOrigin());
 			for (Iterator<PropositionNode> iterator = propSet.propositions
 					.iterator(); iterator.hasNext();) {
 				PropositionNode p = iterator.next();
-				SNeBR.oldPropositionSupport.addAll(((Proposition) p
-						.getSemantic()).getOrigin());
+				SNeBR.getOldPropositionSupport().addAll(
+						((Proposition) p.getSemantic()).getOrigin());
 			}
-			SNeBR.restrictionsOfRestrictions(SNeBR.oldPropositionSupport,
-					SNeBR.newPropositionSupport);
+			SNeBR.restrictionsOfRestrictions(SNeBR.getOldPropositionSupport(),
+					SNeBR.getNewPropositionSupport());
 			Contradiction cont = new Contradiction(
 					(Proposition) this.getSemantic(), propSet);
 			context.addCont(cont);
@@ -229,6 +231,27 @@ public class PropositionNode extends MolecularNode {
 			return true;
 		return false;
 	}
-	
-	
+
+	@Override
+	public LinkedList<VariableNode> getFreeVariables() {
+		if (getSyntactic() instanceof Pattern)
+			return ((Pattern) this.getSyntactic()).getFreeVariables();
+		return new LinkedList<VariableNode>();
+	}
+
+	/**
+	 * 
+	 * @param patternNode
+	 *            a given pattern node that its free variables will be compared
+	 *            to the free variables of the current node.
+	 * 
+	 * @return true if both nodes has the same free variables, and false
+	 *         otherwise.
+	 */
+	@Override
+	public boolean hasSameFreeVariablesAs(NodeWithVar patternNode) {
+		return ((Pattern) this.getSyntactic())
+				.hasSameFreeVariablesAs((Node) patternNode);
+	}
+
 }

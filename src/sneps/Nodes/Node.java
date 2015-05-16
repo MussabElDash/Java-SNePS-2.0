@@ -460,7 +460,7 @@ public class Node {
 						if (!(currentChannel instanceof MatchChannel)) {
 							// Sending requests to matched channels nodes
 							// TODO Ahmed Akram: call network.match
-							ArrayList<Pair> matchedNodes = Network.match(this);
+//							ArrayList<Pair> matchedNodes = Network.match(this);
 							toBeSentTo.clear();
 	
 							// TODO Akram send to all the matched nodes

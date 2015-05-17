@@ -485,5 +485,13 @@ public class LinearSubstitutions implements Substitutions
 					return sub.get(i).getNode().getId();
 			return -1;
 		}
+
+		@Override
+		public void insertOrUpdate(Binding mb) {
+			if(isBound(mb.getVariable()))
+				update(getBindingByVariable(mb.getVariable()), mb.getNode());
+		else putIn(mb);
+			
+		}
 }
 

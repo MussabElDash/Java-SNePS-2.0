@@ -493,7 +493,6 @@ public class Node {
 						filterSubs, conetxtID, currentPair.getNode(), true);
 			}
 			incomingChannels.addChannel(newChannel);
-			Runner.addToLowQueue(currentPair.getNode());
 			currentPair.getNode().receiveRequest(newChannel);
 		}
 	}

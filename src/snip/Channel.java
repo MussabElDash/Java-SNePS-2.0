@@ -9,7 +9,8 @@ public abstract class Channel {
 	private Filter filter;
 	private Switch switch_;
 	private int contextID;
-	private Node destination;
+	private Node requester;
+	private Node reporter;
 	private boolean valve;
 	private ArrayList<Report> reportsBuffer;
 
@@ -19,21 +20,34 @@ public abstract class Channel {
 		reportsBuffer = new ArrayList<Report>();
 	}
 
-	public Channel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node d, boolean v) {
+	public Channel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node requester, Node reporter, boolean v) {
 		this.filter = new Filter(filterSubstitutions);
 		this.switch_ = new Switch(switchSubstitution);
 		this.contextID = contextID;
-		this.destination = d;
+		this.requester = requester;
 		this.valve = v;
+		this.reporter = reporter;
 		reportsBuffer = new ArrayList<Report>();
 	}
 	
 	public int getContextID() {
 		return contextID;
 	}
+	
+	public Node getReporter() {
+		return reporter;
+	}
 
 	public boolean isValveOpen() {
 		return valve;
+	}
+	
+	public Node getRequester() {
+		return requester;
+	}
+	
+	public void clearReportsBuffer() {
+		reportsBuffer.clear();
 	}
 
 	public void setValve(boolean valve) {
@@ -46,7 +60,7 @@ public abstract class Channel {
 			System.out.println("\n\nThe Switch data:\n" + switch_);
 			switch_.switchReport(report);
 			reportsBuffer.add(report);
-			Runner.addToHighQueue(destination);
+			Runner.addToHighQueue(requester);
 			return true;
 		}
 		return false;
@@ -58,10 +72,6 @@ public abstract class Channel {
 	
 	public Switch getSwitch() {
 		return switch_;
-	}
-	
-	public Node getDestination() {
-		return destination;
 	}
 
 	public ArrayList<Report> getReportsBuffer() {

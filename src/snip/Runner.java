@@ -19,7 +19,11 @@ public class Runner {
 		String sequence = "";
 		while(!highQueue.isEmpty() || !lowQueue.isEmpty()) {
 			while(!highQueue.isEmpty()) {
+				System.out.println("\n\n");
+				System.out.println(" AT HIGH QUEUE ");
 				Node toRunNext = highQueue.poll();
+				System.out.println(toRunNext);
+				System.out.println("\n\n");
 				toRunNext.processReports();
 				sequence += 'H';
 			}

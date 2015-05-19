@@ -130,6 +130,7 @@ public class RuleUseInfo {
 		// }
 		for (FlagNode fn1 : fns) {
 			for (FlagNode fn2 : r.getFlagNodeSet()) {
+				System.out.println("---->> " + fn1.getNode() + " " + fn1.getNode());
 				if (fn1.getNode() == fn2.getNode())
 					return true;
 			}
@@ -156,6 +157,7 @@ public class RuleUseInfo {
 	 * @return RuleUseInfo
 	 */
 	public RuleUseInfo combine(RuleUseInfo rui) {
+		System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
 			return new RuleUseInfo(this.getSub().union(rui.getSub()), this.pos
 					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));

@@ -608,10 +608,13 @@ public class Network {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// create the Molecular Node
 		MolecularNode mNode;
-		if (isToBePattern(array))
+		if (isToBePattern(array)) {
+			System.out.println("building patt");
 			mNode = createPatNode(relNodeSet, caseFrame);
-		else
+		}else {
+			System.out.println("building closed");
 			mNode = createClosedNode(relNodeSet, caseFrame);
+		}
 		nodes.put(mNode.getIdentifier(), mNode);
 		nodesIndex.add(mNode.getId(), mNode);
 		molecularNodes.get(mNode.getDownCableSet().getCaseFrame().getId())
@@ -892,6 +895,7 @@ public class Network {
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
+		System.out.println("mtooo");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -965,7 +969,20 @@ public class Network {
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
 		if (semantic.equals("Proposition")) {
-			PropositionNode propNode = new PropositionNode(c, (Proposition) e);
+			Proposition prop = (Proposition) e;
+			PropositionNode propNode;
+			if (caseFrame == CaseFrame.andRule)
+				propNode = new AndNode(c, prop);
+			else if (caseFrame == CaseFrame.orRule)
+				propNode = new OrNode(c, prop);
+			else if (caseFrame == CaseFrame.andOrRule)
+				propNode = new AndOrNode(c, prop);
+			else if (caseFrame == CaseFrame.threshRule)
+				propNode = new ThreshNode(c, prop);
+			else if (caseFrame == CaseFrame.numericalRule)
+				propNode = new NumericalNode(c, prop);
+			else
+				propNode = new PropositionNode(c, prop);
 			return propNode;
 		} else {
 			ClosedNode cNode = new ClosedNode(c, e);

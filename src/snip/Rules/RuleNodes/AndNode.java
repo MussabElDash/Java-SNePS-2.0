@@ -37,13 +37,19 @@ public class AndNode extends RuleNode {
 		cq = this.getDownNodeSet("cq").size();
 		this.processNodes(antNodes);
 	}
-
+	
+	@Override
+	public void clear() {
+		System.out.println("clearing");
+		contextRuiNotSent.clear();
+		super.clear();
+	}
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
 		if (report.isNegative()) {
 			return;
 		}
-
+//		System.out.println("sig " + signature);
 		FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);
@@ -51,9 +57,15 @@ public class AndNode extends RuleNode {
 
 		Context context = SNeBR.getContextByID(report.getContextID());
 		if (isConstantNode(signature)) {
-			int pos = addConstantRuiToContext(context, rui).getPosCount();
+			rui = addConstantRuiToContext(context, rui);
+			int pos = rui.getPosCount();
 			if (pos == this.antsWithoutVarsNumber)
-				sendReports(context);
+				if(this.antsWithVarsNumber != 0)
+					sendReports(context);
+				else{
+					sendRui(getConstantRui(context), context);
+					System.out.println("dfdsf");
+					}
 			return;
 		}
 
@@ -86,6 +98,9 @@ public class AndNode extends RuleNode {
 	}
 
 	private void sendReports(Context context) {
+		System.out.println("contezxt " + context);
+		if(contextRuiNotSent.get(context.getId()) == null)
+			return;
 		Iterator<RuleUseInfo> iter = contextRuiNotSent.get(context.getId())
 				.iterator();
 		while (iter.hasNext()) {
@@ -107,6 +122,13 @@ public class AndNode extends RuleNode {
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
 		// TODO Mussab Calculate support
+		if(tRui.getPosCount() == this.antsWithoutVarsNumber){
+
+			Report reply = new Report(tRui.getSub(), null, true,
+					context.getId());
+			for (Channel outChannel : outgoingChannels)
+				outChannel.addReport(reply);
+		}
 		if (tRui.getPosCount() == this.antsWithVarsNumber) {
 			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {
 				addNotSentRui(tRui, context);

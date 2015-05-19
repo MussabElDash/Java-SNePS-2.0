@@ -16,14 +16,13 @@ public class ContextRUISSet {
 	// Vector<ContextRUIS> crs;
 	Hashtable<Integer, ContextRUIS> crs;
 
-	// /**
-	// * Create a new ContextRUISSet
-	// */
-	// public ContextRUISSet() {
-	// // crs=new Vector<ContextRUIS>();
-	// crs = new Hashtable<Integer, ContextRUIS>();
-	// }
-
+	 /**
+	 * Create a new ContextRUISSet
+	 */
+	 public ContextRUISSet() {
+		 crs = new Hashtable<Integer, ContextRUIS>();
+	 }
+	
 	/**
 	 * Add a new ContextRUIS to the ContextRUISSet
 	 * 

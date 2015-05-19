@@ -50,5 +50,9 @@ public class Report {
 	public boolean isNegative() {
 		return !sign;
 	}
+	
+	public String toString() {
+		return "ContextID : " + contextID + "\nSign: " + sign + "\nSubstitution: " + substitution; 
+	}
 
 }

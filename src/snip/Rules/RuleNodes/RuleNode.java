@@ -1,10 +1,11 @@
 package snip.Rules.RuleNodes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Set;
 
-import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PropositionNode;
@@ -157,7 +158,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return true or false
 	 */
 	public boolean allShareVars(NodeSet nodes) {
-
+		if(nodes.isEmpty())
+			return false;
 		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
 		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
@@ -321,7 +323,7 @@ public abstract class RuleNode extends PropositionNode {
 			NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			if (n instanceof NodeWithVar && !(n instanceof RuleNode))
+			if (n instanceof NodeWithVar && !(n instanceof RuleNode) && !((NodeWithVar) n).getFreeVariables().isEmpty())
 				withVars.addNode(n);
 			else
 				WithoutVars.addNode(n);
@@ -342,10 +344,17 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public RuleUseInfo addConstantRuiToContext(Context context, RuleUseInfo rui) {
 		RuleUseInfo tRui = contextConstantRUI.get(context.getId());
-		if (tRui != null)
+		System.out.println("rui " + rui.getFlagNodeSet().iterator().next().getNode());
+		if (tRui != null){
 			rui = rui.combine(tRui);
+		System.out.println("trui " + tRui.getFlagNodeSet().iterator().next().getNode());}
 		contextConstantRUI.put(context.getId(), rui);
 		return rui;
+	}
+	
+	public RuleUseInfo getConstantRui(Context con){
+		RuleUseInfo tRui = contextConstantRUI.get(con.getId());
+		return tRui;
 	}
 
 	/**
@@ -375,60 +384,57 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public static boolean isConstantNode(Node n) {
-		return !(n instanceof NodeWithVar) || n instanceof RuleNode;
+		return !(n instanceof NodeWithVar) || n instanceof RuleNode || ((NodeWithVar) n).getFreeVariables().isEmpty();
 	}
 
 	@Override
 	public void processRequests() {
-		for (Channel currentChannel : incomingChannels) {
+		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				// TODO Akram: no free variable
-				if (true) {
+				LinkedList<VariableNode> variablesList = this
+						.getFreeVariables();
+				if (variablesList.isEmpty()) {
 					Proposition semanticType = (Proposition) this.getSemantic();
 					if (semanticType.isAsserted(SNeBR
 							.getContextByID(currentChannel.getContextID()))) {
-						// TODO Akram: if rule is usable
-						if (true) {
-							// TODO Akram: relation name "Antecedent"
-							DownCable antecedntCable = this.getDownCableSet()
-									.getDownCable("Antecedent");
-							NodeSet antecedentNodeSet = antecedntCable
-									.getNodeSet();
-							Set<Node> antecedentNodes = new HashSet<Node>();
-							for (int i = 0; i < antecedentNodeSet.size(); ++i) {
-								Node currentNode = antecedentNodeSet.getNode(i);
-								// TODO Akram: if not yet been requested for
-								// this instance
-								if (true) {
-									antecedentNodes.add(currentNode);
-								}
+						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
+						Set<Node> toBeSentTo = new HashSet<Node>();
+						for (Node currentNode : antecedentNodeSet) {
+							if(currentNode == currentChannel.getRequester()) {
+								continue;
 							}
-							sendRequests(antecedentNodes,
-									currentChannel.getContextID(),
-									ChannelTypes.RuleAnt);
-						} else {
-							// TODO Akram: establish the rule
+							// TODO Akram: if not yet been requested for this instance
+							if (true) {
+								toBeSentTo.add(currentNode);
+							}
 						}
+						sendRequests(toBeSentTo,
+								currentChannel.getContextID(),
+								ChannelTypes.RuleAnt);
 					}
 				} else if (true) {
-
+//					 TODO AKram: there are free vaiables, but each is bound
 				} else if (true) {
-
+//					 TODO AKRam: there are free variables
 				}
 			} else {
 				super.processSingleRequest(currentChannel);
 			}
 		}
 	}
-
+	
 	@Override
 	public void processReports() {
-		for (Channel currentChannel : outgoingChannels) {
-			processSingleReport(currentChannel);
-			if (currentChannel instanceof AntecedentToRuleChannel) {
-				// TODO Akram: send the correct report :D
-				this.applyRuleHandler(null, null);
+		for (Channel currentChannel : incomingChannels) {
+//			processSingleReport(currentChannel);
+			ArrayList<Report> channelReports = currentChannel.getReportsBuffer();
+			for(Report currentReport : channelReports) {
+				if (currentChannel instanceof AntecedentToRuleChannel) {
+					// TODO Akram: send the correct report :D
+					this.applyRuleHandler(currentReport, currentChannel.getReporter());
+				}
 			}
+			currentChannel.clearReportsBuffer();
 		}
 	}
 }

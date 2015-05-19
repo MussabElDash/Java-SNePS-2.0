@@ -121,5 +121,12 @@ public class FUnitPath extends Path {
 	public Path converse() {
 		return new BUnitPath(this.relation);
 	}
+	
+	public LinkedList<Relation> firstRelations() {
+		LinkedList<Relation> r= new LinkedList<Relation>();
+		r.add(relation);
+		return r;
+			
+		}
 
 }

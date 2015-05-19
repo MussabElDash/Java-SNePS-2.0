@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class ConversePath extends Path{
@@ -97,5 +98,11 @@ public class ConversePath extends Path{
 	public Path converse() {
 		return this.path;
 	}
+	
+	public LinkedList<Relation> firstRelations() {
+		return new LinkedList<Relation>();
+		//TODO
+			
+		}
 
 }

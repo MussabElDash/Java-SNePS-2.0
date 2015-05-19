@@ -1,14 +1,20 @@
 package snip.Rules.RuleNodes;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import snip.Channel;
+import snip.Report;
+import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.RuleUseInfo;
 import SNeBR.Context;
 
 public class AndOrNode extends RuleNode {
 
-	private int min, max , arg;
+	private int min, max, arg;
 
 	public AndOrNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
@@ -17,23 +23,46 @@ public class AndOrNode extends RuleNode {
 		NodeSet maxNode = this.getDownNodeSet("max");
 		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("arg");
-		arg=antNodes.size();
-		
+		arg = antNodes.size();
+
 		this.processNodes(antNodes);
 	}
 
 	protected void sendRui(RuleUseInfo ruiRes, Context context) {
-		// TODO Mussab Auto-generated method stub
+		// TODO Mussab Compute Support
+		boolean sign = false;
+		if (ruiRes.getNegCount() == arg - min)
+			sign = true;
+		else if (ruiRes.getPosCount() != max)
+			return;
+
+		Set<Integer> consequents = new HashSet<Integer>();
+		for (FlagNode fn : ruiRes.getFlagNodeSet()) {
+			if (antNodesWithVarsIDs.contains(fn.getNode().getId()))
+				continue;
+			if (antNodesWithoutVarsIDs.contains(fn.getNode().getId()))
+				continue;
+			consequents.add(fn.getNode().getId());
+		}
+
+		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
+		for (Channel outChannel : outgoingChannels) {
+			if (!consequents.contains(outChannel.getDestination().getId()))
+				continue;
+			outChannel.addReport(reply);
+		}
 
 	}
-	
-	public int getMin(){
+
+	public int getMin() {
 		return min;
 	}
-	public int getMax(){
+
+	public int getMax() {
 		return max;
 	}
-	public int getArg(){
+
+	public int getArg() {
 		return arg;
 	}
 

@@ -1,14 +1,20 @@
 package snip.Rules.RuleNodes;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import snip.Channel;
+import snip.Report;
+import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.RuleUseInfo;
 import SNeBR.Context;
 
 public class ThreshNode extends RuleNode {
 
-	private int min, max , arg;
+	private int min, max, arg;
 
 	public ThreshNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
@@ -17,21 +23,47 @@ public class ThreshNode extends RuleNode {
 		NodeSet maxNode = this.getDownNodeSet("threshmax");
 		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("arg");
-		arg=antNodes.size();
+		arg = antNodes.size();
 		this.processNodes(antNodes);
 	}
 
 	protected void sendRui(RuleUseInfo ruiRes, Context context) {
-		// TODO Mussab Auto-generated method stub
+		// TODO Mussab Compute Support
+		boolean sign = false;
+		if (ruiRes.getPosCount() == min
+				&& ruiRes.getNegCount() == arg - max - 1)
+			sign = true;
+		else if (ruiRes.getPosCount() != min - 1
+				|| ruiRes.getNegCount() != arg - max)
+			return;
+
+		Set<Integer> consequents = new HashSet<Integer>();
+		for (FlagNode fn : ruiRes.getFlagNodeSet()) {
+			if (antNodesWithVarsIDs.contains(fn.getNode().getId()))
+				continue;
+			if (antNodesWithoutVarsIDs.contains(fn.getNode().getId()))
+				continue;
+			consequents.add(fn.getNode().getId());
+		}
+
+		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
+		for (Channel outChannel : outgoingChannels) {
+			if (!consequents.contains(outChannel.getDestination().getId()))
+				continue;
+			outChannel.addReport(reply);
+		}
 
 	}
-	public int getThresh(){
+
+	public int getThresh() {
 		return min;
 	}
-	public int getThreshMax(){
+
+	public int getThreshMax() {
 		return max;
 	}
-	public int getArg(){
+
+	public int getArg() {
 		return arg;
 	}
 

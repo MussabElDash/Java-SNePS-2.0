@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class BangPath extends Path{
@@ -99,4 +100,8 @@ public class BangPath extends Path{
 		return this;
 	}
 
+	public LinkedList<Relation> firstRelations(){
+		return new LinkedList<Relation>();
+		//TODO
+	}
 }

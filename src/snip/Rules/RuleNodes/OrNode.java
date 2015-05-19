@@ -1,6 +1,7 @@
 package snip.Rules.RuleNodes;
 
 import sneps.Nodes.Node;
+import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
@@ -40,5 +41,10 @@ public class OrNode extends RuleNode {
 
 	public int getCq() {
 		return cq;
+	}
+
+	@Override
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("ant");
 	}
 }

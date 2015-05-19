@@ -214,6 +214,14 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	/**
+	 * Returns the antecedents down node set and in case of And-or or Thresh
+	 * returns the arguments down node set
+	 * 
+	 * @return NodeSet
+	 */
+	public abstract NodeSet getDownAntNodeSet();
+
+	/**
 	 * Return the up node set of this node
 	 * 
 	 * @param name

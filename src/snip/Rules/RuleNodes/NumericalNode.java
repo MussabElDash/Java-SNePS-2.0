@@ -44,4 +44,9 @@ public class NumericalNode extends RuleNode {
 		return cq;
 	}
 
+	@Override
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("&ant");
+	}
+
 }

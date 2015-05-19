@@ -132,4 +132,9 @@ public class AndNode extends RuleNode {
 		return cq;
 	}
 
+	@Override
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("&ant");
+	}
+
 }

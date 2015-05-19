@@ -66,4 +66,9 @@ public class AndOrNode extends RuleNode {
 		return arg;
 	}
 
+	@Override
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("arg");
+	}
+
 }

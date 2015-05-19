@@ -199,5 +199,13 @@ public class HashSubstitution implements Substitutions {
 		
 		return -1;
 	}
+
+	@Override
+	public void insertOrUpdate(Binding mb) {
+		if(sub.containsKey(mb.getVariable()))
+				update(getBindingByVariable(mb.getVariable()), mb.getNode());
+		else putIn(mb);
+		
+	}
 	
 }

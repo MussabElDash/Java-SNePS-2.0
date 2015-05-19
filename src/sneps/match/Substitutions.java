@@ -34,6 +34,7 @@ public interface Substitutions {
     public boolean sub(String x, String y);
     public String toString();
     public int termID(int variableID);
+    public void insertOrUpdate(Binding mb);
 
 	
 	

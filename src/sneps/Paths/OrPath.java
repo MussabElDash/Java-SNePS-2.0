@@ -14,6 +14,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class OrPath extends Path {
@@ -162,4 +163,13 @@ public class OrPath extends Path {
 		return new OrPath(result);
 	}
 
+	public LinkedList<Relation> firstRelations(){
+		LinkedList<Relation> relations=new LinkedList<Relation>();
+		for (int i = 0; i < paths.size(); i++) 
+			relations.addAll(paths.get(i).firstRelations());
+		
+		return relations;
+		
+	}
+	
 }

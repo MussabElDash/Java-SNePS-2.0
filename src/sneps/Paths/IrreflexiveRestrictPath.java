@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
 
 public class IrreflexiveRestrictPath extends Path {
@@ -111,5 +112,11 @@ public class IrreflexiveRestrictPath extends Path {
 	public Path converse() {
 		return new IrreflexiveRestrictPath(this.path.converse());
 	}
+	
+	public LinkedList<Relation> firstRelations() {
+		
+		return path.firstRelations();
+			
+		}
 
 }

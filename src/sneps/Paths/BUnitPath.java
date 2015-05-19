@@ -115,4 +115,12 @@ public class BUnitPath extends Path{
 		return new FUnitPath(this.relation);
 	}
 
+	@Override
+	public LinkedList<Relation> firstRelations() {
+	LinkedList<Relation> r= new LinkedList<Relation>();
+	r.add(relation);
+	return r;
+		
+	}
+
 }

@@ -15,9 +15,10 @@ package sneps.Paths;
 
 import java.util.LinkedList;
 
-import SNeBR.Context;
 import sneps.PathTrace;
+import sneps.Relation;
 import sneps.Nodes.Node;
+import SNeBR.Context;
 
 public abstract class Path {
 	
@@ -89,5 +90,7 @@ public abstract class Path {
 	  *   path.
 	  */
 	 public abstract Path converse();
+	 
+	 public abstract LinkedList<Relation> firstRelations();
 	 
 }

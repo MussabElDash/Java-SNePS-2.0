@@ -249,6 +249,15 @@ public class Network {
 		}
 	}
 
+	public static Node getNodeById(int id) throws CustomException {
+		if (nodesIndex.get(id) != null) {
+			return nodesIndex.get(id);
+		} else {
+			throw new CustomException("There is no node named '" + id
+					+ "' in the network");
+		}
+	}
+
 	/**
 	 * 
 	 * @param array
@@ -313,8 +322,9 @@ public class Network {
 	public static Relation defineRelation(String name, String type,
 			String adjust, int limit) throws CustomException {
 		if (relations.containsKey(name)) {
-			throw new CustomException("The relation named " + name
-					+ " is already defined in the network");
+			return relations.get(name);
+			// throw new CustomException("The relation named " + name +
+			// " is already defined in the network");
 		} else {
 			relations.put(name, new Relation(name, type, adjust, limit));
 		}
@@ -536,11 +546,12 @@ public class Network {
 	 *             if another node with the same given name already exists in
 	 *             the network.
 	 */
-	public static Node buildBaseNode(String identifier, Entity semantic)
-			throws CustomException {
+	public static Node buildBaseNode(String identifier, Entity semantic) {
 		if (nodes.containsKey(identifier)) {
-			throw new CustomException(
-					"There is already another node with the same name existing in the network");
+			return nodes.get(identifier);
+
+			// throw new
+			// CustomException("There is already another node with the same name existing in the network");
 		} else {
 			Base b = new Base(identifier);
 			Node node = new Node(b, semantic);

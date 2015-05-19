@@ -1,9 +1,12 @@
 package snip.Rules.RuleNodes;
 
+import java.util.Iterator;
+
 import SNeBR.Context;
 import sneps.Nodes.Node;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
 
@@ -22,13 +25,15 @@ public class OrNode extends RuleNode {
 		if (report.isNegative())
 			return;
 
-		Report reply = new Report(report.getSubstitutions(),
-				report.getSupport(), true, report.getContextID());
-		// TODO Mussab
-		throw new UnsupportedOperationException();
-		// ChannelsSet ctemp = this.getOutGoing().getConChannelsSet(
-		// r.getContext());
-		// this.sendReport(reply, ctemp);
+		// TODO Mussab Compute Support
+		Report reply = new Report(report.getSubstitutions(), null, true,
+				report.getContextID());
+		Channel ch = null;
+		for (Iterator<Channel> iter = outgoingChannels.getIterator(); iter
+				.hasNext();) {
+			ch = iter.next();
+			ch.addReport(reply);
+		}
 	}
 
 	@Override

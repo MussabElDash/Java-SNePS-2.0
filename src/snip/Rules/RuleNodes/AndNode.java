@@ -9,6 +9,7 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
+import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.FlagNode;
@@ -16,6 +17,7 @@ import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
+import snip.Rules.DataStructures.SIndex;
 import SNeBR.Context;
 import SNeBR.SNeBR;
 
@@ -71,16 +73,16 @@ public class AndNode extends RuleNode {
 	}
 
 	@Override
-	protected NodeSet getPatternNodes() {
-		return antNodesWithVars;
-	}
-
-	@Override
 	protected ContextRUIS createContextRUISNonShared(Context c) {
 		PTree pTree = new PTree(c);
 		ContextRUIS cr = this.addContextRUIS(pTree);
 		pTree.buildTree(antNodesWithVars);
 		return cr;
+	}
+
+	@Override
+	protected byte getSIndexContextType() {
+		return SIndex.PTREE;
 	}
 
 	private void sendReports(Context context) {
@@ -104,14 +106,26 @@ public class AndNode extends RuleNode {
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Mussab Auto-generated method stub
+		// TODO Mussab Calculate support
 		if (tRui.getPosCount() == this.antsWithVarsNumber) {
 			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {
 				addNotSentRui(tRui, context);
 				return;
 			}
-			throw new UnsupportedOperationException();
+			Report reply = new Report(tRui.getSub(), null, true,
+					context.getId());
+			Channel ch = null;
+			for (Iterator<Channel> iter = outgoingChannels.getIterator(); iter
+					.hasNext();) {
+				ch = iter.next();
+				ch.addReport(reply);
+			}
 		}
+	}
+
+	@Override
+	protected NodeSet getPatternNodes() {
+		return antNodesWithVars;
 	}
 
 	public int getAndant() {

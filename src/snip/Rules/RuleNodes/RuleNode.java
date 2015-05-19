@@ -42,6 +42,17 @@ public abstract class RuleNode extends PropositionNode {
 	 * Node
 	 */
 	protected NodeSet antNodesWithoutVars;
+	/**
+	 * an integer set containing all the ids of the pattern antecedents attached
+	 * to this Node
+	 */
+	protected Set<Integer> antNodesWithVarsIDs;
+
+	/**
+	 * an integer set containing all the ids of the non pattern antecedents
+	 * attached to this Node
+	 */
+	protected Set<Integer> antNodesWithoutVarsIDs;
 
 	/**
 	 * the number of antecedents with Variables attached to this Node
@@ -79,6 +90,12 @@ public abstract class RuleNode extends PropositionNode {
 	protected void processNodes(NodeSet antNodes) {
 		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars,
 				antNodesWithoutVars);
+		for (Node n : antNodesWithVars) {
+			antNodesWithVarsIDs.add(n.getId());
+		}
+		for (Node n : antNodesWithoutVars) {
+			antNodesWithoutVarsIDs.add(n.getId());
+		}
 		this.antsWithoutVarsNumber = this.antNodesWithoutVars.size();
 		this.antsWithVarsNumber = this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
@@ -220,8 +237,13 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public ContextRUIS addContextRUIS(Context c) {
 		if (sharedVars.size() != 0) {
-			SIndex si = new SIndex(c, sharedVars, SIndex.SINGLETONRUIS,
-					getPatternNodes());
+			SIndex si = null;
+			if (shareVars)
+				si = new SIndex(c, sharedVars, SIndex.SINGLETONRUIS,
+						getPatternNodes());
+			else
+				si = new SIndex(c, sharedVars, getSIndexContextType(),
+						getParentNodes());
 			return this.addContextRUIS(si);
 		} else {
 			return this.addContextRUIS(createContextRUISNonShared(c));
@@ -251,6 +273,17 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	protected ContextRUIS createContextRUISNonShared(Context c) {
 		return new RuleUseInfoSet(c, false);
+	}
+
+	/**
+	 * Returns the contextSet type that is used in-case the
+	 * antecedents/arguments share some variables. </br><b>SIndex.PTree: </b> in
+	 * AndNode </br><b>SIndex.RUIS: </b> in other rule nodes
+	 * 
+	 * @return byte
+	 */
+	protected byte getSIndexContextType() {
+		return SIndex.RUIS;
 	}
 
 	/**

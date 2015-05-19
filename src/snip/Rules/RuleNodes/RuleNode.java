@@ -82,7 +82,9 @@ public abstract class RuleNode extends PropositionNode {
 	public RuleNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		antNodesWithoutVars = new NodeSet();
+		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
+		antNodesWithVarsIDs = new HashSet<Integer>();
 		contextRUISSet = new ContextRUISSet();
 		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
 	}

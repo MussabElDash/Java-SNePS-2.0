@@ -187,7 +187,6 @@ public class PTreeTest {
 		for (int i = 0; i < 7; i++) {
 			a1[i][0] = ant;
 			a1[i][1] = (MolecularNode) antNodesTemp[i];
-			;
 		}
 		a1[7][0] = conq;
 		a1[7][1] = consequentNode;

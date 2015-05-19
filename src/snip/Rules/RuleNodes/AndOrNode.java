@@ -1,7 +1,6 @@
 package snip.Rules.RuleNodes;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import sneps.Nodes.NodeSet;
@@ -47,13 +46,10 @@ public class AndOrNode extends RuleNode {
 		}
 
 		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
-		Channel ch = null;
-		for (Iterator<Channel> iter = outgoingChannels.getIterator(); iter
-				.hasNext();) {
-			ch = iter.next();
-			if (!consequents.contains(ch.getDestination().getId()))
+		for (Channel outChannel : outgoingChannels) {
+			if (!consequents.contains(outChannel.getDestination().getId()))
 				continue;
-			ch.addReport(reply);
+			outChannel.addReport(reply);
 		}
 
 	}

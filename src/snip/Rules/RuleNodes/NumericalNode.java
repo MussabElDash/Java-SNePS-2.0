@@ -1,7 +1,5 @@
 package snip.Rules.RuleNodes;
 
-import java.util.Iterator;
-
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
@@ -30,12 +28,8 @@ public class NumericalNode extends RuleNode {
 		if (tRui.getPosCount() < i)
 			return;
 		Report reply = new Report(tRui.getSub(), null, true, context.getId());
-		Channel ch = null;
-		for (Iterator<Channel> iter = outgoingChannels.getIterator(); iter
-				.hasNext();) {
-			ch = iter.next();
-			ch.addReport(reply);
-		}
+		for (Channel outChannel : outgoingChannels)
+			outChannel.addReport(reply);
 	}
 
 	public int getI() {

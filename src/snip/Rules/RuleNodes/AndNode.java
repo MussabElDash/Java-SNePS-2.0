@@ -114,12 +114,8 @@ public class AndNode extends RuleNode {
 			}
 			Report reply = new Report(tRui.getSub(), null, true,
 					context.getId());
-			Channel ch = null;
-			for (Iterator<Channel> iter = outgoingChannels.getIterator(); iter
-					.hasNext();) {
-				ch = iter.next();
-				ch.addReport(reply);
-			}
+			for (Channel outChannel : outgoingChannels)
+				outChannel.addReport(reply);
 		}
 	}
 

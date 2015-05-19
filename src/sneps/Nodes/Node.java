@@ -161,9 +161,11 @@ public class Node {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Node(String syn, String sem, String name, DownCableSet dCableSet) throws Exception{
+	public Node(String syn, String sem, String name, DownCableSet dCableSet)
+			throws Exception {
 		Class s = Class.forName("sneps.SyntaticClasses." + syn);
-		Constructor con = s.getConstructor(new Class[]{String.class, DownCableSet.class});
+		Constructor con = s.getConstructor(new Class[] { String.class,
+				DownCableSet.class });
 		this.syntactic = (Term) con.newInstance(name, dCableSet);
 		Class s2 = Class.forName("sneps.SemanticClasses." + sem);
 		this.semantic = (Entity) s2.newInstance();
@@ -384,44 +386,33 @@ public class Node {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(),
-					currentReport.getSupport(), currentReport.getSign(), currentReport.getContextID());
+					currentReport.getSupport(), currentReport.getSign(),
+					currentReport.getContextID());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}
-			Iterator<Channel> it = outgoingChannels.getIterator();
-			Channel outChannel;
-			while(it.hasNext()) {
-				outChannel = it.next();
+			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(alteredReport);
-			}
 		}
 	}
 
 	public void processReports() {
-		Iterator<Channel> it = outgoingChannels.getIterator();
-		Channel outChannel;
-		while(it.hasNext()) {
-			outChannel = it.next();
+		for (Channel outChannel : outgoingChannels)
 			processSingleReport(outChannel);
-		}
 	}
-	
+
 	public void broadcastReport(Report report) {
-		Iterator<Channel> it = outgoingChannels.getIterator();
-		Channel outChannel;
-		while(it.hasNext()) {
-			outChannel = it.next();
+		for (Channel outChannel : outgoingChannels)
 			outChannel.addReport(report);
-		}
 	}
-	
+
 	public boolean sendReport(Report report, Channel channel) {
-		if(channel.addReport(report)) {
+		if (channel.addReport(report)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void processSingleRequest(Channel currentChannel) {
 
 		PropositionSet propSet = new PropositionSet();
@@ -439,11 +430,15 @@ public class Node {
 			for (Report currentReport : knownInstances) {
 				sentAtLeastOne = sendReport(currentReport, currentChannel);
 			}
-			
-			//TODO Akram: passed the filter subs to isWhQuest, is that correct ?
-			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitution())) {
-				if(!alreadyWorking(currentChannel)) {
-					UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
+
+			// TODO Akram: passed the filter subs to isWhQuest, is that correct
+			// ?
+			if (!sentAtLeastOne
+					|| isWhQuestion(currentChannel.getFilter()
+							.getSubstitution())) {
+				if (!alreadyWorking(currentChannel)) {
+					UpCable consequentCable = this.getUpCableSet().getUpCable(
+							"cq");
 					if (consequentCable != null) {
 						NodeSet dominatingRules = consequentCable.getNodeSet();
 						int dominatingRulesCount = dominatingRules.size();
@@ -458,12 +453,14 @@ public class Node {
 						if (!(currentChannel instanceof MatchChannel)) {
 							// Sending requests to matched channels nodes
 							// TODO Ahmed Akram: call network.match
-//							ArrayList<Pair> matchedNodes = Network.match(this);
+							// ArrayList<Pair> matchedNodes =
+							// Network.match(this);
 							toBeSentTo.clear();
-	
+
 							// TODO Akram send to all the matched nodes
-	
-							sendRequests(toBeSentTo, currentChannel.getContextID(),
+
+							sendRequests(toBeSentTo,
+									currentChannel.getContextID(),
 									ChannelTypes.MATCHED);
 						}
 					}
@@ -475,12 +472,8 @@ public class Node {
 	}
 
 	public void processRequests() {
-		Iterator<Channel> it = outgoingChannels.getIterator();
-		Channel outChannel;
-		while(it.hasNext()) {
-			outChannel = it.next();
+		for (Channel outChannel : outgoingChannels)
 			processSingleRequest(outChannel);
-		}
 	}
 
 	public void sendRequests(ArrayList<Pair> list, int conetxtID,
@@ -507,35 +500,35 @@ public class Node {
 
 	public void sendRequests(Set<Node> ns, int contextID,
 			ChannelTypes channelType) {
-//		for (Node sentTo : ns) {
-//
-//			// TODO Akram: what is a temp node ? h
-//			if (sentTo.isTemp())
-//				continue;
-//
-//			Filter f = new Filter();
-//			Switch s = new Switch();
-//			Channel newChannel;
-//			if (channelType == ChannelTypes.MATCHED) {
-//				newChannel = new MatchChannel(f, s, c, this, true);
-//			} else if (channelType == ChannelTypes.RuleAnt) {
-//				newChannel = new AntecedentToRuleChannel(f, s, c, this, true);
-//			} else {
-//				newChannel = new RuleToConsequentChannel(f, s, c, this, true);
-//			}
-//
-//			incomingChannels.add(newChannel);
-//			Runner.addToLowQueue(this);
-//
-//			sentTo.receiveRequest(newChannel);
-//		}
+		// for (Node sentTo : ns) {
+		//
+		// // TODO Akram: what is a temp node ? h
+		// if (sentTo.isTemp())
+		// continue;
+		//
+		// Filter f = new Filter();
+		// Switch s = new Switch();
+		// Channel newChannel;
+		// if (channelType == ChannelTypes.MATCHED) {
+		// newChannel = new MatchChannel(f, s, c, this, true);
+		// } else if (channelType == ChannelTypes.RuleAnt) {
+		// newChannel = new AntecedentToRuleChannel(f, s, c, this, true);
+		// } else {
+		// newChannel = new RuleToConsequentChannel(f, s, c, this, true);
+		// }
+		//
+		// incomingChannels.add(newChannel);
+		// Runner.addToLowQueue(this);
+		//
+		// sentTo.receiveRequest(newChannel);
+		// }
 	}
 
 	public void receiveRequest(Channel channel) {
 		outgoingChannels.addChannel(channel);
 		Runner.addToLowQueue(this);
 	}
-	
+
 	public boolean alreadyWorking(Channel channel) {
 		// TODO Akram: implement this
 		return false;
@@ -557,11 +550,11 @@ public class Node {
 		}
 		return false;
 	}
-	
+
 	Context fake() {
 		return null;
 	}
-	
+
 	public void deduce() {
 
 	}

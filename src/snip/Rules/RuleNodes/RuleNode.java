@@ -375,7 +375,8 @@ public abstract class RuleNode extends PropositionNode {
 				// TODO Akram: no free variable
 				if (true) {
 					Proposition semanticType = (Proposition) this.getSemantic();
-					if (semanticType.isAsserted(currentChannel.getContext())) {
+					if (semanticType.isAsserted(SNeBR
+							.getContextByID(currentChannel.getContextID()))) {
 						// TODO Akram: if rule is usable
 						if (true) {
 							// TODO Akram: relation name "Antecedent"
@@ -393,7 +394,7 @@ public abstract class RuleNode extends PropositionNode {
 								}
 							}
 							sendRequests(antecedentNodes,
-									currentChannel.getContext(),
+									currentChannel.getContextID(),
 									ChannelTypes.RuleAnt);
 						} else {
 							// TODO Akram: establish the rule

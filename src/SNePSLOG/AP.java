@@ -1,4 +1,4 @@
-package SnepsLog;
+package SNePSLOG;
 
 import java.io.*;
 

@@ -9,7 +9,6 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
-import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.ContextRUIS;
 import snip.Rules.DataStructures.FlagNode;
@@ -18,8 +17,6 @@ import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndex;
-import SNeBR.Context;
-import SNeBR.SNeBR;
 
 public class AndNode extends RuleNode {
 	/**
@@ -69,7 +66,6 @@ public class AndNode extends RuleNode {
 		for (RuleUseInfo tRui : res) {
 			if (tRui.getPosCount() == this.antsWithVarsNumber)
 				addNotSentRui(tRui, context);
-			// sendRui(tRui, context);
 		}
 		sendSavedRUIs(context);
 	}
@@ -95,8 +91,10 @@ public class AndNode extends RuleNode {
 				&& addedConstant.getPosCount() != this.antsWithoutVarsNumber)
 			return;
 		Set<RuleUseInfo> ruis = contextRuiNotSent.get(contextID);
-		if (ruis == null)
+		if (ruis == null) {
 			sendRui(addedConstant, contextID);
+			return;
+		}
 		RuleUseInfo combined;
 		for (Iterator<RuleUseInfo> iter = ruis.iterator(); iter.hasNext();) {
 			RuleUseInfo info = iter.next();
@@ -141,6 +139,12 @@ public class AndNode extends RuleNode {
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		contextRuiNotSent.clear();
 	}
 
 }

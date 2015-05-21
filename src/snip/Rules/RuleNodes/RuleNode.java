@@ -113,7 +113,7 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public void applyRuleHandler(Report report, Node signature) {
 		int contextID = report.getContextID();
-//		Context context = SNeBR.getContextByID(contextID);
+		// Context context = SNeBR.getContextByID(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
 			FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
@@ -157,6 +157,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * @return true or false
 	 */
 	public boolean allShareVars(NodeSet nodes) {
+		if (nodes.isEmpty())
+			return false;
 
 		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
 		boolean res = true;
@@ -321,10 +323,10 @@ public abstract class RuleNode extends PropositionNode {
 			NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			if (n instanceof NodeWithVar && !(n instanceof RuleNode))
-				withVars.addNode(n);
-			else
+			if (isConstantNode(n))
 				WithoutVars.addNode(n);
+			else
+				withVars.addNode(n);
 		}
 	}
 

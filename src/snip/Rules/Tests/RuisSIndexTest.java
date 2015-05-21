@@ -63,7 +63,7 @@ public class RuisSIndexTest {
 		varsIds.add(varNodes[0].getId());
 		varsIds.add(varNodes[1].getId());
 
-		SIndex indexing = new SIndex(null, varsIds, SIndex.RUIS, nodeSet);
+		SIndex indexing = new SIndex(-1, varsIds, SIndex.RUIS, nodeSet);
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());
 		Node mary = Network.buildBaseNode("mary", new Individual());

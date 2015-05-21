@@ -49,11 +49,10 @@ public class AndNode extends RuleNode {
 		fns.putIn(fn);
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 
-		Context context = SNeBR.getContextByID(report.getContextID());
+		int context = report.getContextID();
 		if (isConstantNode(signature)) {
-			int pos = addConstantRuiToContext(context, rui).getPosCount();
-			if (pos == this.antsWithoutVarsNumber)
-				sendReports(context);
+			addConstantRuiToContext(context, rui);
+			sendSavedRUIs(context);
 			return;
 		}
 
@@ -68,12 +67,15 @@ public class AndNode extends RuleNode {
 			res = new RuleUseInfoSet();
 		}
 		for (RuleUseInfo tRui : res) {
-			sendRui(tRui, context);
+			if (tRui.getPosCount() == this.antsWithVarsNumber)
+				addNotSentRui(tRui, context);
+			// sendRui(tRui, context);
 		}
+		sendSavedRUIs(context);
 	}
 
 	@Override
-	protected ContextRUIS createContextRUISNonShared(Context c) {
+	protected ContextRUIS createContextRUISNonShared(int c) {
 		PTree pTree = new PTree(c);
 		ContextRUIS cr = this.addContextRUIS(pTree);
 		pTree.buildTree(antNodesWithVars);
@@ -85,43 +87,47 @@ public class AndNode extends RuleNode {
 		return SIndex.PTREE;
 	}
 
-	private void sendReports(Context context) {
-		Iterator<RuleUseInfo> iter = contextRuiNotSent.get(context.getId())
-				.iterator();
-		while (iter.hasNext()) {
+	private void sendSavedRUIs(int contextID) {
+		RuleUseInfo addedConstant = getConstantRUI(contextID);
+		if (addedConstant == null && this.antsWithoutVarsNumber != 0)
+			return;
+		if (addedConstant != null
+				&& addedConstant.getPosCount() != this.antsWithoutVarsNumber)
+			return;
+		Set<RuleUseInfo> ruis = contextRuiNotSent.get(contextID);
+		if (ruis == null)
+			sendRui(addedConstant, contextID);
+		RuleUseInfo combined;
+		for (Iterator<RuleUseInfo> iter = ruis.iterator(); iter.hasNext();) {
 			RuleUseInfo info = iter.next();
 			iter.remove();
-			sendRui(info, context);
+			combined = info.combine(addedConstant);
+			if (combined == null)
+				throw new NullPointerException(
+						"The Constant RUI could not be merged "
+								+ "with the non-constant one so check your code again");
+			sendRui(combined, contextID);
 		}
 	}
 
-	private void addNotSentRui(RuleUseInfo tRui, Context context) {
-		Set<RuleUseInfo> set = contextRuiNotSent.get(context.getId());
+	private void addNotSentRui(RuleUseInfo tRui, int contextID) {
+		Set<RuleUseInfo> set = contextRuiNotSent.get(contextID);
 		if (set == null) {
 			set = new HashSet<RuleUseInfo>();
-			contextRuiNotSent.put(context.getId(), set);
+			contextRuiNotSent.put(contextID, set);
 		}
 		set.add(tRui);
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
+	protected void sendRui(RuleUseInfo tRui, int contextID) {
 		// TODO Mussab Calculate support
-		if (tRui.getPosCount() == this.antsWithVarsNumber) {
-			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {
-				addNotSentRui(tRui, context);
-				return;
-			}
-			Report reply = new Report(tRui.getSub(), null, true,
-					context.getId());
-			for (Channel outChannel : outgoingChannels)
-				outChannel.addReport(reply);
-		}
-	}
-
-	@Override
-	protected NodeSet getPatternNodes() {
-		return antNodesWithVars;
+		addNotSentRui(tRui, contextID);
+		if (tRui.getPosCount() != this.antsWithVarsNumber
+				+ this.antsWithoutVarsNumber)
+			return;
+		Report reply = new Report(tRui.getSub(), null, true, contextID);
+		broadcastReport(reply);
 	}
 
 	public int getAndant() {

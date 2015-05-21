@@ -61,7 +61,7 @@ public class SingletonSIndexTest {
 		for (VariableNode varNode : varNodes)
 			varsIds.add(varNode.getId());
 
-		SIndex indexing = new SIndex(null, varsIds, SIndex.SINGLETONRUIS,
+		SIndex indexing = new SIndex(-1, varsIds, SIndex.SINGLETONRUIS,
 				nodeSet);
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());

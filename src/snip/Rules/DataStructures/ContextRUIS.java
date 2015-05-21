@@ -8,10 +8,9 @@
 
 package snip.Rules.DataStructures;
 
-import SNeBR.Context;
 
 public abstract class ContextRUIS {
-	private Context context;
+	private int context;
 
 	// private ChannelsSet cqChannels;
 	// private Sindexing s;
@@ -44,11 +43,11 @@ public abstract class ContextRUIS {
 	/**
 	 * Create new ContextRUIS
 	 * 
-	 * @param context
+	 * @param contextID
 	 *            Context
 	 */
-	public ContextRUIS(Context context) {
-		this.context = context;
+	public ContextRUIS(int contextID) {
+		this.context = contextID;
 	}
 
 	//
@@ -93,7 +92,7 @@ public abstract class ContextRUIS {
 	 * 
 	 * @return Context
 	 */
-	public Context getContext() {
+	public int getContext() {
 		return context;
 	}
 

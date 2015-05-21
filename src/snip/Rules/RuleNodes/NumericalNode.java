@@ -6,7 +6,6 @@ import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class NumericalNode extends RuleNode {
 
@@ -23,11 +22,11 @@ public class NumericalNode extends RuleNode {
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
+	protected void sendRui(RuleUseInfo tRui, int context) {
 		// TODO Mussab Compute support
 		if (tRui.getPosCount() < i)
 			return;
-		Report reply = new Report(tRui.getSub(), null, true, context.getId());
+		Report reply = new Report(tRui.getSub(), null, true, context);
 		for (Channel outChannel : outgoingChannels)
 			outChannel.addReport(reply);
 	}

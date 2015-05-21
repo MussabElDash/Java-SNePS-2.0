@@ -21,7 +21,6 @@ import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.VariableNode;
 import snip.Rules.Interfaces.NodeWithVar;
-import SNeBR.Context;
 
 import com.google.common.collect.Sets;
 
@@ -38,7 +37,7 @@ public class PTree extends ContextRUIS {
 	 * @param c
 	 *            Context
 	 */
-	public PTree(Context c) {
+	public PTree(int c) {
 		super(c);
 		patternVariables = new Hashtable<Integer, Set<Integer>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();

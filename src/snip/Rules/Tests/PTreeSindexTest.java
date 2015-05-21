@@ -63,7 +63,7 @@ public class PTreeSindexTest {
 		varsIds.add(varNodes[0].getId());
 		varsIds.add(varNodes[1].getId());
 
-		SIndex indexing = new SIndex(null, varsIds, SIndex.PTREE, nodeSet);
+		SIndex indexing = new SIndex(-1, varsIds, SIndex.PTREE, nodeSet);
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());
 		Node mary = Network.buildBaseNode("mary", new Individual());

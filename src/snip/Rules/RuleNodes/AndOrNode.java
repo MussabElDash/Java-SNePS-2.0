@@ -10,7 +10,6 @@ import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class AndOrNode extends RuleNode {
 
@@ -28,7 +27,7 @@ public class AndOrNode extends RuleNode {
 		this.processNodes(antNodes);
 	}
 
-	protected void sendRui(RuleUseInfo ruiRes, Context context) {
+	protected void sendRui(RuleUseInfo ruiRes, int context) {
 		// TODO Mussab Compute Support
 		boolean sign = false;
 		if (ruiRes.getNegCount() == arg - min)
@@ -45,7 +44,7 @@ public class AndOrNode extends RuleNode {
 			consequents.add(fn.getNode().getId());
 		}
 
-		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
+		Report reply = new Report(ruiRes.getSub(), null, sign, context);
 		for (Channel outChannel : outgoingChannels) {
 			if (!consequents.contains(outChannel.getDestination().getId()))
 				continue;

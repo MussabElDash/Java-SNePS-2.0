@@ -58,9 +58,9 @@ public class PTreeTest {
 		NodeSet nodeSet = new NodeSet();
 		for (NodeWithVar mn : antNodesTemp)
 			nodeSet.addNode((Node) mn);
-		PTree tree = new PTree(null);
+		PTree tree = new PTree(-1);
 		tree.buildTree(nodeSet);
-		
+
 		tree.printSubTrees();
 
 		System.out.println("====================================");
@@ -232,7 +232,7 @@ public class PTreeTest {
 	}
 
 	private static void printRuis(RuleUseInfoSet ruis) {
-		System.out.println(ruis.cardinality());
+		System.out.println("Number of RUIs is: " + ruis.cardinality());
 		for (RuleUseInfo tRui : ruis) {
 			System.out.println("====================================");
 			for (int i = 0; i < tRui.getSub().cardinality(); i++) {

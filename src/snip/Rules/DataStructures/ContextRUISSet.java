@@ -32,7 +32,7 @@ public class ContextRUISSet {
 	 */
 	public void putIn(ContextRUIS c) {
 		// crs.add(c);
-		crs.put(c.getContext().getId(), c);
+		crs.put(c.getContext(), c);
 	}
 
 	/**
@@ -79,8 +79,19 @@ public class ContextRUISSet {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	public ContextRUIS getContextRUIS(Context c) {
-		return crs.get(c.getId());
+	public ContextRUIS getContextRUIS(int contextID) {
+		return crs.get(contextID);
+	}
+
+	/**
+	 * Return the ContextRUIS that is associated with the Context c
+	 * 
+	 * @param c
+	 *            Context
+	 * @return ContextRUIS
+	 */
+	public ContextRUIS getContextRUIS(Context context) {
+		return crs.get(context.getId());
 	}
 
 	/**
@@ -91,14 +102,26 @@ public class ContextRUISSet {
 	 *            Context
 	 * @return boolean
 	 */
-	public boolean hasContext(Context c) {
-		return crs.containsKey(c.getId());
+	public boolean hasContext(int contextID) {
+		return crs.containsKey(contextID);
 	}
-	
+
+	/**
+	 * Checks if this ContextRUISSet has a ContextRUIS that is associated by the
+	 * Context c
+	 * 
+	 * @param c
+	 *            Context
+	 * @return boolean
+	 */
+	public boolean hasContext(Context context) {
+		return crs.containsKey(context.getId());
+	}
+
 	/**
 	 * Clears the ContextRUISet
 	 */
-	public void clear(){
+	public void clear() {
 		crs.clear();
 	}
 }

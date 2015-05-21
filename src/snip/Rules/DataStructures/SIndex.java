@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.Nodes.NodeSet;
-import SNeBR.Context;
 
 public class SIndex extends ContextRUIS {
 	private Hashtable<Integer, ContextRUIS> map;
@@ -39,7 +38,7 @@ public class SIndex extends ContextRUIS {
 	 * @param nodesWithVars
 	 *            NodeSet
 	 */
-	public SIndex(Context context, Set<Integer> sharedVars, byte contextType,
+	public SIndex(int context, Set<Integer> sharedVars, byte contextType,
 			NodeSet nodesWithVars) {
 		super(context);
 		this.sharedVars = sharedVars;

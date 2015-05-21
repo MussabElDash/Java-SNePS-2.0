@@ -7,7 +7,6 @@ import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class OrNode extends RuleNode {
 
@@ -32,7 +31,7 @@ public class OrNode extends RuleNode {
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
+	protected void sendRui(RuleUseInfo tRui, int context) {
 	}
 
 	public int getAnt() {

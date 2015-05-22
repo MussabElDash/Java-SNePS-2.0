@@ -3,6 +3,7 @@ package snip.Rules.RuleNodes;
 import java.util.HashSet;
 import java.util.Set;
 
+import SNeBR.Support;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
@@ -44,8 +45,10 @@ public class ThreshNode extends RuleNode {
 				continue;
 			consequents.add(fn.getNode().getId());
 		}
-
-		Report reply = new Report(ruiRes.getSub(), null, sign, context);
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(ruiRes.getSub(),
+				ruiRes.getSupport(originSupports), sign, context);
 		for (Channel outChannel : outgoingChannels) {
 			if (!consequents.contains(outChannel.getDestination().getId()))
 				continue;

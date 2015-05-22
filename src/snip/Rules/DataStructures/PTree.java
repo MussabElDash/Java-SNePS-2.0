@@ -24,7 +24,7 @@ import snip.Rules.Interfaces.NodeWithVar;
 
 import com.google.common.collect.Sets;
 
-public class PTree extends ContextRUIS {
+public class PTree extends RuisHandler {
 	private Hashtable<Integer, Set<Integer>> patternVariables,
 			variablePatterns;
 	private Set<Integer> varNotProccessed, patterns;

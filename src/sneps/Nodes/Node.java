@@ -15,11 +15,9 @@ package sneps.Nodes;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-import sneps.Network;
 import sneps.Cables.DownCableSet;
 import sneps.Cables.UpCable;
 import sneps.Cables.UpCableSet;
@@ -386,7 +384,7 @@ public class Node {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(),
-					currentReport.getSupport(), currentReport.getSign(),
+					currentReport.getSupports(), currentReport.getSign(),
 					currentReport.getContextID());
 			if (knownInstances.contains(alteredReport)) {
 				continue;

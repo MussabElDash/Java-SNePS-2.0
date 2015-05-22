@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RuleUseInfoSet extends ContextRUIS implements
+public class RuleUseInfoSet extends RuisHandler implements
 		Iterable<RuleUseInfo> {
 	// private Vector<RuleUseInfo> ruis;
 	private Set<RuleUseInfo> ruis;

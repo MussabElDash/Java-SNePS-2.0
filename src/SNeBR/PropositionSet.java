@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import sneps.Nodes.PropositionNode;
 
-public class PropositionSet {
+public class PropositionSet implements Iterable<PropositionNode>{
 	public HashSet<PropositionNode> propositions;
 
 	public PropositionSet() {
@@ -62,6 +62,11 @@ public class PropositionSet {
 
 	public void setPropositions(HashSet<PropositionNode> propositions) {
 		this.propositions = propositions;
+	}
+
+	@Override
+	public Iterator<PropositionNode> iterator() {
+		return propositions.iterator();
 	}
 
 }

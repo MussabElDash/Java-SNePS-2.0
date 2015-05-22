@@ -16,10 +16,10 @@ import snip.Channel;
 import snip.ChannelTypes;
 import snip.Report;
 import snip.RuleToConsequentChannel;
-import snip.Rules.DataStructures.ContextRUIS;
-import snip.Rules.DataStructures.ContextRUISSet;
+import snip.Rules.DataStructures.ContextRuisSet;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
+import snip.Rules.DataStructures.RuisHandler;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndex;
@@ -74,7 +74,7 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	protected Set<Integer> sharedVars;
 
-	protected ContextRUISSet contextRUISSet;
+	protected ContextRuisSet contextRUISSet;
 
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
@@ -84,7 +84,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		contextRUISSet = new ContextRUISSet();
+		contextRUISSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
 	}
 
@@ -116,17 +116,17 @@ public abstract class RuleNode extends PropositionNode {
 		// Context context = SNeBR.getContextByID(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
+			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 		} else {
-			FlagNode fn = new FlagNode(signature, report.getSupport(), 2);
+			FlagNode fn = new FlagNode(signature, report.getSupports(), 2);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
-		ContextRUIS crtemp = null;
+		RuisHandler crtemp = null;
 		if (this.getContextRUISSet().hasContext(contextID)) {
 			crtemp = this.getContextRUISSet().getContextRUIS(contextID);
 		} else {
@@ -236,7 +236,7 @@ public abstract class RuleNode extends PropositionNode {
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
-	public ContextRUISSet getContextRUISSet() {
+	public ContextRuisSet getContextRUISSet() {
 		return contextRUISSet;
 	}
 
@@ -247,7 +247,7 @@ public abstract class RuleNode extends PropositionNode {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	public ContextRUIS addContextRUIS(int contextID) {
+	public RuisHandler addContextRUIS(int contextID) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
@@ -269,7 +269,7 @@ public abstract class RuleNode extends PropositionNode {
 	 *            ContextRUIS
 	 * @return ContextRUIS
 	 */
-	public ContextRUIS addContextRUIS(ContextRUIS cRuis) {
+	public RuisHandler addContextRUIS(RuisHandler cRuis) {
 		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
 		contextRUISSet.putIn(cRuis);
 		return cRuis;
@@ -283,7 +283,7 @@ public abstract class RuleNode extends PropositionNode {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	protected ContextRUIS createContextRUISNonShared(int contextID) {
+	protected RuisHandler createContextRUISNonShared(int contextID) {
 		return new RuleUseInfoSet(contextID, false);
 	}
 

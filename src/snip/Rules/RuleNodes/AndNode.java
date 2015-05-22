@@ -5,12 +5,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import SNeBR.Support;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Report;
-import snip.Rules.DataStructures.ContextRUIS;
+import snip.Rules.DataStructures.RuisHandler;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.PTree;
@@ -41,7 +42,7 @@ public class AndNode extends RuleNode {
 			return;
 		}
 
-		FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
+		FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
@@ -53,7 +54,7 @@ public class AndNode extends RuleNode {
 			return;
 		}
 
-		ContextRUIS crtemp = null;
+		RuisHandler crtemp = null;
 		if (this.getContextRUISSet().hasContext(context)) {
 			crtemp = this.getContextRUISSet().getContextRUIS(context);
 		} else {
@@ -71,9 +72,9 @@ public class AndNode extends RuleNode {
 	}
 
 	@Override
-	protected ContextRUIS createContextRUISNonShared(int c) {
+	protected RuisHandler createContextRUISNonShared(int c) {
 		PTree pTree = new PTree(c);
-		ContextRUIS cr = this.addContextRUIS(pTree);
+		RuisHandler cr = this.addContextRUIS(pTree);
 		pTree.buildTree(antNodesWithVars);
 		return cr;
 	}
@@ -119,12 +120,14 @@ public class AndNode extends RuleNode {
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, int contextID) {
-		// TODO Mussab Calculate support
 		addNotSentRui(tRui, contextID);
 		if (tRui.getPosCount() != this.antsWithVarsNumber
 				+ this.antsWithoutVarsNumber)
 			return;
-		Report reply = new Report(tRui.getSub(), null, true, contextID);
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(tRui.getSub(),
+				tRui.getSupport(originSupports), true, contextID);
 		broadcastReport(reply);
 	}
 
@@ -140,7 +143,7 @@ public class AndNode extends RuleNode {
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");
 	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();

@@ -3,6 +3,7 @@ package snip.Rules.RuleNodes;
 import java.util.HashSet;
 import java.util.Set;
 
+import SNeBR.Support;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
@@ -28,7 +29,6 @@ public class AndOrNode extends RuleNode {
 	}
 
 	protected void sendRui(RuleUseInfo ruiRes, int context) {
-		// TODO Mussab Compute Support
 		boolean sign = false;
 		if (ruiRes.getNegCount() == arg - min)
 			sign = true;
@@ -44,7 +44,10 @@ public class AndOrNode extends RuleNode {
 			consequents.add(fn.getNode().getId());
 		}
 
-		Report reply = new Report(ruiRes.getSub(), null, sign, context);
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(ruiRes.getSub(),
+				ruiRes.getSupport(originSupports), sign, context);
 		for (Channel outChannel : outgoingChannels) {
 			if (!consequents.contains(outChannel.getDestination().getId()))
 				continue;

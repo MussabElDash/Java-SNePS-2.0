@@ -25,7 +25,6 @@ import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.Interfaces.NodeWithVar;
-import SNeBR.Support;
 
 public class PTreeTest {
 	public static void main(String[] args) throws Exception {
@@ -197,7 +196,7 @@ public class PTreeTest {
 
 	private static RuleUseInfo getRui(Node signature, VariableNode var,
 			Node subs) {
-		FlagNode fn = new FlagNode(signature, new Support(), 1);
+		FlagNode fn = new FlagNode(signature, null, 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
 		Substitutions sub = new LinearSubstitutions();
@@ -208,7 +207,7 @@ public class PTreeTest {
 
 	private static RuleUseInfo getRui(Node signature, VariableNode var1,
 			VariableNode var2, Node sub1, Node sub2) {
-		FlagNode fn = new FlagNode(signature, new Support(), 1);
+		FlagNode fn = new FlagNode(signature, null, 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
 		Substitutions sub = new LinearSubstitutions();

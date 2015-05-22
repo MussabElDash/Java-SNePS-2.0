@@ -25,7 +25,6 @@ import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndex;
 import snip.Rules.Interfaces.NodeWithVar;
-import SNeBR.Support;
 
 public class SingletonSIndexTest {
 	public static void main(String[] args) throws Exception {
@@ -61,8 +60,7 @@ public class SingletonSIndexTest {
 		for (VariableNode varNode : varNodes)
 			varsIds.add(varNode.getId());
 
-		SIndex indexing = new SIndex(-1, varsIds, SIndex.SINGLETONRUIS,
-				nodeSet);
+		SIndex indexing = new SIndex(-1, varsIds, SIndex.SINGLETONRUIS, nodeSet);
 
 		Node bob = Network.buildBaseNode("Bob", new Individual());
 		Node mary = Network.buildBaseNode("mary", new Individual());
@@ -155,7 +153,7 @@ public class SingletonSIndexTest {
 	private static RuleUseInfo getPosRui(Node signature, VariableNode var1,
 			VariableNode var2, VariableNode var3, Node sub1, Node sub2,
 			Node sub3) {
-		FlagNode fn = new FlagNode(signature, new Support(), 1);
+		FlagNode fn = new FlagNode(signature, null, 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
 		Substitutions sub = new LinearSubstitutions();
@@ -169,7 +167,7 @@ public class SingletonSIndexTest {
 	private static RuleUseInfo getNegRui(Node signature, VariableNode var1,
 			VariableNode var2, VariableNode var3, Node sub1, Node sub2,
 			Node sub3) {
-		FlagNode fn = new FlagNode(signature, new Support(), 2);
+		FlagNode fn = new FlagNode(signature, null, 2);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(fn);
 		Substitutions sub = new LinearSubstitutions();

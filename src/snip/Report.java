@@ -1,20 +1,21 @@
 package snip;
 
 
+import java.util.Set;
+
 import sneps.match.Substitutions;
 import SNeBR.Support;
-import sneps.match.Substitutions;
 
 public class Report {
 
 	private Substitutions substitution;
-	private Support support;
+	private Set<Support> supports;
 	private boolean sign;
 	private int contextID;
 
-	public Report(Substitutions substitution, Support support, boolean sign, int contextID) {
+	public Report(Substitutions substitution, Set<Support> set, boolean sign, int contextID) {
 		this.substitution = substitution;
-		this.support = support;
+		this.supports = set;
 		this.sign = sign;
 		this.contextID = contextID;
 	}
@@ -23,8 +24,8 @@ public class Report {
 		return substitution;
 	}
 
-	 public Support getSupport() {
-		 return support;
+	 public Set<Support> getSupports() {
+		 return supports;
 	 }
 
 	public int getContextID() {

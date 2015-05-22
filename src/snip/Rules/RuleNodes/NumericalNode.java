@@ -1,12 +1,14 @@
 package snip.Rules.RuleNodes;
 
+import java.util.Set;
+
+import SNeBR.Support;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class NumericalNode extends RuleNode {
 
@@ -23,11 +25,13 @@ public class NumericalNode extends RuleNode {
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Mussab Compute support
+	protected void sendRui(RuleUseInfo tRui, int context) {
 		if (tRui.getPosCount() < i)
 			return;
-		Report reply = new Report(tRui.getSub(), null, true, context.getId());
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(tRui.getSub(),
+				tRui.getSupport(originSupports), true, context);
 		for (Channel outChannel : outgoingChannels)
 			outChannel.addReport(reply);
 	}

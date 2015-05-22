@@ -11,9 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import SNeBR.Context;
-
-public class RuleUseInfoSet extends ContextRUIS implements
+public class RuleUseInfoSet extends RuisHandler implements
 		Iterable<RuleUseInfo> {
 	// private Vector<RuleUseInfo> ruis;
 	private Set<RuleUseInfo> ruis;
@@ -25,7 +23,7 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	 * Create a new empty rule use info set for general use
 	 */
 	public RuleUseInfoSet() {
-		super(null);
+		super(-1);
 		// ruis = new Vector<RuleUseInfo>();
 		// ruis = new VectorHashSet<RuleUseInfo>();
 		ruis = new HashSet<RuleUseInfo>();
@@ -34,8 +32,8 @@ public class RuleUseInfoSet extends ContextRUIS implements
 	/**
 	 * Create a new empty rule use info set for ContextRUIS use
 	 */
-	public RuleUseInfoSet(Context c, boolean singleton) {
-		super(c);
+	public RuleUseInfoSet(int contextID, boolean singleton) {
+		super(contextID);
 		// ruis = new Vector<RuleUseInfo>();
 		// ruis = new VectorHashSet<RuleUseInfo>();
 		ruis = new HashSet<RuleUseInfo>();

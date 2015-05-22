@@ -1,6 +1,11 @@
 package snip.Rules.DataStructures;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import sneps.match.Substitutions;
+import SNeBR.Support;
 
 public class RuleUseInfo {
 	private Substitutions sub;
@@ -161,5 +166,24 @@ public class RuleUseInfo {
 					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
 		}
 		return null;
+	}
+
+	public Set<Support> getSupport(Set<Support> originSupport) {
+		Set<Support> ruiSupports = getSupports();
+		return Support.combine(originSupport, ruiSupports);
+	}
+
+	private Set<Support> getSupports() {
+		if (fns.isNew())
+			return new HashSet<Support>();
+		if (fns.cardinality() == 1)
+			return fns.iterator().next().getSupports();
+		Iterator<FlagNode> fnIter = fns.iterator();
+		Set<Support> res = fnIter.next().getSupports();
+		while (fnIter.hasNext()) {
+			Set<Support> toBeCombined = fnIter.next().getSupports();
+			res = Support.combine(res, toBeCombined);
+		}
+		return res;
 	}
 }

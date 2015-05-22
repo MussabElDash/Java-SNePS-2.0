@@ -7,13 +7,15 @@
  */
 package snip.Rules.DataStructures;
 
+import java.util.Set;
+
 import SNeBR.Support;
 import sneps.Nodes.Node;
 
 public class FlagNode {
 
 	private Node node;
-	private Support support;
+	private Set<Support> supports;
 	private int flag;
 
 	/**
@@ -21,14 +23,14 @@ public class FlagNode {
 	 * 
 	 * @param n
 	 *            node
-	 * @param s
+	 * @param set
 	 *            support
 	 * @param f
 	 *            true or false
 	 */
-	public FlagNode(Node n, Support s, int f) {
+	public FlagNode(Node n, Set<Support> set, int f) {
 		node = n;
-		support = s;
+		supports = set;
 		flag = f;
 	}
 
@@ -46,8 +48,8 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Object getSupport() {
-		return support;
+	public Set<Support> getSupports() {
+		return supports;
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class FlagNode {
 	 * @return true or false
 	 */
 	public boolean isEqual(FlagNode fn) {
-		return fn.node == node && fn.support == support && fn.flag == flag;
+		return fn.node == node && fn.supports == supports && fn.flag == flag;
 	}
 
 	/**

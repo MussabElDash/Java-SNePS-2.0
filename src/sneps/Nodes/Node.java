@@ -385,7 +385,7 @@ public class Node {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(),
-					currentReport.getSupport(), currentReport.getSign(),
+					currentReport.getSupports(), currentReport.getSign(),
 					currentReport.getContextID());
 			if (knownInstances.contains(alteredReport)) {
 				continue;

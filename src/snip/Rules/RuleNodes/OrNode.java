@@ -1,5 +1,8 @@
 package snip.Rules.RuleNodes;
 
+import java.util.Set;
+
+import SNeBR.Support;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
@@ -7,7 +10,6 @@ import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class OrNode extends RuleNode {
 
@@ -24,15 +26,17 @@ public class OrNode extends RuleNode {
 		if (report.isNegative())
 			return;
 
-		// TODO Mussab Compute Support
-		Report reply = new Report(report.getSubstitutions(), null, true,
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(report.getSubstitutions(), Support.combine(
+				originSupports, report.getSupports()), true,
 				report.getContextID());
 		for (Channel outChannel : outgoingChannels)
 			outChannel.addReport(reply);
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
+	protected void sendRui(RuleUseInfo tRui, int context) {
 	}
 
 	public int getAnt() {

@@ -965,7 +965,20 @@ public class Network {
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
 		if (semantic.equals("Proposition")) {
-			PropositionNode propNode = new PropositionNode(c, (Proposition) e);
+			Proposition prop = (Proposition) e;
+			PropositionNode propNode;
+			if (caseFrame == CaseFrame.andRule)
+				propNode = new AndNode(c, prop);
+			else if (caseFrame == CaseFrame.orRule)
+				propNode = new OrNode(c, prop);
+			else if (caseFrame == CaseFrame.andOrRule)
+				propNode = new AndOrNode(c, prop);
+			else if (caseFrame == CaseFrame.threshRule)
+				propNode = new ThreshNode(c, prop);
+			else if (caseFrame == CaseFrame.numericalRule)
+				propNode = new NumericalNode(c, prop);
+			else
+				propNode = new PropositionNode(c, prop);
 			return propNode;
 		} else {
 			ClosedNode cNode = new ClosedNode(c, e);
@@ -1174,7 +1187,7 @@ public class Network {
 	 *             if the semantic class cannot be successfully built.
 	 */
 	public Entity buildSemanticClass(String name) throws Exception {
-		Class sem = Class.forName("sneps.SemanticClasses." + name);
+		Class<?> sem = Class.forName("sneps.SemanticClasses." + name);
 		Entity e = (Entity) sem.newInstance();
 		return e;
 	}
@@ -1706,6 +1719,7 @@ public class Network {
 	 * @return a node set of variable nodes that are dominated by the given
 	 *         molecular node
 	 */
+	@SuppressWarnings("unused")
 	private static NodeSet getAllVariables(MolecularNode node) {
 		NodeSet result = new NodeSet();
 

@@ -70,7 +70,7 @@ public class Test {
 		
 		ArrayList<Pair> list = getMatched(m1);
 		System.out.println("Switch subs " + list.get(0).getSwitch());
-		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), 0, m1, true);
+		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), 0, m1, list.get(0).getNode(), true);
 		
 		list.get(0).getNode().receiveRequest(match);
 //		Runner.addToLowQueue(list.get(0).getNode());

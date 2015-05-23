@@ -411,17 +411,17 @@ public abstract class RuleNode extends PropositionNode {
 					if (semanticType.isAsserted(SNeBR
 							.getContextByID(currentChannel.getContextID()))) {
 						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
-						Set<Node> toBeSentTo = new HashSet<Node>();
+						NodeSet toBeSentTo = new NodeSet();
 						for (Node currentNode : antecedentNodeSet) {
 							if(currentNode == currentChannel.getRequester()) {
 								continue;
 							}
 							// TODO Akram: if not yet been requested for this instance
 							if (true) {
-								toBeSentTo.add(currentNode);
+								toBeSentTo.addNode(currentNode);
 							}
 						}
-						sendRequests(toBeSentTo, currentChannel.getContextID(), ChannelTypes.RuleAnt);
+						sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitution(), currentChannel.getContextID(), ChannelTypes.RuleAnt);
 					}
 				} else if (true) {
 //				 TODO Akram: there are free variables but each is bound

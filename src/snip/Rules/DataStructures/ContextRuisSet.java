@@ -10,8 +10,6 @@ package snip.Rules.DataStructures;
 
 import java.util.Hashtable;
 
-import SNeBR.Context;
-
 public class ContextRuisSet {
 	// Vector<ContextRUIS> crs;
 	Hashtable<Integer, RuisHandler> crs;
@@ -43,34 +41,6 @@ public class ContextRuisSet {
 		return crs.size();
 	}
 
-	// /**
-	// * Return the index of the ContextRUIS in ContextRUISSet which have the
-	// * context c if there are no ContextRUIS with the context c return -1
-	// *
-	// * @param c
-	// * Context
-	// * @return int
-	// */
-	// public int getIndex(Context c) {
-	// for (int i = 0; i < crs.size(); i++) {
-	// if (crs.get(i).getContext() == c) {
-	// return i;
-	// }
-	// }
-	// return -1;
-	// }
-
-	// /**
-	// * Return the ContextRUIS number x in the ContextRUISSet
-	// *
-	// * @param x
-	// * int
-	// * @return ContextRUIS
-	// */
-	// public ContextRUIS getContextRUIS(int x) {
-	// return crs.get(x);
-	// }
-
 	/**
 	 * Return the ContextRUIS that is associated with the Context c
 	 * 
@@ -78,8 +48,8 @@ public class ContextRuisSet {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	public RuisHandler getContextRUIS(Context c) {
-		return crs.get(c.getId());
+	public RuisHandler getContextRUIS(int contextID) {
+		return crs.get(contextID);
 	}
 
 	/**
@@ -90,8 +60,8 @@ public class ContextRuisSet {
 	 *            Context
 	 * @return boolean
 	 */
-	public boolean hasContext(Context c) {
-		return crs.containsKey(c.getId());
+	public boolean hasContext(int contextID) {
+		return crs.containsKey(contextID);
 	}
 
 	/**

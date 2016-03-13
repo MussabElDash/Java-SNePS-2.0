@@ -12,26 +12,26 @@ import java.util.Hashtable;
 
 import SNeBR.Context;
 
-public class ContextRUISSet {
+public class ContextRuisSet {
 	// Vector<ContextRUIS> crs;
-	Hashtable<Integer, ContextRUIS> crs;
+	Hashtable<Integer, RuisHandler> crs;
 
-	 /**
+	/**
 	 * Create a new ContextRUISSet
 	 */
-	 public ContextRUISSet() {
-		 crs = new Hashtable<Integer, ContextRUIS>();
-	 }
-	
+	public ContextRuisSet() {
+		crs = new Hashtable<Integer, RuisHandler>();
+	}
+
 	/**
 	 * Add a new ContextRUIS to the ContextRUISSet
 	 * 
 	 * @param c
 	 *            ContextRUIS
 	 */
-	public void putIn(ContextRUIS c) {
+	public void putIn(RuisHandler c) {
 		// crs.add(c);
-		crs.put(c.getContext().getId(), c);
+		crs.put(c.getContext(), c);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class ContextRUISSet {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	public ContextRUIS getContextRUIS(Context c) {
+	public RuisHandler getContextRUIS(Context c) {
 		return crs.get(c.getId());
 	}
 
@@ -93,11 +93,11 @@ public class ContextRUISSet {
 	public boolean hasContext(Context c) {
 		return crs.containsKey(c.getId());
 	}
-	
+
 	/**
 	 * Clears the ContextRUISet
 	 */
-	public void clear(){
+	public void clear() {
 		crs.clear();
 	}
 }

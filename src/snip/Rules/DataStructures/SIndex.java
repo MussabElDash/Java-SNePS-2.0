@@ -9,7 +9,7 @@ public class SIndex extends RuisHandler {
 	private Hashtable<Integer, RuisHandler> map;
 	private Set<Integer> sharedVars;
 	private NodeSet nodesWithVars;
-	private byte contextType;
+	private byte ruiHandlerType;
 	public static final byte SINGLETONRUIS = 0, RUIS = 1, PTREE = 2;
 
 	/**
@@ -43,7 +43,7 @@ public class SIndex extends RuisHandler {
 		super(context);
 		this.sharedVars = sharedVars;
 		this.nodesWithVars = nodesWithVars;
-		this.contextType = contextType;
+		this.ruiHandlerType = contextType;
 		map = new Hashtable<Integer, RuisHandler>();
 	}
 
@@ -70,7 +70,7 @@ public class SIndex extends RuisHandler {
 
 	private RuisHandler getNewContextRUIS() {
 		RuisHandler tempRui = null;
-		switch (contextType) {
+		switch (ruiHandlerType) {
 		case PTREE:
 			tempRui = new PTree(getContext());
 			((PTree) tempRui).buildTree(nodesWithVars);

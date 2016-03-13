@@ -74,7 +74,7 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	protected Set<Integer> sharedVars;
 
-	protected ContextRuisSet contextRUISSet;
+	protected ContextRuisSet contextRuisSet;
 
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
@@ -84,7 +84,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		contextRUISSet = new ContextRuisSet();
+		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
 	}
 
@@ -147,7 +147,7 @@ public abstract class RuleNode extends PropositionNode {
 	 * save some memory and prepare for the new inference
 	 */
 	public void clear() {
-		contextRUISSet.clear();
+		contextRuisSet.clear();
 		contextConstantRUI.clear();
 	}
 
@@ -237,7 +237,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public ContextRuisSet getContextRUISSet() {
-		return contextRUISSet;
+		return contextRuisSet;
 	}
 
 	/**
@@ -271,7 +271,7 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	public RuisHandler addContextRUIS(RuisHandler cRuis) {
 		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
-		contextRUISSet.putIn(cRuis);
+		contextRuisSet.putIn(cRuis);
 		return cRuis;
 	}
 

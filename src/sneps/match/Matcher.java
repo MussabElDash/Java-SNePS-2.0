@@ -839,8 +839,8 @@ public class Matcher {
 				return false;
 			return true;
 		} else if (sClass.equals(AndNode.class)) {
-			int sourceAndant = ((AndNode) sourceNode).getAndant();
-			int targetAndant = ((AndNode) targetNode).getAndant();
+			int sourceAndant = ((AndNode) sourceNode).getant();
+			int targetAndant = ((AndNode) targetNode).getant();
 			int sourceCq = ((AndNode) sourceNode).getCq();
 			int targetCq = ((AndNode) targetNode).getCq();
 			// TODO: dcq

@@ -49,7 +49,7 @@ public class AndOrNode extends RuleNode {
 		Report reply = new Report(ruiRes.getSub(),
 				ruiRes.getSupport(originSupports), sign, context);
 		for (Channel outChannel : outgoingChannels) {
-			if (!consequents.contains(outChannel.getDestination().getId()))
+			if (!consequents.contains(outChannel.getRequester().getId()))
 				continue;
 			outChannel.addReport(reply);
 		}

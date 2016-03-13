@@ -36,6 +36,7 @@ import snip.RuleToConsequentChannel;
 import snip.Runner;
 import SNeBR.Context;
 import SNeBR.PropositionSet;
+import SNeBR.SNeBR;
 
 public class Node {
 
@@ -391,6 +392,7 @@ public class Node {
 			}
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(alteredReport);
+			currentChannel.clearReportsBuffer();
 		}
 	}
 
@@ -411,13 +413,31 @@ public class Node {
 		return false;
 	}
 
+	public NodeSet getDominatingRules() {
+		NodeSet ret = new NodeSet();
+		UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
+		UpCable argsCable = this.getUpCableSet().getUpCable("arg");
+		UpCable antCable = this.getUpCableSet().getUpCable("&ant");
+		if (consequentCable != null) {
+			ret.addAll(consequentCable.getNodeSet());
+		}
+		if (argsCable != null) {
+			ret.addAll(argsCable.getNodeSet());
+		}
+		if (antCable != null) {
+			ret.addAll(antCable.getNodeSet());
+		}
+		return ret;
+	}
+
 	public void processSingleRequest(Channel currentChannel) {
 
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
-		// TODO AKram: call the getContextByID from SNeBR
-		Context desiredContext = fake();
-		if (desiredContext == null || propSet.assertedInContext(desiredContext)) {
+
+		Context desiredContext = SNeBR.getContextByID(currentChannel
+				.getContextID());
+		if (propSet.assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
 			Report reply = new Report(new LinearSubstitutions(), null, true,
 					currentChannel.getContextID());
@@ -435,32 +455,13 @@ public class Node {
 					|| isWhQuestion(currentChannel.getFilter()
 							.getSubstitution())) {
 				if (!alreadyWorking(currentChannel)) {
-					UpCable consequentCable = this.getUpCableSet().getUpCable(
-							"cq");
-					if (consequentCable != null) {
-						NodeSet dominatingRules = consequentCable.getNodeSet();
-						int dominatingRulesCount = dominatingRules.size();
-						Set<Node> toBeSentTo = new HashSet<Node>();
-						for (int i = 0; i < dominatingRulesCount; ++i) {
-							Node currentNode = dominatingRules.getNode(i);
-							toBeSentTo.add(currentNode);
-						}
-						sendRequests(toBeSentTo, currentChannel.getContextID(),
-								ChannelTypes.RuleCons);
-						// TODO Akram: resources available ?
-						if (!(currentChannel instanceof MatchChannel)) {
-							// Sending requests to matched channels nodes
-							// TODO Ahmed Akram: call network.match
-							// ArrayList<Pair> matchedNodes =
-							// Network.match(this);
-							toBeSentTo.clear();
-
-							// TODO Akram send to all the matched nodes
-
-							sendRequests(toBeSentTo,
-									currentChannel.getContextID(),
-									ChannelTypes.MATCHED);
-						}
+					NodeSet dominatingRules = getDominatingRules();
+					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(), currentChannel.getContextID(), ChannelTypes.RuleCons);
+					if (!(currentChannel instanceof MatchChannel)) {
+						// Sending requests to matched channels nodes
+						// TODO Ahmed Akram: call network.match
+						// TODO Akram send to all the matched nodes
+						sendRequests(new ArrayList<Pair>(), currentChannel.getContextID(), ChannelTypes.MATCHED);
 					}
 				}
 			}
@@ -482,43 +483,40 @@ public class Node {
 			Channel newChannel;
 			if (channelType == ChannelTypes.MATCHED) {
 				newChannel = new MatchChannel(switchSubs, filterSubs,
-						conetxtID, currentPair.getNode(), true);
+						conetxtID, this, currentPair.getNode(), true);
 			} else if (channelType == ChannelTypes.RuleAnt) {
 				newChannel = new AntecedentToRuleChannel(switchSubs,
-						filterSubs, conetxtID, currentPair.getNode(), true);
+						filterSubs, conetxtID, this, currentPair.getNode(),
+						true);
 			} else {
 				newChannel = new RuleToConsequentChannel(switchSubs,
-						filterSubs, conetxtID, currentPair.getNode(), true);
+						filterSubs, conetxtID, this, currentPair.getNode(),
+						true);
 			}
 			incomingChannels.addChannel(newChannel);
 			currentPair.getNode().receiveRequest(newChannel);
 		}
 	}
 
-	public void sendRequests(Set<Node> ns, int contextID,
+	public void sendRequests(NodeSet ns, Substitutions filterSubs, int contextID,
 			ChannelTypes channelType) {
-		// for (Node sentTo : ns) {
-		//
-		// // TODO Akram: what is a temp node ? h
-		// if (sentTo.isTemp())
-		// continue;
-		//
-		// Filter f = new Filter();
-		// Switch s = new Switch();
-		// Channel newChannel;
-		// if (channelType == ChannelTypes.MATCHED) {
-		// newChannel = new MatchChannel(f, s, c, this, true);
-		// } else if (channelType == ChannelTypes.RuleAnt) {
-		// newChannel = new AntecedentToRuleChannel(f, s, c, this, true);
-		// } else {
-		// newChannel = new RuleToConsequentChannel(f, s, c, this, true);
-		// }
-		//
-		// incomingChannels.add(newChannel);
-		// Runner.addToLowQueue(this);
-		//
-		// sentTo.receiveRequest(newChannel);
-		// }
+		for (Node sentTo : ns) {
+			Channel newChannel = null;
+			if (channelType == ChannelTypes.MATCHED) {
+				newChannel = new MatchChannel(new LinearSubstitutions(), filterSubs, contextID, this, sentTo,
+						true);
+			} else if (channelType == ChannelTypes.RuleAnt) {
+				newChannel = new AntecedentToRuleChannel(
+						new LinearSubstitutions(), filterSubs,
+						contextID, this, sentTo, true);
+			} else {
+				newChannel = new RuleToConsequentChannel(
+						new LinearSubstitutions(), filterSubs,
+						contextID, this, sentTo, true);
+			}
+			incomingChannels.addChannel(newChannel);
+			sentTo.receiveRequest(newChannel);
+		}
 	}
 
 	public void receiveRequest(Channel channel) {

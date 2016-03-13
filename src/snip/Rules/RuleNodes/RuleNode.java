@@ -1,10 +1,11 @@
 package snip.Rules.RuleNodes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Set;
 
-import sneps.Cables.DownCable;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PropositionNode;
@@ -402,40 +403,30 @@ public abstract class RuleNode extends PropositionNode {
 
 	@Override
 	public void processRequests() {
-		for (Channel currentChannel : incomingChannels) {
+		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				// TODO Akram: no free variable
-				if (true) {
+				LinkedList<VariableNode> variablesList = this.getFreeVariables(); 
+				if (variablesList.isEmpty()) {
 					Proposition semanticType = (Proposition) this.getSemantic();
 					if (semanticType.isAsserted(SNeBR
 							.getContextByID(currentChannel.getContextID()))) {
-						// TODO Akram: if rule is usable
-						if (true) {
-							// TODO Akram: relation name "Antecedent"
-							DownCable antecedntCable = this.getDownCableSet()
-									.getDownCable("Antecedent");
-							NodeSet antecedentNodeSet = antecedntCable
-									.getNodeSet();
-							Set<Node> antecedentNodes = new HashSet<Node>();
-							for (int i = 0; i < antecedentNodeSet.size(); ++i) {
-								Node currentNode = antecedentNodeSet.getNode(i);
-								// TODO Akram: if not yet been requested for
-								// this instance
-								if (true) {
-									antecedentNodes.add(currentNode);
-								}
+						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
+						NodeSet toBeSentTo = new NodeSet();
+						for (Node currentNode : antecedentNodeSet) {
+							if(currentNode == currentChannel.getRequester()) {
+								continue;
 							}
-							sendRequests(antecedentNodes,
-									currentChannel.getContextID(),
-									ChannelTypes.RuleAnt);
-						} else {
-							// TODO Akram: establish the rule
+							// TODO Akram: if not yet been requested for this instance
+							if (true) {
+								toBeSentTo.addNode(currentNode);
+							}
 						}
+						sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitution(), currentChannel.getContextID(), ChannelTypes.RuleAnt);
 					}
 				} else if (true) {
-
+//				 TODO Akram: there are free variables but each is bound
 				} else if (true) {
-
+//					TODO Akram: there are free variable
 				}
 			} else {
 				super.processSingleRequest(currentChannel);
@@ -445,12 +436,14 @@ public abstract class RuleNode extends PropositionNode {
 
 	@Override
 	public void processReports() {
-		for (Channel currentChannel : outgoingChannels) {
-			processSingleReport(currentChannel);
-			if (currentChannel instanceof AntecedentToRuleChannel) {
-				// TODO Akram: send the correct report :D
-				this.applyRuleHandler(null, null);
+		for (Channel currentChannel : incomingChannels) {
+			ArrayList<Report> channelReports = currentChannel.getReportsBuffer();
+			for(Report currentReport : channelReports) {
+				if(currentChannel instanceof AntecedentToRuleChannel) {
+					applyRuleHandler(currentReport, currentChannel.getReporter());
+				}
 			}
+			currentChannel.clearReportsBuffer();
 		}
 	}
 }

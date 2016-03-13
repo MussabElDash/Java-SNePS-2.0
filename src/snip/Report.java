@@ -52,4 +52,7 @@ public class Report {
 		return !sign;
 	}
 
+	public String toString() {
+		return "ContextID : " + contextID + "\nSign: " + sign + "\nSubstitution: " + substitution; 
+	}
 }

@@ -10,7 +10,7 @@ import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
+import SNeBR.Support;
 
 public class ThreshNode extends RuleNode {
 
@@ -27,7 +27,7 @@ public class ThreshNode extends RuleNode {
 		this.processNodes(antNodes);
 	}
 
-	protected void sendRui(RuleUseInfo ruiRes, Context context) {
+	protected void sendRui(RuleUseInfo ruiRes, int context) {
 		// TODO Mussab Compute Support
 		boolean sign = false;
 		if (ruiRes.getPosCount() == min
@@ -45,10 +45,12 @@ public class ThreshNode extends RuleNode {
 				continue;
 			consequents.add(fn.getNode().getId());
 		}
-
-		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(ruiRes.getSub(),
+				ruiRes.getSupport(originSupports), sign, context);
 		for (Channel outChannel : outgoingChannels) {
-			if (!consequents.contains(outChannel.getDestination().getId()))
+			if (!consequents.contains(outChannel.getRequester().getId()))
 				continue;
 			outChannel.addReport(reply);
 		}

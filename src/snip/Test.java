@@ -9,11 +9,13 @@ import sneps.RCFP;
 import sneps.Relation;
 import sneps.Nodes.MolecularNode;
 import sneps.Nodes.Node;
+import sneps.Nodes.PropositionNode;
 import sneps.Nodes.VariableNode;
 import sneps.SemanticClasses.Individual;
 import sneps.match.Binding;
 import sneps.match.LinearSubstitutions;
 import sneps.match.Substitutions;
+import SNeBR.SNeBR;
 
 public class Test {
 
@@ -26,7 +28,6 @@ public class Test {
 
 	public static void main(String[] ar) throws Exception {
 		Runner.initiate();
-
 		// building variable nodes
 		
 		// defining a new relation with the name: member
@@ -70,7 +71,7 @@ public class Test {
 		
 		ArrayList<Pair> list = getMatched(m1);
 		System.out.println("Switch subs " + list.get(0).getSwitch());
-		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), 0, m1, true);
+		Channel match = new MatchChannel(list.get(0).getSwitch(), list.get(0).getFilter(), SNeBR.getCurrentContext().getId(), m1, list.get(0).getNode(), true);
 		
 		list.get(0).getNode().receiveRequest(match);
 //		Runner.addToLowQueue(list.get(0).getNode());
@@ -136,7 +137,8 @@ public class Test {
 			m1 = Network.buildMolecularNode(a1, cf1);
 		} catch (Exception exp) {
 		}
- 
+		
+		SNeBR.assertProposition((PropositionNode)m1);
 		Binding bind1 = new Binding(var1, b1);
 		Binding bind2 = new Binding(var2, b2);
 		Substitutions switchSub = new LinearSubstitutions();

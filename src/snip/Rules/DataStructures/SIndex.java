@@ -4,13 +4,12 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.Nodes.NodeSet;
-import SNeBR.Context;
 
-public class SIndex extends ContextRUIS {
-	private Hashtable<Integer, ContextRUIS> map;
+public class SIndex extends RuisHandler {
+	private Hashtable<Integer, RuisHandler> map;
 	private Set<Integer> sharedVars;
 	private NodeSet nodesWithVars;
-	private byte contextType;
+	private byte ruiHandlerType;
 	public static final byte SINGLETONRUIS = 0, RUIS = 1, PTREE = 2;
 
 	/**
@@ -39,13 +38,13 @@ public class SIndex extends ContextRUIS {
 	 * @param nodesWithVars
 	 *            NodeSet
 	 */
-	public SIndex(Context context, Set<Integer> sharedVars, byte contextType,
+	public SIndex(int context, Set<Integer> sharedVars, byte contextType,
 			NodeSet nodesWithVars) {
 		super(context);
 		this.sharedVars = sharedVars;
 		this.nodesWithVars = nodesWithVars;
-		this.contextType = contextType;
-		map = new Hashtable<Integer, ContextRUIS>();
+		this.ruiHandlerType = contextType;
+		map = new Hashtable<Integer, RuisHandler>();
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class SIndex extends ContextRUIS {
 	 * @return the final RuleUseInfo
 	 */
 	private RuleUseInfoSet insertInIndex(int x, RuleUseInfo rui) {
-		ContextRUIS tempRui = map.get(x);
+		RuisHandler tempRui = map.get(x);
 		if (tempRui == null) {
 			tempRui = getNewContextRUIS();
 			map.put(x, tempRui);
@@ -69,9 +68,9 @@ public class SIndex extends ContextRUIS {
 		return res;
 	}
 
-	private ContextRUIS getNewContextRUIS() {
-		ContextRUIS tempRui = null;
-		switch (contextType) {
+	private RuisHandler getNewContextRUIS() {
+		RuisHandler tempRui = null;
+		switch (ruiHandlerType) {
 		case PTREE:
 			tempRui = new PTree(getContext());
 			((PTree) tempRui).buildTree(nodesWithVars);

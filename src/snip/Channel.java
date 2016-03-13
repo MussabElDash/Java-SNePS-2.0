@@ -20,32 +20,26 @@ public abstract class Channel {
 		reportsBuffer = new ArrayList<Report>();
 	}
 
-	public Channel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node requester, Node reporter, boolean v) {
+	public Channel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node requester,
+			Node reporter, boolean v) {
 		this.filter = new Filter(filterSubstitutions);
 		this.switch_ = new Switch(switchSubstitution);
 		this.contextID = contextID;
 		this.requester = requester;
+		this.reporter = reporter;
 		this.valve = v;
 		this.reporter = reporter;
 		reportsBuffer = new ArrayList<Report>();
 	}
-	
+
 	public int getContextID() {
 		return contextID;
-	}
-	
-	public Node getReporter() {
-		return reporter;
 	}
 
 	public boolean isValveOpen() {
 		return valve;
 	}
-	
-	public Node getRequester() {
-		return requester;
-	}
-	
+
 	public void clearReportsBuffer() {
 		reportsBuffer.clear();
 	}
@@ -56,7 +50,7 @@ public abstract class Channel {
 
 	public boolean addReport(Report report) {
 		System.out.println("Can pass " + filter.canPass(report));
-		if(filter.canPass(report) && contextID == report.getContextID()) {
+		if (filter.canPass(report) && contextID == report.getContextID()) {
 			System.out.println("\n\nThe Switch data:\n" + switch_);
 			switch_.switchReport(report);
 			reportsBuffer.add(report);
@@ -65,13 +59,21 @@ public abstract class Channel {
 		}
 		return false;
 	}
-	
+
 	public Filter getFilter() {
 		return filter;
 	}
-	
+
 	public Switch getSwitch() {
 		return switch_;
+	}
+
+	public Node getRequester() {
+		return requester;
+	}
+
+	public Node getReporter() {
+		return reporter;
 	}
 
 	public ArrayList<Report> getReportsBuffer() {

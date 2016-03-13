@@ -1,33 +1,37 @@
 package snip.Rules.RuleNodes;
 
+import java.util.Set;
+
+import SNeBR.Support;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
 import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class NumericalNode extends RuleNode {
 
-	private int i, numAnt, cq;;
+	private int i, ant, cq;;
 
 	public NumericalNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		NodeSet maxNode = this.getDownNodeSet("i");
 		i = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("&ant");
-		numAnt = antNodes.size();
+		ant = antNodes.size();
 		cq = this.getDownNodeSet("cq").size();
 		this.processNodes(antNodes);
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Mussab Compute support
+	protected void sendRui(RuleUseInfo tRui, int context) {
 		if (tRui.getPosCount() < i)
 			return;
-		Report reply = new Report(tRui.getSub(), null, true, context.getId());
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(tRui.getSub(),
+				tRui.getSupport(originSupports), true, context);
 		for (Channel outChannel : outgoingChannels)
 			outChannel.addReport(reply);
 	}
@@ -36,8 +40,8 @@ public class NumericalNode extends RuleNode {
 		return i;
 	}
 
-	public int getNumAnt() {
-		return numAnt;
+	public int getAnt() {
+		return ant;
 	}
 
 	public int getCq() {

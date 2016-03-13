@@ -1191,7 +1191,7 @@ public class Network {
 	 *             if the semantic class cannot be successfully built.
 	 */
 	public Entity buildSemanticClass(String name) throws Exception {
-		Class sem = Class.forName("sneps.SemanticClasses." + name);
+		Class<?> sem = Class.forName("sneps.SemanticClasses." + name);
 		Entity e = (Entity) sem.newInstance();
 		return e;
 	}
@@ -1723,6 +1723,7 @@ public class Network {
 	 * @return a node set of variable nodes that are dominated by the given
 	 *         molecular node
 	 */
+	@SuppressWarnings("unused")
 	private static NodeSet getAllVariables(MolecularNode node) {
 		NodeSet result = new NodeSet();
 

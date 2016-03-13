@@ -3,6 +3,7 @@ package snip.Rules.RuleNodes;
 import java.util.HashSet;
 import java.util.Set;
 
+import SNeBR.Support;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
@@ -10,7 +11,6 @@ import snip.Channel;
 import snip.Report;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.RuleUseInfo;
-import SNeBR.Context;
 
 public class AndOrNode extends RuleNode {
 
@@ -28,8 +28,7 @@ public class AndOrNode extends RuleNode {
 		this.processNodes(antNodes);
 	}
 
-	protected void sendRui(RuleUseInfo ruiRes, Context context) {
-		// TODO Mussab Compute Support
+	protected void sendRui(RuleUseInfo ruiRes, int context) {
 		boolean sign = false;
 		if (ruiRes.getNegCount() == arg - min)
 			sign = true;
@@ -45,9 +44,12 @@ public class AndOrNode extends RuleNode {
 			consequents.add(fn.getNode().getId());
 		}
 
-		Report reply = new Report(ruiRes.getSub(), null, sign, context.getId());
+		Set<Support> originSupports = ((Proposition) this.getSemantic())
+				.getOriginSupport();
+		Report reply = new Report(ruiRes.getSub(),
+				ruiRes.getSupport(originSupports), sign, context);
 		for (Channel outChannel : outgoingChannels) {
-			if (!consequents.contains(outChannel.getDestination().getId()))
+			if (!consequents.contains(outChannel.getRequester().getId()))
 				continue;
 			outChannel.addReport(reply);
 		}

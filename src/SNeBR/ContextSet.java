@@ -59,10 +59,10 @@ public class ContextSet {
 
 	public boolean remove(Context context) {
 		boolean bool = false;
-//		bool |= contextsMappedByID.remove(context.getId(), context);
-//		for (String s : context.names) {
-//			bool |= contextsMappedByName.remove(s, context);
-//		}
+		bool |= contextsMappedByID.remove(context.getId()) == context;
+		for (String s : context.names) {
+			bool |= contextsMappedByName.remove(s) == context;
+		}
 		return bool;
 	}
 

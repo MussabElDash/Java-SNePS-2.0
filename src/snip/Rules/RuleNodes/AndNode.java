@@ -5,21 +5,19 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import SNeBR.Support;
 import sneps.Nodes.Node;
 import sneps.Nodes.NodeSet;
 import sneps.SemanticClasses.Proposition;
 import sneps.SyntaticClasses.Molecular;
-import snip.Channel;
 import snip.Report;
-import snip.Rules.DataStructures.ContextRUIS;
+import snip.Rules.DataStructures.RuisHandler;
 import snip.Rules.DataStructures.FlagNode;
 import snip.Rules.DataStructures.FlagNodeSet;
 import snip.Rules.DataStructures.PTree;
 import snip.Rules.DataStructures.RuleUseInfo;
 import snip.Rules.DataStructures.RuleUseInfoSet;
 import snip.Rules.DataStructures.SIndex;
-import SNeBR.Context;
-import SNeBR.SNeBR;
 
 public class AndNode extends RuleNode {
 	/**
@@ -27,49 +25,36 @@ public class AndNode extends RuleNode {
 	 * missing reports of the constant nodes
 	 */
 	private Hashtable<Integer, Set<RuleUseInfo>> contextRuiNotSent;
-	private int Andant, cq;
+	private int ant, cq;
 
 	public AndNode(Molecular syn, Proposition sym) {
 		super(syn, sym);
 		contextRuiNotSent = new Hashtable<Integer, Set<RuleUseInfo>>();
 		NodeSet antNodes = this.getDownNodeSet("&ant");
-		Andant = antNodes.size();
+		ant = antNodes.size();
 		cq = this.getDownNodeSet("cq").size();
 		this.processNodes(antNodes);
 	}
-	
-	@Override
-	public void clear() {
-		System.out.println("clearing");
-		contextRuiNotSent.clear();
-		super.clear();
-	}
+
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
 		if (report.isNegative()) {
 			return;
 		}
-//		System.out.println("sig " + signature);
-		FlagNode fn = new FlagNode(signature, report.getSupport(), 1);
+
+		FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.putIn(fn);
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 
-		Context context = SNeBR.getContextByID(report.getContextID());
+		int context = report.getContextID();
 		if (isConstantNode(signature)) {
-			rui = addConstantRuiToContext(context, rui);
-			int pos = rui.getPosCount();
-			if (pos == this.antsWithoutVarsNumber)
-				if(this.antsWithVarsNumber != 0)
-					sendReports(context);
-				else{
-					sendRui(getConstantRui(context), context);
-					System.out.println("dfdsf");
-					}
+			addConstantRuiToContext(context, rui);
+			sendSavedRUIs(context);
 			return;
 		}
 
-		ContextRUIS crtemp = null;
+		RuisHandler crtemp = null;
 		if (this.getContextRUISSet().hasContext(context)) {
 			crtemp = this.getContextRUISSet().getContextRUIS(context);
 		} else {
@@ -80,14 +65,16 @@ public class AndNode extends RuleNode {
 			res = new RuleUseInfoSet();
 		}
 		for (RuleUseInfo tRui : res) {
-			sendRui(tRui, context);
+			if (tRui.getPosCount() == this.antsWithVarsNumber)
+				addNotSentRui(tRui, context);
 		}
+		sendSavedRUIs(context);
 	}
 
 	@Override
-	protected ContextRUIS createContextRUISNonShared(Context c) {
+	protected RuisHandler createContextRUISNonShared(int c) {
 		PTree pTree = new PTree(c);
-		ContextRUIS cr = this.addContextRUIS(pTree);
+		RuisHandler cr = this.addContextRUIS(pTree);
 		pTree.buildTree(antNodesWithVars);
 		return cr;
 	}
@@ -97,57 +84,51 @@ public class AndNode extends RuleNode {
 		return SIndex.PTREE;
 	}
 
-	private void sendReports(Context context) {
-		System.out.println("contezxt " + context);
-		if(contextRuiNotSent.get(context.getId()) == null)
+	private void sendSavedRUIs(int contextID) {
+		RuleUseInfo addedConstant = getConstantRUI(contextID);
+		if (addedConstant == null && this.antsWithoutVarsNumber != 0)
 			return;
-		Iterator<RuleUseInfo> iter = contextRuiNotSent.get(context.getId())
-				.iterator();
-		while (iter.hasNext()) {
+		if (addedConstant != null && addedConstant.getPosCount() != this.antsWithoutVarsNumber)
+			return;
+		Set<RuleUseInfo> ruis = contextRuiNotSent.get(contextID);
+		if (ruis == null) {
+			sendRui(addedConstant, contextID);
+			return;
+		}
+		RuleUseInfo combined;
+		for (Iterator<RuleUseInfo> iter = ruis.iterator(); iter.hasNext();) {
 			RuleUseInfo info = iter.next();
 			iter.remove();
-			sendRui(info, context);
+			combined = info.combine(addedConstant);
+			if (combined == null)
+				throw new NullPointerException(
+						"The Constant RUI could not be merged " + "with the non-constant one so check your code again");
+			sendRui(combined, contextID);
 		}
 	}
 
-	private void addNotSentRui(RuleUseInfo tRui, Context context) {
-		Set<RuleUseInfo> set = contextRuiNotSent.get(context.getId());
+	private void addNotSentRui(RuleUseInfo tRui, int contextID) {
+		Set<RuleUseInfo> set = contextRuiNotSent.get(contextID);
 		if (set == null) {
 			set = new HashSet<RuleUseInfo>();
-			contextRuiNotSent.put(context.getId(), set);
+			contextRuiNotSent.put(contextID, set);
 		}
 		set.add(tRui);
 	}
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, Context context) {
-		// TODO Mussab Calculate support
-		if(tRui.getPosCount() == this.antsWithoutVarsNumber){
 
-			Report reply = new Report(tRui.getSub(), null, true,
-					context.getId());
-			for (Channel outChannel : outgoingChannels)
-				outChannel.addReport(reply);
-		}
-		if (tRui.getPosCount() == this.antsWithVarsNumber) {
-			if (this.getPositiveCount(context) != this.antsWithoutVarsNumber) {
-				addNotSentRui(tRui, context);
-				return;
-			}
-			Report reply = new Report(tRui.getSub(), null, true,
-					context.getId());
-			for (Channel outChannel : outgoingChannels)
-				outChannel.addReport(reply);
-		}
+	protected void sendRui(RuleUseInfo tRui, int contextID) {
+		addNotSentRui(tRui, contextID);
+		if (tRui.getPosCount() != this.antsWithVarsNumber + this.antsWithoutVarsNumber)
+			return;
+		Set<Support> originSupports = ((Proposition) this.getSemantic()).getOriginSupport();
+		Report reply = new Report(tRui.getSub(), tRui.getSupport(originSupports), true, contextID);
+		broadcastReport(reply);
 	}
 
-	@Override
-	protected NodeSet getPatternNodes() {
-		return antNodesWithVars;
-	}
-
-	public int getAndant() {
-		return Andant;
+	public int getant() {
+		return ant;
 	}
 
 	public int getCq() {
@@ -157,6 +138,12 @@ public class AndNode extends RuleNode {
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");
+	}
+
+	@Override
+	public void clear() {
+		super.clear();
+		contextRuiNotSent.clear();
 	}
 
 }

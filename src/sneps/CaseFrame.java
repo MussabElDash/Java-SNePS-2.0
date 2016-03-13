@@ -264,7 +264,7 @@ public class CaseFrame {
 		andRule = Network.defineCaseFrame("Proposition", and);
 		
 		LinkedList<RCFP> or = new LinkedList<RCFP>();
-		and.add(RCFP.ant);
+		or.add(RCFP.ant);
 		or.add(RCFP.cq);
 		orRule = Network.defineCaseFrame("Proposition", or);
 		

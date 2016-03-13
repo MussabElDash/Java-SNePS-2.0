@@ -15,11 +15,9 @@ package sneps.Nodes;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-import sneps.Network;
 import sneps.Cables.DownCableSet;
 import sneps.Cables.UpCable;
 import sneps.Cables.UpCableSet;
@@ -162,11 +160,9 @@ public class Node {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Node(String syn, String sem, String name, DownCableSet dCableSet)
-			throws Exception {
+	public Node(String syn, String sem, String name, DownCableSet dCableSet) throws Exception {
 		Class s = Class.forName("sneps.SyntaticClasses." + syn);
-		Constructor con = s.getConstructor(new Class[] { String.class,
-				DownCableSet.class });
+		Constructor con = s.getConstructor(new Class[] { String.class, DownCableSet.class });
 		this.syntactic = (Term) con.newInstance(name, dCableSet);
 		Class s2 = Class.forName("sneps.SemanticClasses." + sem);
 		this.semantic = (Entity) s2.newInstance();
@@ -386,14 +382,14 @@ public class Node {
 	public void processSingleReport(Channel currentChannel) {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
-			Report alteredReport = new Report(currentReport.getSubstitutions(),
-					currentReport.getSupport(), currentReport.getSign(),
-					currentReport.getContextID());
+			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
+					currentReport.getSign(), currentReport.getContextID());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(alteredReport);
+			currentChannel.clearReportsBuffer();
 		}
 		currentChannel.clearReportsBuffer();
 	}
@@ -405,30 +401,46 @@ public class Node {
 
 	public void broadcastReport(Report report) {
 		for (Channel outChannel : outgoingChannels) {
-			if(outChannel.addReport(report)){
-				System.out.println("SENDING REPORT "  + this);
+			if (outChannel.addReport(report)) {
+				System.out.println("SENDING REPORT " + this);
 			}
 		}
 	}
 
 	public boolean sendReport(Report report, Channel channel) {
 		if (channel.addReport(report)) {
-			System.out.println("SENDING REPORT "  + this);
+			System.out.println("SENDING REPORT " + this);
 			return true;
 		}
 		return false;
+	}
+
+	public NodeSet getDominatingRules() {
+		NodeSet ret = new NodeSet();
+		UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
+		UpCable argsCable = this.getUpCableSet().getUpCable("arg");
+		UpCable antCable = this.getUpCableSet().getUpCable("&ant");
+		if (consequentCable != null) {
+			ret.addAll(consequentCable.getNodeSet());
+		}
+		if (argsCable != null) {
+			ret.addAll(argsCable.getNodeSet());
+		}
+		if (antCable != null) {
+			ret.addAll(antCable.getNodeSet());
+		}
+		return ret;
 	}
 
 	public void processSingleRequest(Channel currentChannel) {
 
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
-		// TODO AKram: call the getContextByID from SNeBR
+
 		Context desiredContext = SNeBR.getContextByID(currentChannel.getContextID());
 		if (propSet.assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
-			Report reply = new Report(new LinearSubstitutions(), null, true,
-					currentChannel.getContextID());
+			Report reply = new Report(new LinearSubstitutions(), null, true, currentChannel.getContextID());
 			knownInstances.add(reply);
 			broadcastReport(reply);
 		} else {
@@ -439,36 +451,16 @@ public class Node {
 
 			// TODO Akram: passed the filter subs to isWhQuest, is that correct
 			// ?
-			if (!sentAtLeastOne
-					|| isWhQuestion(currentChannel.getFilter()
-							.getSubstitution())) {
+			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitution())) {
 				if (!alreadyWorking(currentChannel)) {
-					UpCable consequentCable = this.getUpCableSet().getUpCable(
-							"cq");
-					if (consequentCable != null) {
-						NodeSet dominatingRules = consequentCable.getNodeSet();
-						int dominatingRulesCount = dominatingRules.size();
-						Set<Node> toBeSentTo = new HashSet<Node>();
-						for (int i = 0; i < dominatingRulesCount; ++i) {
-							Node currentNode = dominatingRules.getNode(i);
-							toBeSentTo.add(currentNode);
-						}
-						sendRequests(toBeSentTo, currentChannel.getContextID(),
-								ChannelTypes.RuleCons);
-						// TODO Akram: resources available ?
-						if (!(currentChannel instanceof MatchChannel)) {
-							// Sending requests to matched channels nodes
-							// TODO Ahmed Akram: call network.match
-							// ArrayList<Pair> matchedNodes =
-							// Network.match(this);
-							toBeSentTo.clear();
-
-							// TODO Akram send to all the matched nodes
-
-							sendRequests(toBeSentTo,
-									currentChannel.getContextID(),
-									ChannelTypes.MATCHED);
-						}
+					NodeSet dominatingRules = getDominatingRules();
+					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
+							currentChannel.getContextID(), ChannelTypes.RuleCons);
+					if (!(currentChannel instanceof MatchChannel)) {
+						// Sending requests to matched channels nodes
+						// TODO Ahmed Akram: call network.match
+						// TODO Akram send to all the matched nodes
+						sendRequests(new ArrayList<Pair>(), currentChannel.getContextID(), ChannelTypes.MATCHED);
 					}
 				}
 			}
@@ -482,43 +474,40 @@ public class Node {
 			processSingleRequest(outChannel);
 	}
 
-	public void sendRequests(ArrayList<Pair> list, int conetxtID,
-			ChannelTypes channelType) {
+	public void sendRequests(ArrayList<Pair> list, int conetxtID, ChannelTypes channelType) {
 		for (Pair currentPair : list) {
 			Substitutions switchSubs = currentPair.getSwitch();
 			Substitutions filterSubs = currentPair.getFilter();
 			Channel newChannel;
 			if (channelType == ChannelTypes.MATCHED) {
-				newChannel = new MatchChannel(switchSubs, filterSubs,
-						conetxtID, this, currentPair.getNode(), true);
+				newChannel = new MatchChannel(switchSubs, filterSubs, conetxtID, this, currentPair.getNode(), true);
 			} else if (channelType == ChannelTypes.RuleAnt) {
-				newChannel = new AntecedentToRuleChannel(switchSubs,
-						filterSubs, conetxtID, this, currentPair.getNode(), true);
+				newChannel = new AntecedentToRuleChannel(switchSubs, filterSubs, conetxtID, this, currentPair.getNode(),
+						true);
 			} else {
-				newChannel = new RuleToConsequentChannel(switchSubs,
-						filterSubs, conetxtID, this, currentPair.getNode(), true);
+				newChannel = new RuleToConsequentChannel(switchSubs, filterSubs, conetxtID, this, currentPair.getNode(),
+						true);
 			}
 			incomingChannels.addChannel(newChannel);
 			currentPair.getNode().receiveRequest(newChannel);
 		}
 	}
 
-	public void sendRequests(Set<Node> ns, int contextID,
-			ChannelTypes channelType) {
-		 for (Node sentTo : ns) {
-			 Channel newChannel = null;
-			 if (channelType == ChannelTypes.MATCHED) {
-	//		 newChannel = new MatchChannel(f, s, c, this, true);
-			 } else if (channelType == ChannelTypes.RuleAnt) {
-				 newChannel = new AntecedentToRuleChannel(new LinearSubstitutions(), new LinearSubstitutions(), contextID, this, sentTo, true);
-			 } else {
-	//			 newChannel = new RuleToConsequentChannel(f, s, c, this, true);
-			 }
-			
-			 incomingChannels.addChannel(newChannel);
-//			 Runner.addToLowQueue(this);
-			 sentTo.receiveRequest(newChannel);
-		 }
+	public void sendRequests(NodeSet ns, Substitutions filterSubs, int contextID, ChannelTypes channelType) {
+		for (Node sentTo : ns) {
+			Channel newChannel = null;
+			if (channelType == ChannelTypes.MATCHED) {
+				newChannel = new MatchChannel(new LinearSubstitutions(), filterSubs, contextID, this, sentTo, true);
+			} else if (channelType == ChannelTypes.RuleAnt) {
+				newChannel = new AntecedentToRuleChannel(new LinearSubstitutions(), filterSubs, contextID, this, sentTo,
+						true);
+			} else {
+				newChannel = new RuleToConsequentChannel(new LinearSubstitutions(), filterSubs, contextID, this, sentTo,
+						true);
+			}
+			incomingChannels.addChannel(newChannel);
+			sentTo.receiveRequest(newChannel);
+		}
 	}
 
 	public void receiveRequest(Channel channel) {
@@ -540,8 +529,7 @@ public class Node {
 
 		for (int i = 0; i < variables.size(); i++) {
 			Node termNode = sub.term(variables.get(i));
-			if (termNode == null
-					|| (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
+			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
 				return true;
 
 		}

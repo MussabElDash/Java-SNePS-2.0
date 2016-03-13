@@ -10,28 +10,24 @@ package snip.Rules.DataStructures;
 
 import java.util.Hashtable;
 
-import SNeBR.Context;
+public class ContextRuisSet {
+	Hashtable<Integer, RuisHandler> crs;
 
-public class ContextRUISSet {
-	// Vector<ContextRUIS> crs;
-	Hashtable<Integer, ContextRUIS> crs;
-
-	 /**
+	/**
 	 * Create a new ContextRUISSet
 	 */
-	 public ContextRUISSet() {
-		 crs = new Hashtable<Integer, ContextRUIS>();
-	 }
-	
+	public ContextRuisSet() {
+		crs = new Hashtable<Integer, RuisHandler>();
+	}
+
 	/**
 	 * Add a new ContextRUIS to the ContextRUISSet
 	 * 
 	 * @param c
 	 *            ContextRUIS
 	 */
-	public void putIn(ContextRUIS c) {
-		// crs.add(c);
-		crs.put(c.getContext().getId(), c);
+	public void putIn(RuisHandler c) {
+		crs.put(c.getContext(), c);
 	}
 
 	/**
@@ -43,34 +39,6 @@ public class ContextRUISSet {
 		return crs.size();
 	}
 
-	// /**
-	// * Return the index of the ContextRUIS in ContextRUISSet which have the
-	// * context c if there are no ContextRUIS with the context c return -1
-	// *
-	// * @param c
-	// * Context
-	// * @return int
-	// */
-	// public int getIndex(Context c) {
-	// for (int i = 0; i < crs.size(); i++) {
-	// if (crs.get(i).getContext() == c) {
-	// return i;
-	// }
-	// }
-	// return -1;
-	// }
-
-	// /**
-	// * Return the ContextRUIS number x in the ContextRUISSet
-	// *
-	// * @param x
-	// * int
-	// * @return ContextRUIS
-	// */
-	// public ContextRUIS getContextRUIS(int x) {
-	// return crs.get(x);
-	// }
-
 	/**
 	 * Return the ContextRUIS that is associated with the Context c
 	 * 
@@ -78,8 +46,8 @@ public class ContextRUISSet {
 	 *            Context
 	 * @return ContextRUIS
 	 */
-	public ContextRUIS getContextRUIS(Context c) {
-		return crs.get(c.getId());
+	public RuisHandler getContextRUIS(int contextID) {
+		return crs.get(contextID);
 	}
 
 	/**
@@ -90,14 +58,14 @@ public class ContextRUISSet {
 	 *            Context
 	 * @return boolean
 	 */
-	public boolean hasContext(Context c) {
-		return crs.containsKey(c.getId());
+	public boolean hasContext(int contextID) {
+		return crs.containsKey(contextID);
 	}
-	
+
 	/**
 	 * Clears the ContextRUISet
 	 */
-	public void clear(){
+	public void clear() {
 		crs.clear();
 	}
 }

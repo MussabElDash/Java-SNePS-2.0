@@ -22,22 +22,18 @@ public class Support {
 	}
 
 	public boolean assertedInContext(Context context) {
-		if (context.hypothesisSet.propositions
-				.containsAll(this.originSet.hypothesisSet.propositions))
+		if (context.hypothesisSet.propositions.containsAll(this.originSet.hypothesisSet.propositions))
 			return true;
 		return false;
 	}
 
-	public void addRestriction(Context restrictor, PropositionSet removed,
-			HashSet<Support> supportSet) {
+	public void addRestriction(Context restrictor, PropositionSet removed, HashSet<Support> supportSet) {
 		HashSet<PropositionSet> restrictions = new HashSet<PropositionSet>();
-		for (Iterator<Support> iterator = supportSet.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<Support> iterator = supportSet.iterator(); iterator.hasNext();) {
 			restrictions.add(iterator.next().originSet.hypothesisSet);
 		}
 		PropositionSet newRemoved = new PropositionSet(removed.propositions);
-		Restriction newRestriction = new Restriction(restrictor, newRemoved,
-				restrictions);
+		Restriction newRestriction = new Restriction(restrictor, newRemoved, restrictions);
 		this.originSet.restrictionSet.add(newRestriction);
 	}
 
@@ -63,11 +59,10 @@ public class Support {
 		return new Support(resContext);
 	}
 
-	public static Set<Support> combine(Set<Support> originSupports,
-			Set<Support> supports) {
-		if (originSupports.isEmpty())
+	public static Set<Support> combine(Set<Support> originSupports, Set<Support> supports) {
+		if (originSupports == null || originSupports.isEmpty())
 			return supports;
-		if (supports.isEmpty())
+		if (supports == null || supports.isEmpty())
 			return originSupports;
 		Set<Support> res = new HashSet<Support>();
 		for (Support s1 : originSupports)

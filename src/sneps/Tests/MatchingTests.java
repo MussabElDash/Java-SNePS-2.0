@@ -351,6 +351,7 @@ public class MatchingTests {
 				VariableNode y=new VariableNode("Entity", "y");
 				Node cons = new Node("Base", "Entity","constant");
 				Node cons2 = new Node("Base", "Entity","constant2");
+				Node cons3 = new Node("Base", "Entity","constant3");
 				Matcher matcher=new Matcher();
 				//sub lists
 				LinkedList<Substitutions> sourceList=new LinkedList<Substitutions>();
@@ -497,11 +498,17 @@ public class MatchingTests {
 			  //test 4 : pass
 		//matcher.hERE(g, g2, sourceList2, targetList2, true, true, terms2, 2);
 			//test 5 : pass
-			  
-			    //System.out.println(h1);
-			    //System.out.println(h2);
+			    h1ns.removeNode(g2);
+			    h2ns.addNode(cons);
+			    Tterms.add(cons);
+			    h1ns.addNode(x);
+			    Sterms.add(x);
+			    System.out.println(h1);
+			    System.out.println(h2);
+			    System.out.println(Sterms);
+			    System.out.println(Tterms);
 			    //pass h1(f1(y)) / h2(f3(c)) y->c
-			  //  Matcher.hERE(h1, h2, sourceList2, targetList2, true,Sterms, 3,Tterms,3);
+			    Matcher.hERE(h1, h2, sourceList2, targetList2, true,Sterms, 3,Tterms,3);
 			    
 			 
 				//test 6
@@ -515,13 +522,15 @@ public class MatchingTests {
 			    printSubs(targetList2,"Target2");
 			
 			    
-			    h3ns.addNode(cons);
+			    h3ns.addNode(cons3);
 			    h1ns.addNode(y);
-			    ns2.removeNode(cons);
-			    ns2.addNode(cons2);
+//			    ns2.removeNode(cons);
+//			    ns2.addNode(cons2);
 			  //  h2ns.addNode(h3);
 			    h2ns.addNode(cons2);
-			    
+			    //h2ns.removeNode(g2);
+			    //h2ns.addNode(h3);
+			    h2ns.removeNode(x);
 			    Sterms=new MatchingSet();
 			    Tterms=new MatchingSet();
 			    Sterms.add(h1);
@@ -530,12 +539,23 @@ public class MatchingTests {
 			    Sterms.add(cons2);
 			   // Sterms.add(cons);
 			    h2ns.addNode(x);
+			    h2ns.removeNode(cons2);
+			    h2ns.addNode(cons);
+			    h1ns.removeNode(y);
+			    h1ns.removeNode(cons);
+			    h1ns.removeNode(g2);
+			    h1ns.addNode(h3);
+			    h2ns.removeNode(cons);
+			    h1ns.removeNode(x);
 			    Tterms.add(h2);
 			    Tterms.add(h2ns);
 			    Tterms.add(x);
+			    Sterms.replace(cons2, cons3);
 			    //Tterms.remove(cons);
 			    System.out.println(h1);
 			    System.out.println(h2);
+			    System.out.println(h3);
+			    Tterms.add(g);
 			  //  System.out.println(h3);
 			    System.out.println(Sterms);
                                             
@@ -544,7 +564,7 @@ public class MatchingTests {
 			    LinearSubstitutions es=new LinearSubstitutions();
 			    sl3.add(es);
 			    printSubs(sl3,"Source");
-			    Matcher.hERE(h1, h2, sl3, targetList, true,Sterms, Sterms.size(),Tterms,Tterms.size());
+			 //   Matcher.hERE(h1, h2, sl3, targetList, true,Sterms, Sterms.size(),Tterms,Tterms.size());
 			    
 			    printSubs(sl3,"Source2");		
 			    printSubs(targetList,"Target2");

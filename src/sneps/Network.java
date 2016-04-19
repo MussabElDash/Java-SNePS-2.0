@@ -1,11 +1,11 @@
 /**
  * @className Network.java
- * 
- * @ClassDescription The Network class is the class that uses all other classes 
- * 	to build the network according to the specifications decided by the user 
- * 	through the UI. The Network class keeps track of all the relations, case frames 
+ *
+ * @ClassDescription The Network class is the class that uses all other classes
+ * 	to build the network according to the specifications decided by the user
+ * 	through the UI. The Network class keeps track of all the relations, case frames
  * 	and nodes that are defined in the network. It is implemented as an 11-tuple.
- * 
+ *
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
@@ -124,7 +124,7 @@ public class Network {
 	private static LinkedList<Integer> userDefinedVarSuffix = new LinkedList<Integer>();
 
 	/**
-	 * 
+	 *
 	 * @return the hash table that stores the nodes defined in the network.
 	 */
 	public static Hashtable<String, Node> getNodes() {
@@ -132,7 +132,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the array list that stores the nodes defined in the network.
 	 */
 	public static ArrayList<Node> getNodesWithIDs() {
@@ -140,7 +140,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the hash table that stores the molecular nodes along with their
 	 *         case frames.
 	 */
@@ -149,7 +149,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the hash table that stores the case frames defined in the
 	 *         network.
 	 */
@@ -158,7 +158,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the hash table that stores the relations defined in the network.
 	 */
 	public static Hashtable<String, Relation> getRelations() {
@@ -166,7 +166,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the linked list of the suffix of the user-defined closed nodes'
 	 *         identifiers.
 	 */
@@ -175,7 +175,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the linked list of the suffix of the user-defined pattern nodes'
 	 *         identifiers.
 	 */
@@ -184,7 +184,7 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the linked list of the suffix of the user-defined variable nodes'
 	 *         identifiers.
 	 */
@@ -193,12 +193,12 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param name
 	 *            the name of the relation that will be retrieved.
-	 * 
+	 *
 	 * @return the relation with the specified name if it exists.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the requested relation does not exist.
 	 */
@@ -212,12 +212,12 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param id
 	 *            the string id of the case frame that will be retrieved.
-	 * 
+	 *
 	 * @return the case frame with the specified id if it exists.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the requested frame does not exist.
 	 */
@@ -231,12 +231,12 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param identifier
 	 *            the name of the node that will be retrieved.
-	 * 
+	 *
 	 * @return the node with the specified name if it exists.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the requested node does not exist.
 	 */
@@ -259,11 +259,11 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of Objects that represents relation-node pairs for
 	 *            the cable set
-	 * 
+	 *
 	 * @return the molecular node that have the down cable set specified by the
 	 *         given 2D array.
 	 */
@@ -301,7 +301,7 @@ public class Network {
 
 	/**
 	 * This method is used to define a new relation in the network.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the new relation.
 	 * @param type
@@ -312,9 +312,9 @@ public class Network {
 	 * @param limit
 	 *            the minimum number of nodes that this new relation can point
 	 *            to within a down-cable.
-	 * 
+	 *
 	 * @return the newly created relation.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if another relation with the same given name is already
 	 *             defined in the network.
@@ -333,10 +333,10 @@ public class Network {
 
 	/**
 	 * This method is used to delete a relation from the network.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the relation that will be deleted.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the relation cannot be removed because one of the case
 	 *             frames that contains it cannot be removed.
@@ -363,15 +363,15 @@ public class Network {
 	// Assume the LinkedList<RCFP> is formulated in UI
 	/**
 	 * This method is used to define a new case frame.
-	 * 
+	 *
 	 * @param semanticType
 	 *            the default semantic type specified by the new case frame.
 	 * @param relationSet
 	 *            the list that contains the RCFP's of the relations included in
 	 *            the new case frame.
-	 * 
+	 *
 	 * @return the newly created case frame.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if another case frame with the same given relations (same id)
 	 *             is already defined in the network.
@@ -393,10 +393,10 @@ public class Network {
 
 	/**
 	 * This method is used to remove a case frame from the network.
-	 * 
+	 *
 	 * @param id
 	 *            the ID of the case frame that will be removed.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the specified case frame cannot be removed because there
 	 *             are nodes implementing this case frame and they need to be
@@ -416,7 +416,7 @@ public class Network {
 
 	/**
 	 * This method is used to define a certain path for a specific relation.
-	 * 
+	 *
 	 * @param relation
 	 *            the relation that its path will be defined.
 	 * @param path
@@ -429,7 +429,7 @@ public class Network {
 	/**
 	 * This method is used to undefine or remove the path of a a certain
 	 * relation
-	 * 
+	 *
 	 * @param relation
 	 *            the relation that its path will be removed.
 	 */
@@ -440,10 +440,10 @@ public class Network {
 	/**
 	 * This method is used to remove a node from the network and also removes
 	 * all the nodes that are only dominated by it.
-	 * 
+	 *
 	 * @param node
 	 *            the node that will be removed.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if the node cannot be removed because it is not isolated.
 	 */
@@ -497,7 +497,7 @@ public class Network {
 	/**
 	 * This method builds a variable node with the default semantic type for
 	 * variable nodes which is 'infimum'.
-	 * 
+	 *
 	 * @return the newly created variable node.
 	 */
 	public static VariableNode buildVariableNode() {
@@ -516,11 +516,11 @@ public class Network {
 	// default semantic type 'infimum'.
 	/**
 	 * This method builds a variable node with the given semantic type.
-	 * 
+	 *
 	 * @param semantic
 	 *            the specified semantic type that will override the default
 	 *            semantic type for the variable node that will be created.
-	 * 
+	 *
 	 * @return the newly created variable node.
 	 */
 	public static VariableNode buildVariableNode(Entity semantic) {
@@ -533,15 +533,15 @@ public class Network {
 
 	/**
 	 * This method builds a new base node with the given name and semantic type.
-	 * 
+	 *
 	 * @param identifier
 	 *            the name of the new base node.
 	 * @param semantic
 	 *            the semantic class that represents the semantic type of the
 	 *            new base node.
-	 * 
+	 *
 	 * @return the newly created base node.
-	 * 
+	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in
 	 *             the network.
@@ -571,7 +571,7 @@ public class Network {
 	/**
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of Relation-Node pairs that represents the
 	 *            specifications of the down cable set of the new molecular
@@ -579,9 +579,9 @@ public class Network {
 	 * @param caseFrame
 	 *            the case frame that will be implemented by the new molecular
 	 *            node.
-	 * 
+	 *
 	 * @return the newly created molecular node.
-	 * 
+	 *
 	 * @throws Exception
 	 *             if the invoked methods to create a pattern node or closed
 	 *             node throw an Exception.
@@ -594,18 +594,22 @@ public class Network {
 	 */
 	public static MolecularNode buildMolecularNode(Object[][] array,
 			CaseFrame caseFrame) throws Exception, CustomException {
+		// System.out.println("in method");
 		if (downCableSetExists(array))
 			throw new CustomException(
 					"Cannot build the node .. down cable set already exists");
 		// check the validity of the relation-node pairs
+		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
 			throw new CustomException(
 					"Cannot build the node .. the relation node pairs are not valid");
+		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array);
 		// check that the down cable set is following the case frame
 		if (!followingCaseFrame(relNodeSet, caseFrame))
 			throw new CustomException(
 					"Not following the case frame .. wrong node set size or wrong set of relations");
+		// System.out.println("done 3rd");
 		// create the Molecular Node
 		MolecularNode mNode;
 		if (isToBePattern(array))
@@ -626,15 +630,17 @@ public class Network {
 	 * @param array
 	 *            a 2D array of Relation-Node pairs representing a down cable
 	 *            set specifications.
-	 * 
+	 *
 	 * @return true if the down cable set exists, and false otherwise
 	 */
 	private static boolean downCableSetExists(Object[][] array) {
 		int size = 0;
+		// System.out.println("called");
 		for (int i = 0; i < array.length; i++) {
 			if (!array[i][1].getClass().getSimpleName().equals("NodeSet"))
 				size++;
 		}
+		// System.out.println("done first loop");
 		Object[][] temp = new Object[size][2];
 		int counter = 0;
 		for (int i = 0; i < array.length; i++) {
@@ -646,13 +652,17 @@ public class Network {
 			temp[counter][1] = ns1;
 			counter++;
 		}
+		// System.out.println("done 2nd loop");
 		LinkedList<Object[]> ns = find(temp, new Context());
-
+		// System.out.println("done calling find");
+		// System.out.println(ns);
 		for (int j = 0; j < ns.size(); j++) {
 			Object[] x = ns.get(j);
 			MolecularNode n = (MolecularNode) x[0];
+			// System.out.println(array.length);
 			for (int i = 0; i < array.length; i++) {
 				if (array[i][1].getClass().getSimpleName().equals("NodeSet")) {
+					// System.out.println("hey");
 					if (n.getDownCableSet().contains(
 							((Relation) array[i][0]).getName())
 							&& n.getDownCableSet()
@@ -668,6 +678,7 @@ public class Network {
 				}
 			}
 		}
+		// System.out.println("done 3rd loop");
 		for (int i = 0; i < ns.size(); i++) {
 			Object[] x = ns.get(i);
 			MolecularNode n = (MolecularNode) x[0];
@@ -686,7 +697,7 @@ public class Network {
 				i--;
 			}
 		}
-
+		// System.out.println("size "  + ns.size());
 		return ns.size() == 1;
 	}
 
@@ -696,11 +707,11 @@ public class Network {
 	 * with it according to the semantic type specified in the relation. In the
 	 * current implementation any relation can point to the variable node
 	 * because all nodes have infimum as their semantic type.
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of Relation-Node pairs that represents the
 	 *            specifications of the down cable set of a new molecular node.
-	 * 
+	 *
 	 * @return true if each pair in the 2D array is valid, and false otherwise.
 	 */
 	public static boolean validRelNodePairs(Object[][] array) {
@@ -726,12 +737,12 @@ public class Network {
 	/**
 	 * This method build a 2D array of relation-nodeSet pairs from a given 2D
 	 * array of relation-node pairs.
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of Relation-Node pairs that represents the
 	 *            specifications of the down cable set of the new molecular
 	 *            node.
-	 * 
+	 *
 	 * @return a 2D array of relation-nodeSet pairs.
 	 */
 	private static Object[][] turnIntoRelNodeSet(Object[][] array) {
@@ -795,13 +806,13 @@ public class Network {
 	 * same relations and each relation is at least pointing to the minimum
 	 * number of nodes specified by its limit in its RCFP entry within this case
 	 * frame).
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of relation-nodeSet pairs that represent the down
 	 *            cable set of a certain molecular node
 	 * @param caseFrame
 	 *            the case frame implemented by this certain molecular node
-	 * 
+	 *
 	 * @return true if the down cable set is following the case frame
 	 *         restrictions, and false otherwise.
 	 */
@@ -831,12 +842,12 @@ public class Network {
 	 * This method examines the down cable set of a certain molecular node to
 	 * check whether it dominate free variables or not. Pattern nodes dominate
 	 * free variables while closed nodes do not dominate free variables.
-	 * 
+	 *
 	 * @param array
 	 *            a 2D array of Relation-Node pairs that represents the
 	 *            specifications of the down cable set of the new molecular
 	 *            node.
-	 * 
+	 *
 	 * @return true if the node dominates free variable and thus should be
 	 *         pattern node, and false otherwise.
 	 */
@@ -875,16 +886,16 @@ public class Network {
 	/**
 	 * This method builds a new pattern node or proposition node with the given
 	 * down cable set specifications and case frame.
-	 * 
+	 *
 	 * @param relNodeSet
 	 *            a 2D array of relation-nodeSet pairs that represents the down
 	 *            cable set of the new pattern or proposition node.
 	 * @param caseFrame
 	 *            the case frame implemented by the new pattern or proposition
 	 *            node.
-	 * 
+	 *
 	 * @return the newly created pattern node or proposition node.
-	 * 
+	 *
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
@@ -932,17 +943,17 @@ public class Network {
 	/**
 	 * This method builds a new closed node or proposition with the given down
 	 * cable set specifications and case frame.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param relNodeSet
 	 *            a 2D array of relation-nodeSet pairs that represents the down
 	 *            cable set of the new closed or proposition node.
 	 * @param caseFrame
 	 *            the case frame implemented by the new closed or proposition
 	 *            node.
-	 * 
+	 *
 	 * @return the newly created closed or proposition node.
-	 * 
+	 *
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
@@ -992,11 +1003,11 @@ public class Network {
 	 * This method builds a hash table with each entry having the relation name
 	 * as the key and and the node set that contains the nodes pointed to by the
 	 * corresponding relation as the value.
-	 * 
+	 *
 	 * @param relNodeSet
 	 *            a given 2D array of relation-nodeSet pairs that will be used
 	 *            to create the hash table
-	 * 
+	 *
 	 * @return the newly created hash table.
 	 */
 	public static Hashtable<String, NodeSet> turnIntoHashtable(
@@ -1012,14 +1023,14 @@ public class Network {
 	/**
 	 * This method gets the case frame signature specified by the case frame
 	 * based on the down cable set of a certain node.
-	 * 
+	 *
 	 * @param relNodeSet
 	 *            a hash table with entry having the relation name as the key
 	 *            and the node set of nodes pointed to by the corresponding
 	 *            relation as the value.
 	 * @param caseframe
 	 *            a given case frame.
-	 * 
+	 *
 	 * @return the (case frame signature) semantic type specified by the given
 	 *         case frame based on the given down cable set specifications.
 	 */
@@ -1071,7 +1082,7 @@ public class Network {
 						}
 					}
 					if (checks.isEmpty()) {
-						// System.out.println("empty checks");
+						System.out.println("empty checks");
 						rules.remove(j);
 						j--;
 					} else {
@@ -1079,12 +1090,12 @@ public class Network {
 					}
 				}
 				if (rules.isEmpty()) {
-					// System.out.println("Satisfied");
+					System.out.println("Satisfied");
 					return signatures.get(currentId).getResultingType();
 				}
 			}
 		}
-		// System.out.println("Not Satisfied");
+		System.out.println("Not Satisfied");
 		return caseframe.getSemanticClass();
 	}
 
@@ -1093,7 +1104,7 @@ public class Network {
 	 *            a given 2D array that contains pairs of paths and node sets.
 	 * @param context
 	 *            a given context.
-	 * 
+	 *
 	 * @return the node set of nodes that we can start following those paths in
 	 *         the array from, in order to reach at least one node at each node
 	 *         set in all entries of the array.
@@ -1110,7 +1121,7 @@ public class Network {
 	 * @param index
 	 *            the index of the 2D array at which we should start traversing
 	 *            it.
-	 * 
+	 *
 	 * @return the node set of nodes that we can start following those paths in
 	 *         the array from, in order to reach at least one node of node sets
 	 *         at each path-nodeSet pair.
@@ -1118,6 +1129,7 @@ public class Network {
 	private static LinkedList<Object[]> findIntersection(Object[][] array,
 			Context context, int index) {
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
+		// System.out.println("index " + index + " arra leng " + array.length);
 		if (index == array.length) {
 			return result;
 		}
@@ -1148,7 +1160,7 @@ public class Network {
 		} else {
 			result.addAll(findUnion(path, nodeSet, context));
 		}
-
+		// System.out.println("yeeeah");
 		return result;
 	}
 
@@ -1177,12 +1189,12 @@ public class Network {
 
 	/**
 	 * This method builds an instance of the semantic class with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the semantic class.
-	 * 
+	 *
 	 * @return the instance of the semantic class that was newly created.
-	 * 
+	 *
 	 * @throws Exception
 	 *             if the semantic class cannot be successfully built.
 	 */
@@ -1194,7 +1206,7 @@ public class Network {
 
 	/**
 	 * This method builds a new case frame signature with the given parameters.
-	 * 
+	 *
 	 * @param result
 	 *            the name of the semantic class specified by the new case frame
 	 *            signature.
@@ -1203,7 +1215,7 @@ public class Network {
 	 *            frame signature.
 	 * @param caseframeId
 	 *            the case frame if that this CFSignature will be included in
-	 * 
+	 *
 	 * @return the newly created case frame signature.
 	 */
 	public CFSignature createCFSignature(String result,
@@ -1214,17 +1226,17 @@ public class Network {
 
 	/**
 	 * This method adds a given case frame signature to a given case frame.
-	 * 
+	 *
 	 * @param rule
 	 *            the given case frame signature that will be added to the
 	 *            specified case frame.
-	 * 
+	 *
 	 * @param priority
 	 *            the priority of the given case frame signature.
 	 *
 	 * @param caseframe
 	 *            the given case frame.
-	 * 
+	 *
 	 * @return true if the case frame signature was successfully added to the
 	 *         case frame and false otherwise.
 	 */
@@ -1236,12 +1248,12 @@ public class Network {
 	/**
 	 * This method removes the given case frame signature from the given case
 	 * frame
-	 * 
+	 *
 	 * @param signatureID
 	 *            the id of the signature to be removed.
 	 * @param caseFrame
 	 *            the given case frame
-	 * 
+	 *
 	 * @return true if the case frame signature was successfully removed from
 	 *         the given case frame and false otherwise.
 	 */
@@ -1253,12 +1265,12 @@ public class Network {
 	/**
 	 * This method removes the given case frame signature from the given case
 	 * frame
-	 * 
+	 *
 	 * @param signatureID
 	 *            the signature to be removed.
 	 * @param caseFrame
 	 *            the given case frame
-	 * 
+	 *
 	 * @return true if the case frame signature was successfully removed from
 	 *         the given case frame and false otherwise.
 	 */
@@ -1269,14 +1281,14 @@ public class Network {
 
 	/**
 	 * This method builds a new RCFP with the given parameters
-	 * 
+	 *
 	 * @param r
 	 *            the relation included in the new RCFP.
 	 * @param adjust
 	 *            the adjust of the given relation in the new RCFP.
 	 * @param limit
 	 *            the limit of the given relation in the new RCFP.
-	 * 
+	 *
 	 * @return the newly created RCFP.
 	 */
 	public static RCFP defineRelationPropertiesForCF(Relation r, String adjust,
@@ -1377,10 +1389,10 @@ public class Network {
 	/**
 	 * This method checks if a user-defined name of a base node has the same
 	 * form as the closed nodes' identifiers "Mi"
-	 * 
+	 *
 	 * @param identifier
 	 *            a user-defined identifier.
-	 * 
+	 *
 	 * @return -1 if the identifier does not have the form of "Mi" where 'i' is
 	 *         an integer suffix, and return the int value of the 'i' otherwise.
 	 */
@@ -1399,10 +1411,10 @@ public class Network {
 	/**
 	 * This method checks if a user-defined name of a base node has the same
 	 * form as the pattern nodes' identifiers "Pi"
-	 * 
+	 *
 	 * @param identifier
 	 *            a user-defined identifier.
-	 * 
+	 *
 	 * @return -1 if the identifier does not have the form of "Pi" where 'i' is
 	 *         an integer suffix, and return the int value of the 'i' otherwise.
 	 */
@@ -1421,10 +1433,10 @@ public class Network {
 	/**
 	 * This method checks if a user-defined name of a base node has the same
 	 * form as the variable nodes' identifiers "Vi"
-	 * 
+	 *
 	 * @param identifier
 	 *            a user-defined identifier.
-	 * 
+	 *
 	 * @return -1 if the identifier does not have the form of "Vi" where 'i' is
 	 *         an integer suffix, and return the int value of the 'i' otherwise.
 	 */
@@ -1441,10 +1453,10 @@ public class Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param c
 	 *            a character that will be checked whether it is an int or not.
-	 * 
+	 *
 	 * @return true if the character is an int, and false otherwise.
 	 */
 	private static boolean isInt(char c) {
@@ -1484,7 +1496,7 @@ public class Network {
 	 * conflicts on the semantic level with any of the case frame existing in
 	 * the network. Two case frames are said to be conflicting if they can at
 	 * any point produce nodes that are semantically the same.
-	 * 
+	 *
 	 * V.Imp Notes: - This method is not used anywhere in the code yet. - In the
 	 * method it is assumed that the given case frame is newly created and thus
 	 * not added to the hash table of case frames yet thus if the same id as the
@@ -1496,11 +1508,11 @@ public class Network {
 	 * that the given case frame will be returned in the result (along with the
 	 * other conflicting case frames) because it will be conflicting with
 	 * itself.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param cf
 	 *            the newly created case frame.
-	 * 
+	 *
 	 * @return a list of the case frame that are conflicting with the given case
 	 *         frame, and null if the given case frame already exists in the
 	 *         system. if no case frames are conflicting with the given case
@@ -1560,13 +1572,13 @@ public class Network {
 	 * This method gets the intersecting relations between two different case
 	 * frames. It is invoked and used by the method that checks the case frame
 	 * conflicts.
-	 * 
+	 *
 	 * @param list1
 	 *            a given hash table of relations of a certain case frame
-	 * 
+	 *
 	 * @param list2
 	 *            a given hash table of relations of a another case frame
-	 * 
+	 *
 	 * @return a hash table that contains the relations that were in both case
 	 *         frames. Each entry has the relation name as the key and the RCFP
 	 *         of the corresponding relation as the value.
@@ -1593,7 +1605,7 @@ public class Network {
 	 * entries. (when a node is removed from the network its entry in the
 	 * nodesIndex array-list is nullified). The method then adjust the count of
 	 * the nodes and the id of the nodes accordingly.
-	 * 
+	 *
 	 * V.Imp Note: - This method is not used anywhere yet.
 	 */
 	public static void compact() {
@@ -1609,7 +1621,7 @@ public class Network {
 					n.setId(oldID - empty);
 					nodesIndex.set(n.getId(), n);
 					nodesIndex.set(oldID, null);
-					System.out.println("old id: " + oldID + " new id: "
+					// System.out.println("old id: " + oldID + " new id: "
 							+ (oldID - empty) + " empty: " + empty);
 				}
 				nodes++;
@@ -1619,11 +1631,11 @@ public class Network {
 			nodesIndex.remove(i);
 			i--;
 		}
-		System.out.println("");
-		System.out.println("previous count of nodes before deletion: "
+		// System.out.println("");
+		// System.out.println("previous count of nodes before deletion: "
 				+ Node.getCount());
 		Node.setCount(nodes);
-		System.out.println("current count of nodes before deletion: "
+		// System.out.println("current count of nodes before deletion: "
 				+ Node.getCount());
 	}
 
@@ -1750,7 +1762,7 @@ public class Network {
 	// testing //////////////////////////////////////////
 
 	// public static void main(String[] args) throws Exception{
-	// System.out.println(getNexMolName());
+	System.out.println(getNexMolName());
 	// Relation member = new Relation("member", "Entity", "reduce", 1);
 	// // member.setQuantifier();
 	// Relation cl = new Relation("class", "Entity", "none", 1);
@@ -1786,7 +1798,7 @@ public class Network {
 	// relNode[2][1] = node3;
 	// relNode[3][0] = cl;
 	// relNode[3][1] = node4;
-	// System.out.println("checking" + dcs.size());
+	System.out.println("checking" + dcs.size());
 	// Pattern p = new Pattern("M1", dcs);
 	// Entity e = new Entity();
 	// PatternNode pNode = new PatternNode(p, e);
@@ -1794,10 +1806,10 @@ public class Network {
 	// caseFrames.put(cf.getId(), cf);
 	// molecularNodes.put(cf.getId(), new NodeSet());
 	// molecularNodes.get(cf.getId()).addNode(pNode);
-	// System.out.println("start");
+	System.out.println("start");
 	// MolecularNode m = buildMolecularNode(relNode, cf);
-	// System.out.println(m.getSyntacticType());
-	// System.out.println(m.getSemanticType());
+	System.out.println(m.getSyntacticType());
+	System.out.println(m.getSemanticType());
 	//
 	// }
 

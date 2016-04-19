@@ -379,7 +379,7 @@ public class Node {
 	//
 	// }
 
-	public void processSingleReport(Channel currentChannel) {
+	public void processSingleChannelReports(Channel currentChannel) {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
@@ -395,8 +395,8 @@ public class Node {
 	}
 
 	public void processReports() {
-		for (Channel outChannel : outgoingChannels)
-			processSingleReport(outChannel);
+		for (Channel inChannel : incomingChannels)
+			processSingleChannelReports(inChannel);
 	}
 
 	public void broadcastReport(Report report) {

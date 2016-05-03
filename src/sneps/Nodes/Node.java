@@ -557,6 +557,25 @@ public class Node {
 	}
 
 	public void deduce() {
-
+		Runner.initiate();
+		NodeSet dominatingRules = getDominatingRules();
+		sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
+				currentChannel.getContextID(), ChannelTypes.RuleCons);
+		// System.out.println("#$#$#$#$# 1");
+		try {
+			List<Object[]> matchesReturned = Matcher.Match(this);
+			if(matchesReturned != null) {
+				ArrayList<Pair> matches = new ArrayList<Pair>();
+				for(Object[] match : matchesReturned) {
+					Pair newPair = new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
+					matches.add(newPair);
+				}
+				sendRequests(matches, currentChannel.getContextID(), ChannelTypes.MATCHED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Runner.run();
+		// what to return here ?
 	}
 }

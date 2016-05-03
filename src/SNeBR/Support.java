@@ -70,4 +70,9 @@ public class Support {
 				res.add(s1.combine(s2));
 		return res;
 	}
+	
+	public String toString() {
+		return "Names: " + originSet.getNames() + "\nContradictions: " + originSet.getCont() + "\nHyps: " + originSet.getHypothesisSet()
+				+ "\nCount: " + originSet.getCount();
+	}
 }

@@ -51,6 +51,6 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextID + "\nSign: " + sign + "\nSubstitution: " + substitution;
+		return "ContextID : " + contextID + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
 	}
 }

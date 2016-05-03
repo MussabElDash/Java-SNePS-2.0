@@ -1,12 +1,12 @@
 /**
  * @className Node.java
- * 
- * @ClassDescription A node is the building block of the network. A node 
- * 	has both a semantic and a syntactic type. The Node class has an instance 
- * 	of the semantic class representing its semantic type and an instance of 
- * 	the syntactic class representing the its syntactic type. The Node class 
+ *
+ * @ClassDescription A node is the building block of the network. A node
+ * 	has both a semantic and a syntactic type. The Node class has an instance
+ * 	of the semantic class representing its semantic type and an instance of
+ * 	the syntactic class representing the its syntactic type. The Node class
  * 	is implemented as a 4-tuple (syntactic, semantic, count and id)
- * 
+ *
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
  */
@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import sneps.Cables.DownCableSet;
@@ -24,6 +25,7 @@ import sneps.Cables.UpCableSet;
 import sneps.SemanticClasses.Entity;
 import sneps.SyntaticClasses.Term;
 import sneps.match.LinearSubstitutions;
+import sneps.match.Matcher;
 import sneps.match.Substitutions;
 import snip.AntecedentToRuleChannel;
 import snip.Channel;
@@ -37,6 +39,7 @@ import snip.Runner;
 import SNeBR.Context;
 import SNeBR.PropositionSet;
 import SNeBR.SNeBR;
+import SNeBR.Support;
 
 public class Node {
 
@@ -70,17 +73,17 @@ public class Node {
 
 	/**
 	 * The first constructor of this class.
-	 * 
+	 *
 	 * This constructor creates a node using the syntactic and semantic
 	 * instances passed as parameters.
-	 * 
+	 *
 	 * @param syn
 	 *            an instance of a syntactic class representing the syntactic
 	 *            type of the node that will be created.
 	 * @param sem
 	 *            an instance of a semantic class representing the semantic type
 	 *            of the node that will be created.
-	 * 
+	 *
 	 */
 	public Node(Term syn, Entity sem) {
 		this.syntactic = syn;
@@ -94,11 +97,11 @@ public class Node {
 
 	/**
 	 * The second constructor of this class.
-	 * 
+	 *
 	 * This constructor first creates an instance of the semantic class
 	 * specified and an instance of the syntactic class specified and then
 	 * creates the new node using those two newly created instances.
-	 * 
+	 *
 	 * @param syn
 	 *            the name of the syntactic class that will be created to
 	 *            represent the syntactic type of the node that will be created.
@@ -110,7 +113,7 @@ public class Node {
 	 *            will be passed as a parameter to the syntactic class
 	 *            constructor while creating an instance of the syntactic class
 	 *            specified.)
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -132,11 +135,11 @@ public class Node {
 
 	/**
 	 * The third constructor of this class.
-	 * 
+	 *
 	 * This constructor is used to create a molecular node by providing the
 	 * names of the syntactic and semantic classes in addition to the name and
 	 * the down cable set of the node that will be created.
-	 * 
+	 *
 	 * @param syn
 	 *            the name of the syntactic class that will be created to
 	 *            represent the syntactic type of the molecular node that will
@@ -150,13 +153,13 @@ public class Node {
 	 *            created. (this will be passed as a parameter to the syntactic
 	 *            class constructor while creating an instance of the syntactic
 	 *            class specified.)
-	 * 
+	 *
 	 * @param dCableSet
 	 *            the down cable set of the molecular node that will be created.
 	 *            (this will be passed as a parameter to the syntactic class
 	 *            constructor while creating an instance of the syntactic class
 	 *            specified.)
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -174,7 +177,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the instance of syntactic class representing the syntactic type
 	 *         of the current node.
 	 */
@@ -183,7 +186,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the instance of semantic class representing the semantic type of
 	 *         the current node.
 	 */
@@ -192,7 +195,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the simple name of syntactic class representing the syntactic
 	 *         type of the current node.
 	 */
@@ -201,7 +204,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the simple name of the super class of the syntactic class
 	 *         representing the syntactic type of the current node.
 	 */
@@ -210,7 +213,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the simple name of semantic class representing the semantic type
 	 *         of the current node.
 	 */
@@ -219,7 +222,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the simple name of the super class of the semantic class
 	 *         representing the semantic type of the current node.
 	 */
@@ -228,7 +231,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the id of the current node.
 	 */
 	public int getId() {
@@ -236,7 +239,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the name or the label of the current node.
 	 */
 	public String getIdentifier() {
@@ -244,7 +247,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the up cable set of the current node.
 	 */
 	public UpCableSet getUpCableSet() {
@@ -252,7 +255,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return true if the current node is a temporary node, and false
 	 *         otherwise.
 	 */
@@ -261,7 +264,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param temp
 	 *            the boolean value that indicates whether or not the node is a
 	 *            temporary node.
@@ -271,7 +274,7 @@ public class Node {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return a node set containing all the parent nodes of the current node.
 	 *         (whether direct or indirect parent nodes.)
 	 */
@@ -300,10 +303,10 @@ public class Node {
 	 * This method is used to adjust the count of nodes in the network after
 	 * many deletions (this method is used by 'compact' method in the 'Network'
 	 * class.)
-	 * 
+	 *
 	 * @param c
 	 *            the new count of the nodes in the system.
-	 * 
+	 *
 	 */
 	public static void setCount(int c) {
 		count = c;
@@ -313,7 +316,7 @@ public class Node {
 	 * This method is used to adjust the id of the current node after compaction
 	 * process. (this method is used by 'compact' method in the 'Network'
 	 * class.)
-	 * 
+	 *
 	 * @param id
 	 *            the new id of the current node.
 	 */
@@ -324,11 +327,11 @@ public class Node {
 	/**
 	 * This method overrides the default equals method inherited from the Object
 	 * class.
-	 * 
+	 *
 	 * @param obj
 	 *            an Object that is to be compared to the current node to check
 	 *            whether they are equal.
-	 * 
+	 *
 	 * @return true if the given object is an instance of the Node class and has
 	 *         the same name as the current node, and false otherwise.
 	 */
@@ -346,36 +349,36 @@ public class Node {
 
 	// public static void main(String[] args) throws Exception{
 	// // Testing the new approaches
-	// System.out.println("Testing the 1st approach:");
+	System.out.println("Testing the 1st approach:");
 	// Base b = new Base("one");
 	// Entity e = new Entity();
 	// Individual i = new Individual();
 	// Node trialNode = new Node(b, i);
-	// System.out.println("Trial: ");
-	// System.out.println(trialNode.syntactic.getClass().getSimpleName());
-	// System.out.println(trialNode.semantic.getClass().getSimpleName());
-	// //System.out.println(trialNode.semantic.);
-	// System.out.println(trialNode.syntactic.getIdentifier());
-	// System.out.println(trialNode.syntactic.isTemp());
-	// System.out.println("calling method isTemp directly");
+	System.out.println("Trial: ");
+	System.out.println(trialNode.syntactic.getClass().getSimpleName());
+	System.out.println(trialNode.semantic.getClass().getSimpleName());
+	//System.out.println(trialNode.semantic.);
+	System.out.println(trialNode.syntactic.getIdentifier());
+	System.out.println(trialNode.syntactic.isTemp());
+	System.out.println("calling method isTemp directly");
 	// trialNode.syntactic.setTemp(true);
-	// System.out.println(trialNode.syntactic.isTemp());
+	System.out.println(trialNode.syntactic.isTemp());
 	// // trying the difference between my old approach and my new approach
-	// // System.out.println(nd.syntacticClass.isTemp());
-	// System.out.println("Results of the second node");
+	// System.out.println(nd.syntacticClass.isTemp());
+	System.out.println("Results of the second node");
 	// Variable v = new Variable("two");
 	// Node NodeTwo = new Node(v, e);
-	// System.out.println(NodeTwo.syntactic.getClass().getSimpleName());
-	// System.out.println(NodeTwo.syntactic.getIdentifier());
-	// System.out.println("Moved :D");
-	// System.out.println("Testing the 2nd approach:");
+	System.out.println(NodeTwo.syntactic.getClass().getSimpleName());
+	System.out.println(NodeTwo.syntactic.getIdentifier());
+	System.out.println("Moved :D");
+	System.out.println("Testing the 2nd approach:");
 	// Node NodeThree = new Node("Variable", "Individual", "three");
-	// System.out.println(NodeThree.syntactic.getClass().getSimpleName());
-	// System.out.println(NodeThree.getId());
-	// System.out.println(NodeThree.syntactic.getIdentifier());
-	// System.out.println(NodeThree.semantic.getClass().getSimpleName());
-	// System.out.println(NodeThree.getSemanticSuperClass());
-	// System.out.println(NodeThree.getSyntacticSuperClass());
+	System.out.println(NodeThree.syntactic.getClass().getSimpleName());
+	System.out.println(NodeThree.getId());
+	System.out.println(NodeThree.syntactic.getIdentifier());
+	System.out.println(NodeThree.semantic.getClass().getSimpleName());
+	System.out.println(NodeThree.getSemanticSuperClass());
+	System.out.println(NodeThree.getSyntacticSuperClass());
 	//
 	// }
 
@@ -402,14 +405,14 @@ public class Node {
 	public void broadcastReport(Report report) {
 		for (Channel outChannel : outgoingChannels) {
 			if (outChannel.addReport(report)) {
-				System.out.println("SENDING REPORT " + this);
+				// System.out.println("SENDING REPORT " + this);
 			}
 		}
 	}
 
 	public boolean sendReport(Report report, Channel channel) {
 		if (channel.addReport(report)) {
-			System.out.println("SENDING REPORT " + this);
+			// System.out.println("SENDING REPORT " + this);
 			return true;
 		}
 		return false;
@@ -440,7 +443,10 @@ public class Node {
 		Context desiredContext = SNeBR.getContextByID(currentChannel.getContextID());
 		if (propSet.assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
-			Report reply = new Report(new LinearSubstitutions(), null, true, currentChannel.getContextID());
+			// System.out.println("#$#$#$#$# -1 " + desiredContext.getId());
+			Set<Support> support = new HashSet<Support>();
+			support.add(new Support((PropositionNode) this));
+			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextID());
 			knownInstances.add(reply);
 			broadcastReport(reply);
 		} else {
@@ -451,16 +457,27 @@ public class Node {
 
 			// TODO Akram: passed the filter subs to isWhQuest, is that correct
 			// ?
+			// System.out.println("#$#$#$#$# 0");
 			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitution())) {
 				if (!alreadyWorking(currentChannel)) {
 					NodeSet dominatingRules = getDominatingRules();
 					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
 							currentChannel.getContextID(), ChannelTypes.RuleCons);
+					// System.out.println("#$#$#$#$# 1");
 					if (!(currentChannel instanceof MatchChannel)) {
-						// Sending requests to matched channels nodes
-						// TODO Ahmed Akram: call network.match
-						// TODO Akram send to all the matched nodes
-						sendRequests(new ArrayList<Pair>(), currentChannel.getContextID(), ChannelTypes.MATCHED);
+						try {
+							List<Object[]> matchesReturned = Matcher.Match(this);
+							if(matchesReturned != null) {
+								ArrayList<Pair> matches = new ArrayList<Pair>();
+								for(Object[] match : matchesReturned) {
+									Pair newPair = new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
+									matches.add(newPair);
+								}
+								sendRequests(matches, currentChannel.getContextID(), ChannelTypes.MATCHED);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -516,7 +533,6 @@ public class Node {
 	}
 
 	public boolean alreadyWorking(Channel channel) {
-		// TODO Akram: implement this
 		return false;
 	}
 

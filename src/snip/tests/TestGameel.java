@@ -169,6 +169,7 @@ public class TestGameel {
 		String n = Runner.run();
 		System.out.println("Call one seq is " + n);
 		System.out.println("Reports buffer " + csqRule.getReportsBuffer().size());
+		System.out.println("Report: " + csqRule.getReportsBuffer());
 		
 	}
 }

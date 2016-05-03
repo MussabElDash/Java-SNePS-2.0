@@ -13,7 +13,7 @@ import sneps.Relation;
 import sneps.Cables.DownCable;
 import sneps.Cables.DownCableSet;
 import sneps.Nodes.MolecularNode;
-import sneps.Nodes.Node;
+import sneps.Nodes.*;
 import sneps.Nodes.NodeSet;
 import sneps.Nodes.PatternNode;
 import sneps.Nodes.VariableNode;
@@ -30,8 +30,14 @@ public class Matcher {
 
 	private static boolean UVBR = true;
 
-	public static LinkedList<Object[]> Match(MolecularNode sourceNode)
+	public static LinkedList<Object[]> Match(Node source)
 			throws Exception {
+		System.out.println("Called this: #$#$#$#$#");
+		if(!(source instanceof MolecularNode)) {
+			return null;
+		}
+		System.out.println("Called this: #$#$#$#$#");
+		MolecularNode sourceNode = (MolecularNode) source;
 		LinkedList<Object[]> matches = new LinkedList<Object[]>();
 		CaseFrame sourceCF = sourceNode.getDownCableSet().getCaseFrame();
 		NodeSet candidateNodes = Network.getMolecularNodes().get(

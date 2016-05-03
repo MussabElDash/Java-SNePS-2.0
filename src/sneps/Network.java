@@ -1625,7 +1625,7 @@ public class Network {
 					n.setId(oldID - empty);
 					nodesIndex.set(n.getId(), n);
 					nodesIndex.set(oldID, null);
-					// System.out.println("old id: " + oldID + " new id: "
+					 System.out.println("old id: " + oldID + " new id: "
 							+ (oldID - empty) + " empty: " + empty);
 				}
 				nodes++;
@@ -1635,11 +1635,11 @@ public class Network {
 			nodesIndex.remove(i);
 			i--;
 		}
-		// System.out.println("");
-		// System.out.println("previous count of nodes before deletion: "
+		 System.out.println("");
+		 System.out.println("previous count of nodes before deletion: "
 				+ Node.getCount());
 		Node.setCount(nodes);
-		// System.out.println("current count of nodes before deletion: "
+		 System.out.println("current count of nodes before deletion: "
 				+ Node.getCount());
 	}
 
@@ -1766,7 +1766,7 @@ public class Network {
 	// testing //////////////////////////////////////////
 
 	// public static void main(String[] args) throws Exception{
-	System.out.println(getNexMolName());
+//	System.out.println(getNexMolName());
 	// Relation member = new Relation("member", "Entity", "reduce", 1);
 	// // member.setQuantifier();
 	// Relation cl = new Relation("class", "Entity", "none", 1);
@@ -1802,7 +1802,7 @@ public class Network {
 	// relNode[2][1] = node3;
 	// relNode[3][0] = cl;
 	// relNode[3][1] = node4;
-	System.out.println("checking" + dcs.size());
+//	System.out.println("checking" + dcs.size());
 	// Pattern p = new Pattern("M1", dcs);
 	// Entity e = new Entity();
 	// PatternNode pNode = new PatternNode(p, e);
@@ -1810,10 +1810,10 @@ public class Network {
 	// caseFrames.put(cf.getId(), cf);
 	// molecularNodes.put(cf.getId(), new NodeSet());
 	// molecularNodes.get(cf.getId()).addNode(pNode);
-	System.out.println("start");
+//	System.out.println("start");
 	// MolecularNode m = buildMolecularNode(relNode, cf);
-	System.out.println(m.getSyntacticType());
-	System.out.println(m.getSemanticType());
+//	System.out.println(m.getSyntacticType());
+//	System.out.println(m.getSemanticType());
 	//
 	// }
 

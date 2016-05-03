@@ -124,6 +124,7 @@ public class AndNode extends RuleNode {
 			return;
 		Set<Support> originSupports = ((Proposition) this.getSemantic()).getOriginSupport();
 		Report reply = new Report(tRui.getSub(), tRui.getSupport(originSupports), true, contextID);
+		// System.out.println("#$#$#$#$# " + tRui.getSupport(originSupports));
 		broadcastReport(reply);
 	}
 

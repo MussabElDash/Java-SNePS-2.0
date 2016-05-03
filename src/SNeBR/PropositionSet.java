@@ -28,7 +28,11 @@ public class PropositionSet implements Iterable<PropositionNode>{
 	public void addProposition(PropositionNode node) {
 		propositions.add(node);
 	}
-
+	
+	public String toString() {
+		return propositions + "";
+	}
+	
 	public boolean assertedInContext(Context context) {
 		if (context.hypothesisSet.propositions.containsAll(this.propositions))
 			return true;
